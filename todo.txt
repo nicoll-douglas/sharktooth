@@ -1,0 +1,7 @@
+- implement an updater mechanism (electron-updater?)
+- implement a build system for building application into a prod downloadable/release
+- use GitHub releases
+- set up directory ffmpeg executables to pass to yt_dlp that will be bundled into the application
+- Do application README
+- Add a link to release notes, bug reports, changelog (all will be on GitHub)
+- test with a VM that the application works cross-platform
