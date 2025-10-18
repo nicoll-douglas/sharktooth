@@ -1,7 +1,6 @@
 import * as Ch from "@chakra-ui/react";
 import { LuList, LuDownload, LuInfo } from "react-icons/lu";
 import SidebarButtonLink from "./SidebarButtonLink";
-import { FaSpotify } from "react-icons/fa";
 import Logo from "../Logo";
 import { ColorModeButton } from "../chakra-ui/color-mode";
 import { system } from "@/config/theme";
@@ -52,9 +51,9 @@ export default function Sidebar() {
             <SidebarButtonLink href="/downloads" Icon={LuList}>
               Downloads
             </SidebarButtonLink>
-            <SidebarButtonLink Icon={FaSpotify} href="/spotify-sync">
+            {/* <SidebarButtonLink Icon={FaSpotify} href="/spotify-sync">
               Download from Spotify
-            </SidebarButtonLink>
+            </SidebarButtonLink> */}
             <Ch.Spacer />
             <ColorModeButton display={{ lg: "none" }} />
             <SettingsButton display={{ lg: "none" }} />

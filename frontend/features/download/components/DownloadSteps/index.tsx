@@ -37,23 +37,29 @@ export default function DownloadSteps() {
         onStepChange={(e) => setStep(e.step)}
         count={3}
       >
-        <Ch.Steps.List>
+        <Ch.Steps.List flexWrap={"wrap"} gap={"3"}>
           <Ch.Steps.Item index={0} title={"Enter Source URL"}>
             <Ch.Steps.Indicator />
-            <Ch.Steps.Title>Enter Source URL</Ch.Steps.Title>
-            <Ch.Steps.Separator />
+            <Ch.Steps.Title textWrap={"nowrap"}>
+              Enter Source URL
+            </Ch.Steps.Title>
+            <Ch.Steps.Separator mr={"0"} />
           </Ch.Steps.Item>
 
           <Ch.Steps.Item index={1} title={"Set Download Options"}>
             <Ch.Steps.Indicator />
-            <Ch.Steps.Title>Set Download Options</Ch.Steps.Title>
-            <Ch.Steps.Separator />
+            <Ch.Steps.Title textWrap={"nowrap"}>
+              Set Download Options
+            </Ch.Steps.Title>
+            <Ch.Steps.Separator mr={"0"} />
           </Ch.Steps.Item>
 
           <Ch.Steps.Item index={2} title={"Set Track Metadata"}>
             <Ch.Steps.Indicator />
-            <Ch.Steps.Title>Set Track Metadata</Ch.Steps.Title>
-            <Ch.Steps.Separator />
+            <Ch.Steps.Title textWrap={"nowrap"}>
+              Set Track Metadata
+            </Ch.Steps.Title>
+            <Ch.Steps.Separator mr={"0"} />
           </Ch.Steps.Item>
         </Ch.Steps.List>
 
