@@ -1,5 +1,5 @@
 import type { RegisterOptions } from "react-hook-form";
-import type { TrackBitrate, TrackCodec } from "../types";
+import type { TrackBitrate, TrackCodec } from "@/types";
 
 /**
  * Represents the form field names and types in the download form.
