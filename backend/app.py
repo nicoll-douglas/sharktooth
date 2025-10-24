@@ -5,6 +5,7 @@ from routes import register_routes
 from sockets import register_sockets
 import config, db
 from flask_socketio import SocketIO
+from services import Downloader
 
 def create_app(db_conn: sqlite3.Connection | None = None) -> tuple[Flask, SocketIO]:
   """Sets up and creates the application and returns it.
@@ -46,3 +47,4 @@ def create_app(db_conn: sqlite3.Connection | None = None) -> tuple[Flask, Socket
 if __name__ == "__main__":
   app, socketio = create_app()
   socketio.run(app, host="127.0.0.1", port=8888, allow_unsafe_werkzeug=True)
+  Downloader.start(True)

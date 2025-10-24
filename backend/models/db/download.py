@@ -90,8 +90,8 @@ GROUP BY d.id
   # END get_all_downloads
 
 
-  def get_next_in_queue(self) -> dict | None:
-    """Selects the earliest created download where `status` is queued, aggregating all metadata.
+  def get_next(self, status: DownloadStatus) -> dict | None:
+    """Selects the earliest created download based on the status, aggregating all metadata.
 
     Returns:
       dict | None: A dict with the row's data if a row was found, None otherwise.
@@ -119,15 +119,15 @@ FROM {self.TABLE} d
 LEFT JOIN {Metadata.TABLE} m ON d.metadata_id = m.id
 LEFT JOIN {MetadataArtist.TABLE} ma ON m.id = ma.metadata_id
 LEFT JOIN {Artist.TABLE} a ON ma.artist_id = a.id
-WHERE d.status = :queued_status
+WHERE d.status = :status
   AND d.created_at = (
     SELECT MIN(created_at) 
     FROM {self.TABLE}
-    WHERE status = :queued_status
+    WHERE status = :status
   ) 
 GROUP BY d.id
 """
-    self._cur.execute(query, { "queued_status": DownloadStatus.QUEUED.value })
+    self._cur.execute(query, { "status": status.value })
     row = self._cur.fetchone()
     
     if not row:
@@ -137,7 +137,7 @@ GROUP BY d.id
     self._load_other_artists(result)
 
     return result
-  # END get_next_in_queue
+  # END get_next
 
 
   def get_download(self, download_id: int) -> dict | None:
