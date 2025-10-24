@@ -91,11 +91,12 @@ class TestDownloadsSocket:
     """
       
     client = socketio_test_client(DownloadsSocket.NAMESPACE)
+    received = client.get_received(DownloadsSocket.NAMESPACE)
+    
     namespace: DownloadsSocket = client.socketio.server.namespace_handlers[DownloadsSocket.NAMESPACE]
     namespace.send_all_downloads([download_update])
 
     received = client.get_received(DownloadsSocket.NAMESPACE)
-
     assert any(p["name"] == DownloadsSocket.DOWNLOAD_INIT_EVENT for p in received)
 
     event = next(p for p in received if p["name"] == DownloadsSocket.DOWNLOAD_INIT_EVENT)

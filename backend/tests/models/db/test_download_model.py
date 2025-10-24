@@ -1,4 +1,5 @@
 from models.db import Download
+from user_types import DownloadStatus
 import sqlite3
 import pytest
 from typing import Callable
@@ -47,8 +48,8 @@ from typing import Callable
   ),
   (None, None)
 ])
-def next_in_queue_fixture(request: pytest.FixtureRequest) -> tuple[str | None, dict | None]:
-  """Parametrized fixture providing test data for the test_get_next_in_queue method.
+def next_fixture(request: pytest.FixtureRequest) -> tuple[str | None, dict | None]:
+  """Parametrized fixture providing test data for the test_get_next method.
   
   Args:
     request (pytest.FixtureRequest): Provides the current parameter.
@@ -58,28 +59,28 @@ def next_in_queue_fixture(request: pytest.FixtureRequest) -> tuple[str | None, d
   """
   
   return request.param
-# END next_in_queue_fixture
+# END next_fixture
 
 
 class TestDownloadModel:
   """Contains unit/integration tests for the Download model.
   """
 
-  def test_get_next_in_queue(
+  def test_get_next(
     self, 
     seeded_app_db: Callable[[str | None], sqlite3.Connection], 
-    next_in_queue_fixture: tuple[str | None, dict | None]
+    next_fixture: tuple[str | None, dict | None]
   ):
-    """Verfies that the get_next_in_queue method queries the database correctly and returns all the correct data.
+    """Verfies that the get_next method queries the database correctly and returns all the correct data.
 
     Args:
       seeded_app_db (Callable[[str | None], sqlite3.Connection]): The factory function to create the seeded application database and return the connection provided by the fixture.
-      next_in_queue_fixture (tuple[str | None, dict, | None]): The parametrized fixture providing the .sql file key for the seed and the expected data from the query. If the file key is None, then the expected data is also None (no queued rows).
+      next_fixture (tuple[str | None, dict, | None]): The parametrized fixture providing the .sql file key for the seed and the expected data from the query. If the file key is None, then the expected data is also None (no queued rows).
     """
     
-    sql_seed_file_key, included_data = next_in_queue_fixture
+    sql_seed_file_key, included_data = next_fixture
     dl = Download(seeded_app_db(sql_seed_file_key))
-    next_in_queue = dl.get_next_in_queue()
+    next_in_queue = dl.get_next(DownloadStatus.QUEUED)
 
     if sql_seed_file_key is None:
       assert next_in_queue is None
@@ -88,6 +89,6 @@ class TestDownloadModel:
       assert isinstance(next_in_queue, dict)
       assert "created_at" in next_in_queue
       assert included_data.items() <= next_in_queue.items()
-  # END test_get_next_in_queue
+  # END test_get_next
 
 # END class TestDownloadModel
