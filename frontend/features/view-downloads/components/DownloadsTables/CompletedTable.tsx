@@ -8,6 +8,8 @@ import DownloadsTableCellCheckbox from "./shared/DownloadsTableCellCheckbox";
 import DownloadsSelectionActionBar from "./shared/DownloadsSelectionActionBar";
 import deleteDownloads from "../../services/deleteDownloads";
 import { LuCircleMinus } from "react-icons/lu";
+import { toaster } from "@/components/chakra-ui/toaster";
+import getPlural from "@/utils/getPlural";
 
 export default function CompletedTable() {
   const { completed } = useDownloadsSocketContext();
@@ -17,6 +19,11 @@ export default function CompletedTable() {
     const res = await deleteDownloads(downloadsSelection.selection);
 
     if (res.status === 200) {
+      toaster.create({
+        title: `Successfully removed ${downloadsSelection.selectionCount} ${getPlural("download", downloadsSelection.selectionCount)}.`,
+        type: "success",
+      });
+
       downloadsSelection.resetSelection();
     }
   };

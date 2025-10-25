@@ -13,6 +13,7 @@ import { Provider as ChProvider } from "@/components/chakra-ui/provider";
 import * as Ch from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Sidebar from "@/components/Sidebar";
+import { Toaster } from "./components/chakra-ui/toaster";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +72,7 @@ export default function App() {
           >
             <Outlet />
           </Ch.Stack>
+          <Toaster />
         </Ch.Container>
       </ChProvider>
     </QueryClientProvider>

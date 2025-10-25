@@ -64,12 +64,7 @@ export default function DownloadsTableCard({
       </Ch.Card.Header>
       <Ch.Card.Body>
         <Ch.Show when={totalItems > 0}>
-          <Ch.Table.ScrollArea
-            borderTopWidth={"1px"}
-            borderRightWidth={"1px"}
-            borderLeftWidth={"1px"}
-            maxHeight={"500px"}
-          >
+          <Ch.Table.ScrollArea borderWidth={"1px"} maxHeight={"500px"}>
             {children}
           </Ch.Table.ScrollArea>
         </Ch.Show>

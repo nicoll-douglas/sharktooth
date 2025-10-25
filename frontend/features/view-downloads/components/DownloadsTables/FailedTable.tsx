@@ -9,6 +9,8 @@ import DownloadsSelectionActionBar from "./shared/DownloadsSelectionActionBar";
 import { LuCircleMinus, LuRotateCw } from "react-icons/lu";
 import restartDownloads from "../../services/restartDownloads";
 import deleteDownloads from "../../services/deleteDownloads";
+import { toaster } from "@/components/chakra-ui/toaster";
+import getPlural from "@/utils/getPlural";
 
 export default function FailedTable() {
   const { failed } = useDownloadsSocketContext();
@@ -26,6 +28,11 @@ export default function FailedTable() {
     const res = await restartDownloads(downloadsSelection.selection);
 
     if (res.status === 200) {
+      toaster.create({
+        title: `Successfully requeued ${downloadsSelection.selectionCount} ${getPlural("download", downloadsSelection.selectionCount)}.`,
+        type: "success",
+      });
+
       downloadsSelection.resetSelection();
     }
   };
@@ -34,6 +41,11 @@ export default function FailedTable() {
     const res = await deleteDownloads(downloadsSelection.selection);
 
     if (res.status === 200) {
+      toaster.create({
+        title: `Successfully removed ${downloadsSelection.selectionCount} ${getPlural("download", downloadsSelection.selectionCount)}.`,
+        type: "success",
+      });
+
       downloadsSelection.resetSelection();
     }
   };
