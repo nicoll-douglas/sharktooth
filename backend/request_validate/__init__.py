@@ -2,3 +2,4 @@ from .post_downloads_validator import PostDownloadsValidator
 from .get_downloads_search_validator import GetDownloadsSearchValidator
 from .post_downloads_restart_validator import PostDownloadsRestartValidator
 from .delete_downloads_validator import DeleteDownloadsValidator
+from .post_spotify_api_auth_code_validator import PostSpotifyApiAuthCodeValidator

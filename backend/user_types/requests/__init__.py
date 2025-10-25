@@ -2,3 +2,4 @@ from .post_downloads_request import PostDownloadsRequest
 from .get_downloads_search_request import GetDownloadsSearchRequest
 from .post_downloads_restart_request import PostDownloadsRestartRequest
 from .delete_downloads_request import DeleteDownloadsRequest
+from .post_spotify_api_auth_code_request import PostSpotifyApiAuthCodeRequest
