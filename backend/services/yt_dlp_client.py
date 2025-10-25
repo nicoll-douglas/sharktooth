@@ -4,6 +4,7 @@ from user_types.requests import PostDownloadsRequest, GetDownloadsSearchRequest
 from user_types import DownloadSearchResult
 from typing import Callable, Literal
 from yt_dlp.utils import DownloadError, ExtractorError, UnsupportedError
+from utils import get_bin_dir
 
 class YtDlpClient:
   """Service class that interfaces with yt-dlp.
@@ -86,6 +87,8 @@ class YtDlpClient:
       return False, "An OS-level error ocurred."
     except Exception as e:
       return False, "An unexpected error ocurred."
+    
+    print(get_bin_dir())
 
     ydl_opts = {
       "format": "bestaudio/best",
@@ -95,7 +98,8 @@ class YtDlpClient:
         "preferredcodec": track_info.codec.value,
         "preferredquality": track_info.bitrate.value,
       }],
-      "outtmpl": track.output_template
+      "outtmpl": track.output_template,
+      "ffmpeg_location": get_bin_dir()
     }
     
     try:
