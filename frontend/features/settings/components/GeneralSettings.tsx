@@ -2,6 +2,7 @@ import * as Ch from "@chakra-ui/react";
 import SettingsGroup from "./shared/SettingsGroup";
 import useRestoreSettings from "../hooks/useRestoreSettings";
 import { LuRefreshCw } from "react-icons/lu";
+import { toaster } from "@/components/chakra-ui/toaster";
 
 /**
  * Represents a card component that holds general application settings.
@@ -20,7 +21,21 @@ export default function GeneralSettings() {
           size={"sm"}
           colorPalette={"red"}
           marginTop={"2"}
-          onClick={() => restoreSettingsMutation.mutate()}
+          onClick={async () => {
+            const success = await restoreSettingsMutation.mutateAsync();
+
+            if (success) {
+              toaster.create({
+                title: "Successfully restored settings.",
+                type: "success",
+              });
+            } else {
+              toaster.create({
+                title: "Something went wrong, failed to restore settings.",
+                type: "error",
+              });
+            }
+          }}
         >
           Restore
           <LuRefreshCw />
