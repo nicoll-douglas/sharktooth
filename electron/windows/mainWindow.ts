@@ -4,8 +4,10 @@ import path from "path";
 
 /**
  * Creates the main application window with the respective configuration.
+ *
+ * @returns The window.
  */
-function createMainWindow() {
+function createMainWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow(mainWindowConfig);
 
   if (process.env.APP_ENV === "development") {
@@ -18,6 +20,8 @@ function createMainWindow() {
   } else {
     mainWindow.loadFile(path.join(__dirname, "../../frontend/index.html"));
   }
+
+  return mainWindow;
 }
 
 export { createMainWindow };

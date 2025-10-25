@@ -10,6 +10,7 @@ import {
 } from "./processes/backend.js";
 import { registerHandlers as registerSettingsIpcHandlers } from "./ipc/settings.js";
 import { registerHandlers as registerDialogIpcHandlers } from "./ipc/dialog.js";
+import { registerHandlers as registerSpotifyApiIpcHandlers } from "./ipc/spotifyApi.js";
 
 app.whenReady().then(() => {
   startBackend();
@@ -18,9 +19,11 @@ app.whenReady().then(() => {
     watchBackend();
   }
 
-  createMainWindow();
+  const mainWindow = createMainWindow();
+
   registerSettingsIpcHandlers();
   registerDialogIpcHandlers();
+  registerSpotifyApiIpcHandlers(mainWindow);
 });
 
 app.on("will-quit", () => {
@@ -33,6 +36,8 @@ app.on("window-all-closed", () => {
 
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    createMainWindow();
+    const mainWindow = createMainWindow();
+
+    registerSpotifyApiIpcHandlers(mainWindow);
   }
 });

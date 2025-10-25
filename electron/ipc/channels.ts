@@ -8,4 +8,7 @@ export enum IpcChannels {
 
   pickDirectory = "dialog:pick-dir",
   pickImageFile = "dialog:pick-img",
+
+  openSpotifyAuthWindow = "spotify-api:auth-window",
+  spotifyApiRedirect = "spotify-api:redirect",
 }

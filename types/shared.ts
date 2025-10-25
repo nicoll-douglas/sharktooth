@@ -2,6 +2,16 @@ export interface UserSettings {
   default_download_dir: string;
 }
 
+export type SpotifyAuthResult =
+  | {
+      code: string;
+      error: null;
+    }
+  | {
+      code: null;
+      error: string;
+    };
+
 export interface ElectronAPI {
   getSettings: () => Promise<UserSettings | null>;
 
@@ -12,4 +22,10 @@ export interface ElectronAPI {
   pickImageFile: (dialogTitle: string) => Promise<string | null>;
 
   restoreSettings: () => Promise<boolean>;
+
+  openSpotifyAuthWindow: (authUrl: string) => Promise<void>;
+
+  onSpotifyApiRedirect: (
+    callback: (authResult: SpotifyAuthResult) => void | Promise<void>
+  ) => void;
 }
