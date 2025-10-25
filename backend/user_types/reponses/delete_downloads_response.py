@@ -1,4 +1,7 @@
 class DeleteDownloadsResponse():
+  """Class that contains nested classes to be used as models for responses to the DELETE /downloads endpoint.
+  """
+    
   class BadRequest:
     """Represents the response body for a 400 status code response to a DELETE /downloads request.
 
