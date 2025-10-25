@@ -5,4 +5,5 @@ export default [
   route("/settings", "./routes/settings.tsx"),
   route("/downloads", "./routes/downloads.tsx"),
   route("/about", "./routes/about.tsx"),
+  route("/spotify-library", "./routes/spotify-library.tsx"),
 ] satisfies RouteConfig;
