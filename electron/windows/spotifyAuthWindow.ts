@@ -1,10 +1,10 @@
 import { BrowserWindow } from "electron";
-import authWindowConfig from "../config/authWindow";
+import authWindowConfig from "../config/spotifyAuthWindow";
 
 /**
- * Create the authentication window using the respective configuration.
+ * Create the Spotify authentication window using the respective configuration.
  */
-function createAuthWindow() {
+function createSpotifyAuthWindow(authUrl: string) {
   const authWindow = new BrowserWindow(authWindowConfig);
 
   authWindow.webContents.on("will-redirect", (_, url) => {
@@ -18,6 +18,8 @@ function createAuthWindow() {
       authWindow.close();
     }
   });
+
+  authWindow.loadURL(authUrl);
 }
 
-export { createAuthWindow };
+export { createSpotifyAuthWindow };
