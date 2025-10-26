@@ -1,7 +1,24 @@
+[Chores]
+- do more testing to make sure current features are solid
+
+[Release]
 - implement an updater mechanism (electron-updater?)
 - implement a build system for building application into a prod downloadable/release
 - use GitHub releases
-- set up directory ffmpeg executables to pass to yt_dlp that will be bundled into the application
 - Do application README
+- Make sure we have an application logo desktop icon
 - Add a link to release notes, bug reports, changelog (all will be on GitHub)
 - test with a VM that the application works cross-platform
+- Add developer documentation
+- Add user guides + about
+  
+[Features]
+- Extra download step in download feature where we can fetch album cover (MusicBrainz integration?)
+- on successful authentication (the client will know), we should enable a query to fetch spotify user data and then switch out the auth prompt card for that
+
+[Improvements]
+- make Spotify auth system more robust
+- make sure only one refresher thread exists at a time
+- change the while loop condition for the refresh to be only if there is a refresh token
+- If a refresh fails then empty all tokens in the class and settings
+- Investigate what kinds of responses the Spotify API will send back for refresh requests or requesting an access token for the first time
