@@ -1,6 +1,5 @@
-import db
 from ..model import Model
-import json
+import json, sqlite3
 from user_types import DownloadStatus
 from datetime import datetime
 from .metadata import Metadata
@@ -14,7 +13,7 @@ class Download(Model):
   TABLE = "downloads"
 
 
-  def __init__(self, conn = db.connect()):
+  def __init__(self, conn: sqlite3.Connection | None = None):
     super().__init__(conn)
   # END __init__
 

@@ -1,4 +1,5 @@
 import sqlite3
+import db
 
 class Model:
   """A base model class representing a database model/table.
@@ -14,8 +15,8 @@ class Model:
   TABLE: str
 
 
-  def __init__(self, conn: sqlite3.Connection):
-    self._conn = conn
+  def __init__(self, conn: sqlite3.Connection | None):
+    self._conn = conn if conn is not None else db.connect()
     self._cur = self._conn.cursor()
   # END __init__
     

@@ -1,6 +1,6 @@
-import db
 from ..model import Model
 from typing import cast
+import sqlite3
 
 class MetadataArtist(Model):
   """A database model representing the metadata_artists table.
@@ -9,7 +9,7 @@ class MetadataArtist(Model):
   TABLE = "metadata_artists"
 
 
-  def __init__(self, conn = db.connect()):
+  def __init__(self, conn: sqlite3.Connection | None = None):
     super().__init__(conn)
   # END __init__
 

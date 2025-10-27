@@ -1,4 +1,4 @@
-import db
+import sqlite3
 from ..model import Model
 
 class Artist(Model):
@@ -8,7 +8,7 @@ class Artist(Model):
   TABLE = "artists"
 
 
-  def __init__(self, conn = db.connect()):
+  def __init__(self, conn: sqlite3.Connection | None = None):
     super().__init__(conn)
   # END __init__
 

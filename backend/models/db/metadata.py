@@ -1,4 +1,3 @@
-import db
 from ..model import Model
 import sqlite3
 
@@ -9,7 +8,7 @@ class Metadata(Model):
   TABLE = "metadata"
   
   
-  def __init__(self, conn: sqlite3.Connection = db.connect()):
+  def __init__(self, conn: sqlite3.Connection | None = None):
     super().__init__(conn)
   # END __init__
 
