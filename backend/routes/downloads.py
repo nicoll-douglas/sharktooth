@@ -34,7 +34,7 @@ def post_downloads() -> tuple[Response, Literal[400, 200]]:
 
 
 @downloads_bp.route("/downloads/search", methods=["GET"])
-def get_downloads_search():
+def get_downloads_search() -> tuple[Response, Literal[400, 500, 200]]:
   """Interfaces with yt-dlp to query for search results of YouTube videos to be downloaded.
   
   Returns:
@@ -63,7 +63,7 @@ def get_downloads_search():
 
 
 @downloads_bp.route("/downloads/restart", methods=["POST"])
-def post_downloads_restart():
+def post_downloads_restart() -> tuple[Response, Literal[400, 200]]:
   """Sets tracks to queued for the downloader thread to pick up and restart them.
   
   Returns:
@@ -93,7 +93,7 @@ def post_downloads_restart():
 
 
 @downloads_bp.route("/downloads", methods=["DELETE"])
-def delete_downloads():
+def delete_downloads() -> tuple[Response, Literal[400, 200]]:
   """Deletes downloads from the database.
   
   Returns:
@@ -114,5 +114,4 @@ def delete_downloads():
   res_body.message = f"{res_body.delete_count} downloads were deleted." if res_body.delete_count > 0 else "No downloads were deleted"
 
   return jsonify(res_body.__dict__), 200
-
 # END delete_downloads
