@@ -11,22 +11,30 @@ import type { SpotifyUser } from "types/shared.js";
 export default async function fetchUserProfile(): Promise<
   [true, SpotifyUser] | [false, null]
 > {
-  const res = await fetch(`${API_URL}/me`, {
-    headers: getAuthHeaders(),
-  });
+  try {
+    const res = await fetch(`${API_URL}/me`, {
+      headers: getAuthHeaders(),
+    });
 
-  if (!res.ok) {
+    if (!res.ok) {
+      resetSpotifyTokenStore();
+
+      return [false, null];
+    }
+
+    const body = await res.json();
+
+    const userData: SpotifyUser = {
+      display_name: body.display_name || null,
+      avatar_url: body.images?.[0]?.url || null,
+      id: body.id,
+    };
+
+    return [true, userData];
+  } catch (e: any) {
+    console.log(e);
     resetSpotifyTokenStore();
 
     return [false, null];
   }
-
-  const body = await res.json();
-
-  const userData: SpotifyUser = {
-    display_name: body.display_name || null,
-    avatar_url: body.images?.[0]?.url || null,
-  };
-
-  return [true, userData];
 }

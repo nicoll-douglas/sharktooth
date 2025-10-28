@@ -14,4 +14,5 @@ export enum IpcChannels {
   SPOTIFY_AUTH_WINDOW_CLOSED = "spotify-api:auth-window-closed",
   SPOTIFY_IS_AUTH = "spotify-api:is-authenticated",
   GET_SPOTIFY_USER_PROFILE = "spotify-api:get-user",
+  GET_SPOTIFY_USER_PLAYLISTS = "spotify-api:get-user-playlists",
 }

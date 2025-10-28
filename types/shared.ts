@@ -9,6 +9,7 @@ export type SettingsValue = SettingsSchema[SettingsKey];
 export interface SpotifyUser {
   display_name: string | null;
   avatar_url: string | null;
+  id: string;
 }
 
 export interface ElectronAPI {
@@ -36,4 +37,6 @@ export interface ElectronAPI {
   spotifyUserIsAuth: () => Promise<boolean>;
 
   getSpotifyUserProfile: () => Promise<[true, SpotifyUser] | [false, null]>;
+
+  getSpotifyUserPlaylists: () => Promise<[true, unknown[]] | [false, null]>;
 }

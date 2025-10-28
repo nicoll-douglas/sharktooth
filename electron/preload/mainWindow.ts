@@ -52,6 +52,9 @@ const electronAPI: ElectronAPI = {
 
   getSpotifyUserProfile: async () =>
     ipcRenderer.invoke(IpcChannels.GET_SPOTIFY_USER_PROFILE),
+
+  getSpotifyUserPlaylists: async () =>
+    ipcRenderer.invoke(IpcChannels.GET_SPOTIFY_USER_PLAYLISTS),
 };
 
 contextBridge.exposeInMainWorld("electronAPI", electronAPI);
