@@ -1,10 +1,10 @@
-import models
 import yt_dlp
 from user_types.requests import PostDownloadsRequest, GetDownloadsSearchRequest
 from user_types import DownloadSearchResult
 from typing import Callable, Literal
 from yt_dlp.utils import DownloadError, ExtractorError, UnsupportedError
 from utils import get_bin_dir
+import disk
 
 class YtDlpClient:
   """Service class that interfaces with yt-dlp.
@@ -67,7 +67,7 @@ class YtDlpClient:
     track_info: PostDownloadsRequest,
     progress_hook: Callable[[dict], None],
     track_id: str | None = None 
-  ) -> tuple[Literal[True], models.disk.Track] | tuple[Literal[False], str]:
+  ) -> tuple[Literal[True], disk.Track] | tuple[Literal[False], str]:
     """Uses the yt-dlp downloader to download a track.
 
     Args:
@@ -76,11 +76,11 @@ class YtDlpClient:
       track_id (str | None): A unique identifier that will go in the downloaded track filename.
 
     Returns:
-      tuple[Literal[True], models.disk.Track] | tuple[Literal[False], str]: A tuple where on download success the first element is True and the second is a track model instance, otherwise the first element is False and the second is an error message indicating the error that occurred.
+      tuple[Literal[True], disk.Track] | tuple[Literal[False], str]: A tuple where on download success the first element is True and the second is a track model instance, otherwise the first element is False and the second is an error message indicating the error that occurred.
     """
 
     try:
-      track = models.disk.Track(track_info, track_id)
+      track = disk.Track(track_info, track_id)
     except PermissionError as e:
       return False, "The application does not have permission to create the provided download directory."
     except OSError as e:

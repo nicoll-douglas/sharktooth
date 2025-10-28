@@ -1,7 +1,7 @@
 from services import YtDlpClient
 import user_types.requests as req
 from user_types import TrackBitrate, TrackCodec, TrackReleaseDate, DownloadUpdate, DownloadStatus, TrackArtistNames
-import models, db
+import db, disk
 import threading
 from typing import cast, Callable
 from sockets import DownloadsSocket
@@ -35,7 +35,7 @@ class Downloader:
       """
       
       with db.connect() as conn:
-        models.db.Download(conn).update(update.download_id, {
+        db.models.Download(conn).update(update.download_id, {
           "status": DownloadStatus.DOWNLOADING.value,
           "total_bytes": hook_data["total_bytes"],
           "downloaded_bytes": hook_data["downloaded_bytes"],
@@ -66,7 +66,7 @@ class Downloader:
       cls._resume()
     
     with db.connect() as conn:
-      download_model = models.db.Download(conn)
+      download_model = db.models.Download(conn)
 
       while (next_download := download_model.get_next(DownloadStatus.QUEUED)):
         cls._download(next_download, download_model)
@@ -79,7 +79,7 @@ class Downloader:
     """
 
     with db.connect() as conn:
-      download_model = models.db.Download(conn)
+      download_model = db.models.Download(conn)
 
       while (next_download := download_model.get_next(DownloadStatus.DOWNLOADING)):
         cls._download(next_download, download_model)
@@ -87,12 +87,12 @@ class Downloader:
 
 
   @classmethod
-  def _download(cls, db_download: dict, download_model: models.db.Download):
+  def _download(cls, db_download: dict, download_model: db.models.Download):
     """Starts the download process for a download fetched from the database.
 
     Args:
       db_download (dict): The download data.
-      download_model (models.db.Download): The download model used to get the download from the database.
+      download_model (db.models.Download): The download model used to get the download from the database.
     """
     
     # create static download update data
@@ -137,9 +137,9 @@ class Downloader:
     if is_success:
       update.status = DownloadStatus.COMPLETED
 
-      track_model = cast(models.disk.Track, result)
+      track_model = cast(disk.Track, result)
 
-      metadata = models.disk.Metadata()
+      metadata = disk.Metadata()
       metadata.track_name = track_info.track_name
       metadata.artist_names = track_info.artist_names
       metadata.album_name = track_info.album_name
@@ -178,12 +178,12 @@ class Downloader:
     """
 
     with db.connect() as conn:
-      other_artist_ids = models.db.Artist(conn).insert_many([
+      other_artist_ids = db.models.Artist(conn).insert_many([
         { "name": n } 
         for n in track_info.artist_names.get_other_artists()
       ])
 
-      metadata_id = models.db.Metadata(conn).insert({
+      metadata_id = disk.Metadata(conn).insert({
         "track_name": track_info.track_name,
         "main_artist": track_info.artist_names.get_main_artist(),
         "album_name": track_info.album_name,
@@ -194,12 +194,12 @@ class Downloader:
       })
       metadata_id = cast(int, metadata_id)
 
-      models.db.MetadataArtist(conn).insert_many([
+      db.models.MetadataArtist(conn).insert_many([
         { "metadata_id": metadata_id, "artist_id": aid }
         for aid in other_artist_ids
       ])
 
-      download_model = models.db.Download(conn)
+      download_model = db.models.Download(conn)
       created_at = download_model.get_current_timestamp()
 
       download_id = download_model.insert_as_queued({
@@ -267,7 +267,7 @@ class Downloader:
     """
 
     with db.connect() as conn:
-      dl = models.db.Download(conn)
+      dl = db.models.Download(conn)
       restart_count = dl.requeue(request.download_ids)
 
     if restart_count > 0:
@@ -289,7 +289,7 @@ class Downloader:
     """
     
     with db.connect() as conn:
-      dl = models.db.Download(conn)
+      dl = db.models.Download(conn)
       metadata_ids = dl.get_metadata_ids(request.download_ids)
 
       delete_count = dl.delete_many(request.download_ids)
@@ -297,9 +297,9 @@ class Downloader:
       if delete_count == 0:
         return 0
       
-      artist_ids =  models.db.MetadataArtist(conn).get_many_artist_ids(metadata_ids)
-      models.db.Artist(conn).delete_many(artist_ids)
-      models.db.Metadata(conn).delete_many(metadata_ids)
+      artist_ids =  db.models.MetadataArtist(conn).get_many_artist_ids(metadata_ids)
+      db.models.Artist(conn).delete_many(artist_ids)
+      db.models.Metadata(conn).delete_many(metadata_ids)
 
     DownloadsSocket.instance().get_and_send_all_downloads()
 

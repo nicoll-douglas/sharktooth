@@ -14,13 +14,15 @@
   
 [Features]
 - Extra download step in download feature where we can fetch album covers (MusicBrainz integration?) and render them for the user to select for metadata
-- on successful authentication (the client will know), we should enable a query to fetch spotify user data and then switch out the auth prompt card for that
 
 - Set up button that lets user pause download queue
 - Current download will go through but next download will be prevented (downloader loop stopped)
 - Allow user to remove queued downloads if and only if the queue is paused
 - Form with checkbox card selection for playlists
 - Ask the user to confirm that a couple hundred tracks will be added to the download queue.
+- Have a "syncs" page with real-time data similar to the downloads page for spotify syncs
+- Have select field for playlist file output type
+- Have checkbox field asking user if they want metadata pre-filled
 
 [Improvements]
 - make Spotify auth system more robust

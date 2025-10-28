@@ -1,6 +1,6 @@
 from flask_socketio import Namespace
 from user_types import DownloadUpdate, DownloadStatus, TrackArtistNames, TrackCodec, TrackBitrate
-import models, db
+import db
 from typing import Self
 import sqlite3
 
@@ -74,7 +74,7 @@ class DownloadsSocket(Namespace):
       db_conn = db.connect()
       created_conn = True
 
-    dl = models.db.Download(db_conn)
+    dl = db.models.Download(db_conn)
     downloads = dl.get_all_downloads()
 
     download_updates = []

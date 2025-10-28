@@ -1,5 +1,5 @@
 import os, requests, mimetypes, string, secrets, base64, hashlib, threading, time
-import models.disk as disk
+import disk
 from urllib.parse import urlencode
 
 class SpotifyApiClient:

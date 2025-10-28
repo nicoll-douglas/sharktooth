@@ -1,4 +1,4 @@
-from models.db import Download
+import db
 from user_types import DownloadStatus
 import sqlite3
 import pytest
@@ -79,7 +79,7 @@ class TestDownloadModel:
     """
     
     sql_seed_file_key, included_data = next_fixture
-    dl = Download(seeded_app_db(sql_seed_file_key))
+    dl = db.models.Download(seeded_app_db(sql_seed_file_key))
     next_in_queue = dl.get_next(DownloadStatus.QUEUED)
 
     if sql_seed_file_key is None:

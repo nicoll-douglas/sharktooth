@@ -3,7 +3,7 @@ from flask import Flask, jsonify
 import os, sqlite3
 from routes import register_routes
 from sockets import register_sockets
-import config, db, models
+import config, db
 from flask_socketio import SocketIO
 from services import Downloader, SpotifyApiClient
 
