@@ -248,7 +248,7 @@ class Downloader:
     if cls._thread is not None and cls._thread.is_alive():
       return False
 
-    cls._thread = threading.Thread(target=cls._thread_target, args=[resume])
+    cls._thread = threading.Thread(target=cls._thread_target, args=[resume], daemon=True)
     cls._thread.start()
 
     return True
