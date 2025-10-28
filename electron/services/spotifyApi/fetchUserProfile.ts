@@ -1,0 +1,32 @@
+import { API_URL } from "./constants.js";
+import getAuthHeaders from "./getAuthHeaders";
+import { resetSpotifyTokenStore } from "./tokenStore.js";
+import type { SpotifyUser } from "types/shared.js";
+
+/**
+ * Fetches the user's profile from the Spotify API.
+ *
+ * @returns An array containing a success flag and the user profile data on success or null otherwise.
+ */
+export default async function fetchUserProfile(): Promise<
+  [true, SpotifyUser] | [false, null]
+> {
+  const res = await fetch(`${API_URL}/me`, {
+    headers: getAuthHeaders(),
+  });
+
+  if (!res.ok) {
+    resetSpotifyTokenStore();
+
+    return [false, null];
+  }
+
+  const body = await res.json();
+
+  const userData: SpotifyUser = {
+    display_name: body.display_name || null,
+    avatar_url: body.images?.[0]?.url || null,
+  };
+
+  return [true, userData];
+}

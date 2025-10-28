@@ -8,7 +8,7 @@ import { useEffect, useState, type BaseSyntheticEvent } from "react";
 import type { DownloadFormValues } from "../forms/downloadForm";
 import startDownload from "../services/startDownload";
 import type { PostDownloadsResponse } from "../types";
-import { useGetSettings } from "@/features/settings";
+import { useGetSetting } from "@/features/settings";
 
 /**
  * Return type of the useDownloadForm hook.
@@ -68,8 +68,7 @@ export interface UseDownloadFormReturn {
  */
 export default function useDownloadForm(): UseDownloadFormReturn {
   const [response, setResponse] = useState<PostDownloadsResponse | null>(null);
-  const getSettingsQuery = useGetSettings();
-  const defaultDownloadDir = getSettingsQuery?.data?.default_download_dir;
+  const { data: defaultDownloadDir } = useGetSetting("default_download_dir");
 
   const form = useForm<DownloadFormValues>({
     defaultValues: {

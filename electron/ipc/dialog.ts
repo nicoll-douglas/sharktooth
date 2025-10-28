@@ -6,11 +6,11 @@ import { IpcChannels } from "./channels.js";
  * Registers the dialog-related IPC handlers.
  */
 function registerHandlers() {
-  ipcMain.handle(IpcChannels.pickDirectory, async (_, dialogTitle: string) =>
+  ipcMain.handle(IpcChannels.PICK_DIRECTORY, async (_, dialogTitle: string) =>
     pickDirectory(dialogTitle)
   );
 
-  ipcMain.handle(IpcChannels.pickImageFile, async (_, dialogTitle: string) =>
+  ipcMain.handle(IpcChannels.PICK_IMAGE_FILE, async (_, dialogTitle: string) =>
     pickImageFile(dialogTitle)
   );
 }

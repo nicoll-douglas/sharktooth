@@ -6,6 +6,10 @@ export default function getDownloadTimeAgo(dateStr: string | null): string {
 
   const diff = (now.getTime() - dt.getTime()) / 1000;
 
+  if (diff < 10) {
+    return "A few seconds ago";
+  }
+
   if (diff < 60) {
     return "Less than a minute ago";
   }

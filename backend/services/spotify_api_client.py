@@ -3,6 +3,21 @@ import models.disk as disk
 from urllib.parse import urlencode
 
 class SpotifyApiClient:
+  """Service class that interfaces with the Spotify API.
+
+  Attributes:
+    API_URL (str): The URL of the Spotify API.
+    TOKEN_URL (str): The URL of the API endpoint to obtain access and refresh token.
+    AUTH_URL (str): The URL of the API endpoint to obtain an authorization code.
+    CLIENT_ID (str): The Spotify API client ID of the app.
+    REDIRECT_URI (str): The redirect URI to use with the Spotify API.
+    WANTED_SCOPES (str): The scopes to ask for for when the user authorizes.
+    _code_verifier (str | None): The code verifier used in the PKCE flow.
+    access_token (str | None): The current access token.
+    access_token_duration (str | None): The duration of current the access token.
+    current_user_id (int | None): The ID of the current user.
+  """
+  
   API_URL = "https://api.spotify.com/v1"
   TOKEN_URL = "https://accounts.spotify.com/api/token"
   AUTH_URL = "https://accounts.spotify.com/authorize"
@@ -10,11 +25,12 @@ class SpotifyApiClient:
   REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI")
   WANTED_SCOPES = "playlist-read-private user-library-read playlist-read-collaborative"
 
-  _code_verifier = None
+  _code_verifier: str | None = None
+  _refresher_thread: threading.Thread | None = None
 
-  access_token = None
-  refresh_token = None
-  access_token_duration = None
+  access_token: str | None = None
+  access_token_duration: int | None = None
+  current_user_id: int | None
 
 
   @classmethod
@@ -63,9 +79,27 @@ class SpotifyApiClient:
 
 
   @classmethod
-  def request_access_token(cls, auth_code: str):
+  def reset_tokens(cls):
+    """Resets in-memory token data and the refresh token in the database.
     """
-    Request access and refresh tokens from Spotify using the provided authorization code and save them.
+
+    cls.access_token = None
+    cls.access_token_duration = None
+    
+
+    cls.current_user_id = None
+  # END reset_tokens
+  
+
+  @classmethod
+  def request_access_token(cls, auth_code: str) -> tuple[bool, str | None]:
+    """Request access and refresh tokens from the Spotify API using the provided authorization code and save them into the class.
+
+    Args:
+      auth_code (str): The authorization code.
+
+    Returns:
+      tuple[bool, str | None]: A tuple containing a boolean flag indicating whether the request was a success or not and a refresh token on success or None otherwise.
     """
     
     # data to send as url encoded
@@ -78,98 +112,145 @@ class SpotifyApiClient:
     }
 
     # make POST request for access token
-    r = requests.post(cls.TOKEN_URL, data=data)
-    r.raise_for_status()
-    body = r.json()
+    res = requests.post(cls.TOKEN_URL, data=data)
 
-    cls.access_token = body["access_token"]
-    cls.access_token_duration = body["expires_in"]
+    if res.status_code == 200:
+      body: dict = res.json()
 
-    if body.get("refresh_token") is not None:
-      cls.refresh_token = body["refresh_token"]
-    # END request_access_token
+      cls.access_token = body["access_token"]
+      cls.access_token_duration = body["expires_in"]
+      
+      return True, body["refresh_token"]
+
+    return False, None
+  # END request_access_token
 
 
   @classmethod
-  def refresh_access_token(cls):
+  def refresh_access_token(cls) -> tuple[bool, int | None]:
+    """Refresh the access token using the current refresh token and saves the new access token data.
+
+    Returns:
+      bool: True if the request went through and was a success, False otherwise.
     """
-    Refresh the access token using the saved refresh token and save the new access token.
-    """
-    
+
+    if cls.current_user_id is None:
+      cls.reset_tokens()
+
+      return False, None
+
+  
     data = {
       "grant_type": "refresh_token",
-      "refresh_token": cls._refresh_token,
+      "refresh_token": "",
       "client_id": cls.CLIENT_ID
     }
 
-    r = requests.post(cls.TOKEN_URL, data=data)
-    r.raise_for_status()
-    body = r.json()
+    res = requests.post(cls.TOKEN_URL, data=data)
 
+    if res.status_code != 200:
+      cls.reset_tokens()
+
+      return False
+
+    body: dict = res.json()
     cls.access_token = body["access_token"]
     cls.access_token_duration = body["expires_in"]
 
-    if body.get("refresh_token") is not None:
-      cls.refresh_token = body["refresh_token"]
-    # END refresh_access_token
+    return True
+  # END refresh_access_token
 
 
   @classmethod 
-  def start_access_token_refreshing(cls, initial_refresh = False):
-    def thread_target():
-      if initial_refresh:
-        cls.refresh_access_token()
+  def start_access_token_refreshing(cls, initial_refresh: bool = False) -> bool:
+    """Starts a thread to periodically refresh the access token just before it expires.
 
-      while True:
-        next_refresh_s = 0.9 * cls._access_token_duration
-        time.sleep(next_refresh_s)
-        cls.refresh_access_token()
-    # END thread_target
+    Args:
+      initial_refresh (bool): Whether to immediately perform a refresh once the thread starts.
+
+    Returns:
+      bool: True if a fresh thread was started, False otherwise.
+    """
+
+    if cls._refresher_thread is not None and cls._refresher_thread.is_alive():
+      return False
     
-    thread = threading.Thread(target=thread_target, daemon=True)
-    thread.start()
-    return thread
+    def _thread_target():      
+      """Defines the thread target that loops indefinitely refreshing the token.
+      """
+
+      prev_success = True
+
+      if initial_refresh:
+        prev_success = cls.refresh_access_token()
+
+      while prev_success and cls.access_token:
+        next_refresh_s = 0.9 * cls.access_token_duration
+        time.sleep(next_refresh_s)
+        prev_success = cls.refresh_access_token()
+    # END _thread_target
+
+    cls._refresher_thread = threading.Thread(target=_thread_target, daemon=True)
+    cls._refresher_thread.start()
+
+    return True
   # END start_access_token_refreshing
 
+
   @classmethod
-  def fetch_user_profile(cls):
-    if cls.user_profile:
-      return cls.user_profile
+  def fetch_user_profile(cls) -> tuple[bool,  None]:
+    """Fetches the user's profile from the Spotify API.
+
+    Returns:
+      tuple[bool, spotify_api_proxy.UserProfile | None]: A tuple containing a boolean flag indicating whether the request was a success or not and the user profile if the request was a success or None otherwise.
+    """
+
+    if not cls.access_token:
+      return False, None
     
     me_url = f"{cls.API_URL}/me"
-    r = requests.get(
-      url=me_url,
-      headers=cls._auth_headers()
-    )
-    r.raise_for_status()
-    body = r.json()
+    res = requests.get(url=me_url, headers=cls._get_auth_headers())
 
-    return body
+    if res.status_code != 200:
+      return False, None
+
+    body = res.json()
+    images = body["images"]
+
+
+    return True
+  # END fetch_user_profile
+
 
   @classmethod
-  def _auth_headers(cls):
+  def _get_auth_headers(cls):
+    """Retrieves the authentication headers needed for API requests.
+    """
+    
     return {
-      "Authorization": f"Bearer {cls._access_token}"
+      "Authorization": f"Bearer {cls.access_token}"
     }
+  # END _get_auth_headers
+
   
   @classmethod
   def _fetch_all_pages(cls, initial: str):
     next = initial
     results = []
+    partial = False
 
     while next:
-      r = requests.get(
-        next,
-        headers=cls._auth_headers()
-      )
+      res = requests.get(next, headers=cls._get_auth_headers())
 
-      r.raise_for_status()
-      body = r.json()
+      if res.status_code == 200:
+        body = res.json()
+        results.extend(body["items"])
+        next = body["next"]
+      else:
+        next = None
+        partial = True
 
-      results.extend(body["items"])
-      next = body["next"]
-
-    return results
+    return partial, results
 
   @classmethod
   def fetch_user_playlists(cls):

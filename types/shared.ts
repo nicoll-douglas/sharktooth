@@ -1,31 +1,39 @@
-export interface UserSettings {
+export interface SettingsSchema {
   default_download_dir: string;
 }
 
-export type SpotifyAuthResult =
-  | {
-      code: string;
-      error: null;
-    }
-  | {
-      code: null;
-      error: string;
-    };
+export type SettingsKey = keyof SettingsSchema;
+
+export type SettingsValue = SettingsSchema[SettingsKey];
+
+export interface SpotifyUser {
+  display_name: string | null;
+  avatar_url: string | null;
+}
 
 export interface ElectronAPI {
-  getSettings: () => Promise<UserSettings | null>;
+  getSetting: (key: SettingsKey) => Promise<SettingsValue>;
 
-  updateSettings: (updatedSettings: Partial<UserSettings>) => Promise<boolean>;
+  setSetting: (key: SettingsKey, value: SettingsValue) => Promise<void>;
+
+  resetSettings: () => Promise<void>;
 
   pickDirectory: (dialogTitle: string) => Promise<string | null>;
 
   pickImageFile: (dialogTitle: string) => Promise<string | null>;
 
-  restoreSettings: () => Promise<boolean>;
+  openSpotifyAuthWindow: () => Promise<void>;
 
-  openSpotifyAuthWindow: (authUrl: string) => Promise<void>;
-
-  onSpotifyApiRedirect: (
-    callback: (authResult: SpotifyAuthResult) => void | Promise<void>
+  onSpotifyAuthComplete: (
+    callback: (
+      success: boolean,
+      errorMsg: string | null
+    ) => void | Promise<void>
   ) => void;
+
+  onSpotifyAuthWindowClosed: (callback: () => void | Promise<void>) => void;
+
+  spotifyUserIsAuth: () => Promise<boolean>;
+
+  getSpotifyUserProfile: () => Promise<[true, SpotifyUser] | [false, null]>;
 }

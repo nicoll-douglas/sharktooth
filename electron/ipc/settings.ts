@@ -1,24 +1,26 @@
 import { ipcMain } from "electron";
-import {
-  loadSettings,
-  updateSettings,
-  restoreSettings,
-} from "../services/settings.js";
-import type { UserSettings } from "../../types/shared.js";
+import { settings, resetSettings } from "../services/settings.js";
 import { IpcChannels } from "./channels.js";
+import type { SettingsKey, SettingsValue } from "../../types/shared.js";
 
 /**
  * Registers the settings-related IPC handlers.
  */
 function registerHandlers() {
-  ipcMain.handle(IpcChannels.getSettings, async () => loadSettings());
-
-  ipcMain.handle(
-    IpcChannels.updateSettings,
-    async (_, settings: Partial<UserSettings>) => updateSettings(settings)
+  ipcMain.handle(IpcChannels.GET_SETTING, async (_, key: SettingsKey) =>
+    settings.get(key)
   );
 
-  ipcMain.handle(IpcChannels.restoreSettings, async () => restoreSettings());
+  ipcMain.handle(
+    IpcChannels.SET_SETTING,
+    async (_, key: SettingsKey, value: SettingsValue) => {
+      settings.set(key, value);
+    }
+  );
+
+  ipcMain.handle(IpcChannels.RESET_SETTINGS, async () => {
+    resetSettings();
+  });
 }
 
 export { registerHandlers };

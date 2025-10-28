@@ -3,9 +3,9 @@ from flask import Flask, jsonify
 import os, sqlite3
 from routes import register_routes
 from sockets import register_sockets
-import config, db
+import config, db, models
 from flask_socketio import SocketIO
-from services import Downloader
+from services import Downloader, SpotifyApiClient
 
 def create_app(db_conn: sqlite3.Connection | None = None) -> tuple[Flask, SocketIO]:
   """Sets up and creates the application and returns it.
@@ -17,12 +17,19 @@ def create_app(db_conn: sqlite3.Connection | None = None) -> tuple[Flask, Socket
     tuple[Flask, SocketIO]: A tuple containing the Flask application and the SocketIO instance.
   """
 
-  if db_conn:
-    db.setup(db_conn)
-  else:
-    setup_db_conn = db.connect()
-    db.setup(setup_db_conn)
-    setup_db_conn.close()
+  created_conn = False
+  setup_conn = db_conn
+
+  if not setup_conn:
+    setup_conn = db.connect()
+    created_conn = True
+
+  db.setup(setup_conn)
+
+  if created_conn:
+    setup_conn.close()
+  
+  SpotifyApiClient.start_access_token_refreshing(True)
 
   app_name = os.getenv("APP_NAME") or ""
   flask_app_name = app_name + (" " if app_name else "") + "Desktop Backend API"

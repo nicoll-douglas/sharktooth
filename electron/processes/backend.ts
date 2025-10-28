@@ -2,7 +2,7 @@ import { app } from "electron";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import chokidar from "chokidar";
 import path from "path";
-import logger from "../services/logger";
+import logger from "../services/logger.js";
 
 const backendSrcFolder = path.join(__dirname, "../../../backend");
 let backendProcess: ChildProcessWithoutNullStreams | null = null;

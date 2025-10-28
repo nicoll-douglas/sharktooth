@@ -11,6 +11,7 @@ import {
 import { registerHandlers as registerSettingsIpcHandlers } from "./ipc/settings.js";
 import { registerHandlers as registerDialogIpcHandlers } from "./ipc/dialog.js";
 import { registerHandlers as registerSpotifyApiIpcHandlers } from "./ipc/spotifyApi.js";
+import startAccessTokenRefreshing from "./services/spotifyApi/startAccessTokenRefreshing.js";
 
 app.whenReady().then(() => {
   startBackend();
@@ -18,6 +19,8 @@ app.whenReady().then(() => {
   if (process.env.APP_ENV === "development") {
     watchBackend();
   }
+
+  startAccessTokenRefreshing(true);
 
   const mainWindow = createMainWindow();
 

@@ -1,34 +1,57 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { ElectronAPI, UserSettings } from "../../types/shared.js";
+import type {
+  ElectronAPI,
+  SettingsKey,
+  SettingsValue,
+} from "../../types/shared.js";
 import { IpcChannels } from "../ipc/channels.js";
-import type { SpotifyAuthResult } from "../../types/shared.js";
 
 // The API object to be exposed on the window object in the renderer process
 const electronAPI: ElectronAPI = {
-  getSettings: async () => ipcRenderer.invoke(IpcChannels.getSettings),
+  getSetting: async (key: SettingsKey) =>
+    ipcRenderer.invoke(IpcChannels.GET_SETTING, key),
 
-  updateSettings: async (updatedSettings: Partial<UserSettings>) =>
-    ipcRenderer.invoke(IpcChannels.updateSettings, updatedSettings),
+  setSetting: async (key: SettingsKey, value: SettingsValue) =>
+    ipcRenderer.invoke(IpcChannels.SET_SETTING, key, value),
+
+  resetSettings: async () => ipcRenderer.invoke(IpcChannels.RESET_SETTINGS),
 
   pickDirectory: async (dialogTitle: string) =>
-    ipcRenderer.invoke(IpcChannels.pickDirectory, dialogTitle),
+    ipcRenderer.invoke(IpcChannels.PICK_DIRECTORY, dialogTitle),
 
   pickImageFile: async (dialogTitle: string) =>
-    ipcRenderer.invoke(IpcChannels.pickImageFile, dialogTitle),
+    ipcRenderer.invoke(IpcChannels.PICK_IMAGE_FILE, dialogTitle),
 
-  restoreSettings: async () => ipcRenderer.invoke(IpcChannels.restoreSettings),
+  openSpotifyAuthWindow: async () =>
+    ipcRenderer.invoke(IpcChannels.OPEN_SPOTIFY_AUTH_WINDOW),
 
-  openSpotifyAuthWindow: async (authUrl: string) =>
-    ipcRenderer.invoke(IpcChannels.openSpotifyAuthWindow, authUrl),
-
-  onSpotifyApiRedirect: (
-    callback: (authResult: SpotifyAuthResult) => void | Promise<void>
+  onSpotifyAuthComplete: (
+    callback: (
+      success: boolean,
+      errorMsg: string | null
+    ) => void | Promise<void>
   ) => {
+    ipcRenderer.removeAllListeners(IpcChannels.SPOTIFY_AUTH_COMPLETE);
+
     ipcRenderer.on(
-      IpcChannels.spotifyApiRedirect,
-      (_, authResult: SpotifyAuthResult) => callback(authResult)
+      IpcChannels.SPOTIFY_AUTH_COMPLETE,
+      (_, success: boolean, errorMsg: string | null) => {
+        callback(success, errorMsg);
+      }
     );
   },
+
+  onSpotifyAuthWindowClosed: async (callback: () => void | Promise<void>) => {
+    ipcRenderer.removeAllListeners(IpcChannels.SPOTIFY_AUTH_WINDOW_CLOSED);
+
+    ipcRenderer.on(IpcChannels.SPOTIFY_AUTH_WINDOW_CLOSED, () => callback());
+  },
+
+  spotifyUserIsAuth: async () =>
+    ipcRenderer.invoke(IpcChannels.SPOTIFY_IS_AUTH),
+
+  getSpotifyUserProfile: async () =>
+    ipcRenderer.invoke(IpcChannels.GET_SPOTIFY_USER_PROFILE),
 };
 
 contextBridge.exposeInMainWorld("electronAPI", electronAPI);

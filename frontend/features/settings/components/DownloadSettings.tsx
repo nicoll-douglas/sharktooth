@@ -1,21 +1,17 @@
 import * as Ch from "@chakra-ui/react";
 import { LuFolder } from "react-icons/lu";
 import SettingsGroup from "./shared/SettingsGroup";
-import useGetSettings from "../hooks/useGetSettings";
-import useUpdateDownloadDir from "../hooks/useUpdateDownloadDir";
+import useGetSetting from "../hooks/useGetSetting";
+import useSetDefaultDownloadDir from "../hooks/useSetDefaultDownloadDir";
 import { Tooltip } from "@/components/chakra-ui/tooltip";
 
 /**
  * Represents a card component that holds related settings to do with downloads.
  */
 export default function DownloadSettings() {
-  const getSettingsQuery = useGetSettings();
-  const updateDownloadDirMutation = useUpdateDownloadDir();
-
-  const defaultDownloadDir = getSettingsQuery.data?.default_download_dir;
-
-  // if error in get query, then toast error "failed to load settings"
-  // if error in update mutation, then toast error "failed to update settings"
+  const { isDialogOpen, handleSetDefaultDownloadDir } =
+    useSetDefaultDownloadDir();
+  const { data: defaultDownloadDir } = useGetSetting("default_download_dir");
 
   return (
     <SettingsGroup heading="Downloads">
@@ -34,8 +30,8 @@ export default function DownloadSettings() {
           </Tooltip>
           <Ch.Button
             variant={"outline"}
-            onClick={() => updateDownloadDirMutation.mutate()}
-            disabled={updateDownloadDirMutation.isPending}
+            onClick={handleSetDefaultDownloadDir}
+            disabled={isDialogOpen}
           >
             <LuFolder /> Change
           </Ch.Button>

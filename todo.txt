@@ -13,12 +13,12 @@
 - Add user guides + about
   
 [Features]
-- Extra download step in download feature where we can fetch album cover (MusicBrainz integration?)
+- Extra download step in download feature where we can fetch album covers (MusicBrainz integration?) and render them for the user to select for metadata
 - on successful authentication (the client will know), we should enable a query to fetch spotify user data and then switch out the auth prompt card for that
+
+- DO EVERYTHING FROM THE CLIENT FOR THE SPOTIFY API INSTEAD OF PYTHON PROXY
 
 [Improvements]
 - make Spotify auth system more robust
-- make sure only one refresher thread exists at a time
-- change the while loop condition for the refresh to be only if there is a refresh token
 - If a refresh fails then empty all tokens in the class and settings
 - Investigate what kinds of responses the Spotify API will send back for refresh requests or requesting an access token for the first time
