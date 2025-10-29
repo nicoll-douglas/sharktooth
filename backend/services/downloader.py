@@ -183,7 +183,7 @@ class Downloader:
         for n in track_info.artist_names.get_other_artists()
       ])
 
-      metadata_id = disk.Metadata(conn).insert({
+      metadata_id = db.models.Metadata(conn).insert({
         "track_name": track_info.track_name,
         "main_artist": track_info.artist_names.get_main_artist(),
         "album_name": track_info.album_name,
