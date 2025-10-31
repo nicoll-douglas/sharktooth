@@ -1,9 +1,10 @@
+import { SpotifyPlaylist } from "types/shared";
 import { API_URL } from "./constants";
 import fetchAllPages from "./fetchAllPages";
 import fetchUserProfile from "./fetchUserProfile";
 
 export default async function fetchUserPlaylists(): Promise<
-  [true, unknown[]] | [false, null]
+  [true, SpotifyPlaylist[]] | [false, null]
 > {
   const [success, userProfile] = await fetchUserProfile();
 
@@ -15,7 +16,20 @@ export default async function fetchUserPlaylists(): Promise<
   const offset = 0;
   const initial = `${API_URL}/users/${userProfile.id}/playlists?limit=${limit}&offset=${offset}`;
 
-  const playlists = await fetchAllPages(initial);
+  const rawPlaylists = await fetchAllPages(initial);
 
-  return playlists ? [true, playlists] : [false, null];
+  if (!rawPlaylists) return [false, null];
+
+  const playlists = rawPlaylists.map(
+    (playlist): SpotifyPlaylist => ({
+      id: playlist.id,
+      name: playlist.name,
+      owner: playlist.owner.display_name,
+      total_tracks: playlist.tracks.total,
+      tracks_href: playlist.tracks.href,
+      playlist_cover: playlist.images[0].url,
+    })
+  );
+
+  return [true, playlists];
 }

@@ -1,6 +1,5 @@
 import { CLIENT_ID, TOKEN_URL } from "./constants.js";
 import { spotifyTokenStore, resetSpotifyTokenStore } from "./tokenStore.js";
-import { AuthCodeExchangeResponse } from "./types.js";
 
 /**
  * Refreshes the access token with the current refresh token if there is one.
@@ -11,6 +10,10 @@ export default async function refreshAccessToken(): Promise<boolean> {
   const refreshToken = spotifyTokenStore.get("refresh_token");
 
   if (!refreshToken) {
+    console.log(
+      "refreshAccessToken: no refresh token in store, resetting store."
+    );
+
     resetSpotifyTokenStore();
 
     return false;
@@ -29,14 +32,22 @@ export default async function refreshAccessToken(): Promise<boolean> {
   });
 
   if (!res.ok) {
+    const body = await res.json();
+    console.log(body);
+    console.log("refreshAccessToken: req not OK, resetting store.");
     resetSpotifyTokenStore();
+
     return false;
   }
 
-  const body: AuthCodeExchangeResponse = await res.json();
+  const body = await res.json();
 
   spotifyTokenStore.set("access_token", body.access_token);
   spotifyTokenStore.set("access_token_expires_in", body.expires_in);
+
+  if (body.refresh_token) {
+    spotifyTokenStore.set("refresh_token", body.refresh_token);
+  }
 
   return true;
 }

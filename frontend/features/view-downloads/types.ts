@@ -1,4 +1,5 @@
-import type { TrackCodec, TrackBitrate, TrackArtistNames } from "@/types";
+import type { TrackArtistNames } from "@/types";
+import type { AudioCodec, AudioBitrate } from "@/config/audio";
 
 /**
  * Represents the possible statuses that a download can be in.
@@ -32,12 +33,12 @@ export interface DownloadUpdate {
   /**
    * The audio codec of the download.
    */
-  codec: TrackCodec;
+  codec: AudioCodec;
 
   /**
    * The bitrate of the download.
    */
-  bitrate: TrackBitrate;
+  bitrate: AudioBitrate;
 
   /**
    * The source URL used for the download.

@@ -23,6 +23,8 @@ function resetSpotifyTokenStore() {
       defaultSpotifyTokenStore
     ) as (keyof SpotifyTokenStoreSchema)[])
   );
+  spotifyTokenStore.clear();
+  spotifyTokenStore.set(defaultSpotifyTokenStore);
 }
 
 export {

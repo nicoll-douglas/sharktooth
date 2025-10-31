@@ -61,6 +61,7 @@ export default function App() {
           display={"flex"}
           gap={"4"}
           alignItems={"start"}
+          fluid
         >
           <Sidebar />
           <Ch.Stack

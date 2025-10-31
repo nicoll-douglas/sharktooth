@@ -3,6 +3,7 @@ import {
   AuthPromptCard,
   AuthProvider,
   UserProfileCard,
+  PlaylistList,
 } from "@/features/spotify-library";
 
 export function meta() {
@@ -16,6 +17,7 @@ export default function SpotifyLibrary() {
       <AuthProvider>
         <AuthPromptCard />
         <UserProfileCard />
+        <PlaylistList />
       </AuthProvider>
     </>
   );

@@ -5,7 +5,7 @@ from routes import register_routes
 from sockets import register_sockets
 import config, db
 from flask_socketio import SocketIO
-from services import Downloader, SpotifyApiClient
+from services import Downloader
 
 def create_app(db_conn: sqlite3.Connection | None = None) -> tuple[Flask, SocketIO]:
   """Sets up and creates the application and returns it.
@@ -29,8 +29,6 @@ def create_app(db_conn: sqlite3.Connection | None = None) -> tuple[Flask, Socket
   if created_conn:
     setup_conn.close()
   
-  SpotifyApiClient.start_access_token_refreshing(True)
-
   app_name = os.getenv("APP_NAME") or ""
   flask_app_name = app_name + (" " if app_name else "") + "Desktop Backend API"
   

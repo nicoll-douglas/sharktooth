@@ -17,6 +17,8 @@ export default async function fetchUserProfile(): Promise<
     });
 
     if (!res.ok) {
+      console.log("fetchUserProfile: req not ok, resetting store.");
+
       resetSpotifyTokenStore();
 
       return [false, null];

@@ -1,14 +1,16 @@
 import type { CheckboxCheckedChangeDetails } from "@chakra-ui/react";
 import { useState } from "react";
 
+type SelectionItemType = number | string;
+
 /**
  * Return type for the useSelection hook.
  */
-export interface UseSelectionReturn {
+export interface UseSelectionReturn<T> {
   /**
    * The selected items
    */
-  selection: number[];
+  selection: T[];
 
   /**
    * Whether there is a current selection of downloads.
@@ -33,19 +35,19 @@ export interface UseSelectionReturn {
   /**
    * Determines whether an item is currently checked (i.e in the selection).
    */
-  isItemChecked: (item: number) => boolean;
+  isItemChecked: (item: T) => boolean;
 
   /**
    * Creates a handler to run when an item's checkbox value changes that updates the selection.
    */
   onItemCheckedChange: (
-    item: number
+    item: T
   ) => (changes: CheckboxCheckedChangeDetails) => void;
 
   /**
    * Determines the value of the data-selected attribute for a HTML element associated with the item.
    */
-  isItemDataSelected: (item: number) => "" | undefined;
+  isItemDataSelected: (item: T) => "" | undefined;
 
   /**
    * Resets the selection to an empty array.
@@ -55,7 +57,7 @@ export interface UseSelectionReturn {
   /**
    * Removes selections from the current list of selections.
    */
-  removeSelections: (ids: number[]) => void;
+  removeSelections: (items: T[]) => void;
 }
 
 /**
@@ -64,8 +66,10 @@ export interface UseSelectionReturn {
  * @param list The list of items to consider for selection.
  * @returns Event handlers and state values for selection state.
  */
-export default function useSelection(list: number[]): UseSelectionReturn {
-  const [selection, setSelection] = useState<number[]>([]);
+export default function useSelection<T extends SelectionItemType>(
+  list: T[]
+): UseSelectionReturn<T> {
+  const [selection, setSelection] = useState<T[]>([]);
 
   const selectionCount = selection.length;
   const hasSelection = selectionCount > 0;
@@ -76,21 +80,21 @@ export default function useSelection(list: number[]): UseSelectionReturn {
     setSelection(changes.checked ? list : []);
   };
 
-  const isItemChecked = (item: number) => selection.includes(item);
+  const isItemChecked = (item: T) => selection.includes(item);
 
-  const onItemCheckedChange = (item: number) => {
+  const onItemCheckedChange = (item: T) => {
     return (changes: CheckboxCheckedChangeDetails) =>
-      setSelection((prev: number[]) =>
+      setSelection((prev: T[]) =>
         changes.checked
           ? [...prev, item]
           : selection.filter((currentItem) => currentItem !== item)
       );
   };
 
-  const isItemDataSelected = (item: number) =>
+  const isItemDataSelected = (item: T) =>
     selection.includes(item) ? "" : undefined;
 
-  const removeSelections = (items: number[]) =>
+  const removeSelections = (items: T[]) =>
     setSelection((prev) => prev.filter((item) => !items.includes(item)));
 
   const resetSelection = () => setSelection([]);

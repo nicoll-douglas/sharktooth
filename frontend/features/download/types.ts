@@ -1,4 +1,5 @@
-import type { TrackBitrate, TrackCodec, TrackArtistNames } from "@/types";
+import type { TrackArtistNames } from "@/types";
+import type { AudioCodec, AudioBitrate } from "@/config/audio";
 
 /**
  * Represents a YouTube video search result retrieved from the backend API.
@@ -106,12 +107,12 @@ export interface PostDownloadsRequest {
   /**
    * The audio codec to be used for the download.
    */
-  codec: TrackCodec;
+  codec: AudioCodec;
 
   /**
    * The audio bitrate to be used for the download.
    */
-  bitrate: TrackBitrate;
+  bitrate: AudioBitrate;
 
   /**
    * The track number metadata to use for the track.

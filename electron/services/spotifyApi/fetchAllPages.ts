@@ -8,7 +8,7 @@ import getAuthHeaders from "./getAuthHeaders";
  */
 export default async function fetchAllPages(initial: string) {
   let next = initial;
-  let results: unknown[] = [];
+  let results: any[] = [];
 
   while (next) {
     const res = await fetch(next, {
@@ -20,7 +20,7 @@ export default async function fetchAllPages(initial: string) {
     }
 
     const body = await res.json();
-    results = [...results, body.items];
+    results = [...results, ...body.items];
     next = body.next;
   }
 

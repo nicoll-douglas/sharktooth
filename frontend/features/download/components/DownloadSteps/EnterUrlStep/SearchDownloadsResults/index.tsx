@@ -20,7 +20,7 @@ export default function SearchDownloadsResults() {
       <Ch.Card.Header>
         <Ch.Card.Title>Search Results</Ch.Card.Title>
         {response.status === 200 && (
-          <Ch.Card.Description>{`${response.body.results.length} total.`}</Ch.Card.Description>
+          <Ch.Card.Description>{`${response.body.results.length} total`}</Ch.Card.Description>
         )}
       </Ch.Card.Header>
 

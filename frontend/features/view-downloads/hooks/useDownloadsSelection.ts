@@ -1,7 +1,7 @@
 import type { DownloadUpdate } from "../types";
 import useSelection, { type UseSelectionReturn } from "@/hooks/useSelection";
 
-export type UseDownloadsSelectionReturn = UseSelectionReturn;
+export type UseDownloadsSelectionReturn = UseSelectionReturn<number>;
 
 /**
  * Wrapper hook around useSelection to work with a selection of downloads.

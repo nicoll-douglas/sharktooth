@@ -36,11 +36,6 @@ export interface UseDownloadFormReturn {
    */
   utils: {
     /**
-     * A boolean indicating whether to show the bitrate field if applicable to a codec selected.
-     */
-    showBitrateField: boolean;
-
-    /**
      * The artist name field array.
      */
     artistNameFields: FieldArrayWithId<
@@ -102,8 +97,6 @@ export default function useDownloadForm(): UseDownloadFormReturn {
   const addArtistName = () => append({ value: "" });
   const removeArtistName = (index: number) => remove(index);
 
-  const codec = form.watch("codec");
-
   const onFormSubmit = form.handleSubmit(async (data) => {
     const res = await startDownload(data);
     setResponse(res);
@@ -114,7 +107,6 @@ export default function useDownloadForm(): UseDownloadFormReturn {
     onFormSubmit,
     form,
     utils: {
-      showBitrateField: codec === "mp3",
       artistNameFields: fields,
       addArtistName,
       removeArtistName,

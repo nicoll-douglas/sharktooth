@@ -12,6 +12,15 @@ export interface SpotifyUser {
   id: string;
 }
 
+export interface SpotifyPlaylist {
+  id: string;
+  name: string;
+  owner: string;
+  total_tracks: number;
+  playlist_cover: string;
+  tracks_href: string;
+}
+
 export interface ElectronAPI {
   getSetting: (key: SettingsKey) => Promise<SettingsValue>;
 
@@ -38,5 +47,7 @@ export interface ElectronAPI {
 
   getSpotifyUserProfile: () => Promise<[true, SpotifyUser] | [false, null]>;
 
-  getSpotifyUserPlaylists: () => Promise<[true, unknown[]] | [false, null]>;
+  getSpotifyUserPlaylists: () => Promise<
+    [true, SpotifyPlaylist[]] | [false, null]
+  >;
 }

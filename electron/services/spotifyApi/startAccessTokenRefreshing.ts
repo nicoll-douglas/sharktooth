@@ -16,7 +16,7 @@ export default async function startAccessTokenRefreshing(
   }
 
   while (accessTokenExpiresIn !== null) {
-    const timeout = accessTokenExpiresIn;
+    const timeout = 0.9 * accessTokenExpiresIn * 1000;
 
     await new Promise((resolve) => setTimeout(resolve, timeout));
     await refreshAccessToken();

@@ -1,5 +1,4 @@
 import { CLIENT_ID, REDIRECT_URI, TOKEN_URL } from "./constants.js";
-import type { AuthCodeExchangeResponse } from "./types.js";
 import { spotifyTokenStore } from "./tokenStore.js";
 
 /**
@@ -27,10 +26,8 @@ export default async function exchangeAuthCodeForAccessToken(
     },
   });
 
-  console.log(res.status);
-
   if (res.ok) {
-    const body: AuthCodeExchangeResponse = await res.json();
+    const body = await res.json();
 
     spotifyTokenStore.set("access_token", body.access_token);
     spotifyTokenStore.set("refresh_token", body.refresh_token);

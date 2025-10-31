@@ -1,33 +1,34 @@
 import * as Ch from "@chakra-ui/react";
-import useIsAuthenticated from "../hooks/useIsAuthenticated";
 import useGetUserProfile from "../hooks/useGetUserProfile";
+import { useAuthContext } from "../context/AuthContext";
+import useIsAuthenticated from "../hooks/useIsAuthenticated";
 
 /**
  * Represents a card that prompts the user to authenticate with the Spotify API.
  */
 export default function UserProfileCard() {
-  const { data: isAuthenticated, isLoading: authLoading } =
-    useIsAuthenticated();
-  const { data, isLoading: profileLoading } = useGetUserProfile();
+  const { data: userProfile, isLoading: profileLoading } = useGetUserProfile();
+  const { data: isAuth } = useIsAuthenticated();
 
-  if (isAuthenticated === false) return;
+  if (userProfile === null || !isAuth) return;
 
   return (
     <Ch.Card.Root size={"sm"}>
       <Ch.Card.Body>
-        <Ch.Skeleton loading={authLoading || profileLoading}>
-          <Ch.HStack gap={"4"}>
+        <Ch.Skeleton loading={profileLoading || userProfile === undefined}>
+          <Ch.HStack gap={"2"}>
             <Ch.Text>Logged in as</Ch.Text>
 
-            <Ch.Separator orientation={"vertical"} height={"4"} />
+            {userProfile?.display_name && (
+              <Ch.Text>{userProfile.display_name}</Ch.Text>
+            )}
 
-            <Ch.HStack gap={"2"}>
-              <Ch.Text>{data?.display_name}</Ch.Text>
-              <Ch.Avatar.Root size={"xs"}>
-                <Ch.Avatar.Fallback name={data?.display_name || undefined} />
-                <Ch.Avatar.Image src={data?.avatar_url || undefined} />
-              </Ch.Avatar.Root>
-            </Ch.HStack>
+            <Ch.Avatar.Root size={"xs"}>
+              <Ch.Avatar.Fallback
+                name={userProfile?.display_name || undefined}
+              />
+              <Ch.Avatar.Image src={userProfile?.avatar_url || undefined} />
+            </Ch.Avatar.Root>
           </Ch.HStack>
         </Ch.Skeleton>
       </Ch.Card.Body>

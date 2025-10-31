@@ -1,14 +1,12 @@
 import type { RegisterOptions } from "react-hook-form";
-import type { TrackBitrate, TrackCodec } from "@/types";
+import type { FormValuesWithCodecAndBitrate } from "@/types";
 
 /**
  * Represents the form field names and types in the download form.
  */
-interface DownloadFormValues {
+interface DownloadFormValues extends FormValuesWithCodecAndBitrate {
   artistNames: Array<{ value: string }>;
   trackName: string;
-  codec: TrackCodec;
-  bitrate: TrackBitrate;
   albumName: string;
   trackNumber: string;
   discNumber: string;

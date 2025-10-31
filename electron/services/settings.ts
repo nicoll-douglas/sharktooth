@@ -13,6 +13,8 @@ const settings = new Conf<SettingsSchema>({
 
 function resetSettings() {
   settings.reset(...(Object.keys(defaultSettings) as SettingsKey[]));
+  settings.clear();
+  settings.set(defaultSettings);
 }
 
 export { settings, resetSettings, defaultSettings };

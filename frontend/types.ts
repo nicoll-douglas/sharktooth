@@ -1,14 +1,14 @@
-/**
- * Represents the various possible codecs to use for a track download.
- */
-export type TrackCodec = "mp3" | "flac";
-
-/**
- * Represents the various possible bitrates to use for a track download.
- */
-export type TrackBitrate = "320" | "192" | "128";
+import type { AudioBitrate, AudioCodec } from "./config/audio";
 
 /**
  * Represents artist name metadata.
  */
 export type TrackArtistNames = [string, ...string[]];
+
+/**
+ * Represents a base interface for a form that has a bitrate field.
+ */
+export interface FormValuesWithCodecAndBitrate {
+  codec: AudioCodec;
+  bitrate: AudioBitrate;
+}
