@@ -27,8 +27,10 @@ export default function DownloadsTableCellCheckbox({
         size="sm"
         top="0.5"
         aria-label="Select row"
-        checked={downloadsSelection.downloadChecked(download)}
-        onCheckedChange={downloadsSelection.onDownloadCheckedChange(download)}
+        checked={downloadsSelection.isItemChecked(download.download_id)}
+        onCheckedChange={downloadsSelection.onItemCheckedChange(
+          download.download_id
+        )}
       >
         <Ch.Checkbox.HiddenInput />
         <Ch.Checkbox.Control />

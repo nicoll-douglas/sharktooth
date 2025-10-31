@@ -78,8 +78,8 @@ export default function FailedTable() {
               {(download) => (
                 <Ch.Table.Row
                   key={download.download_id}
-                  data-selected={downloadsSelection.downloadRowSelected(
-                    download
+                  data-selected={downloadsSelection.isItemDataSelected(
+                    download.download_id
                   )}
                 >
                   <DownloadsTableCellCheckbox
