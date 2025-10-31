@@ -26,8 +26,10 @@ export default function CodecAndBitrateFields<
         <Ch.NativeSelect.Root>
           <Ch.NativeSelect.Field {...form.register("codec" as any)}>
             {[...audioConfig.codecs.lossy, ...audioConfig.codecs.lossless].map(
-              (codec) => (
-                <option value={codec}>{codec}</option>
+              (codec, index) => (
+                <option key={index} value={codec}>
+                  {codec}
+                </option>
               )
             )}
           </Ch.NativeSelect.Field>
@@ -49,8 +51,10 @@ export default function CodecAndBitrateFields<
 
           <Ch.NativeSelect.Root>
             <Ch.NativeSelect.Field {...form.register("bitrate" as any)}>
-              {audioConfig.bitrates.map((bitrate) => (
-                <option value={bitrate}>{bitrate} kB/s</option>
+              {audioConfig.bitrates.map((bitrate, index) => (
+                <option value={bitrate} key={index}>
+                  {bitrate} kB/s
+                </option>
               ))}
             </Ch.NativeSelect.Field>
             <Ch.NativeSelect.Indicator />
