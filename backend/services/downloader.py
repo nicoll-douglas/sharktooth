@@ -40,15 +40,16 @@ class Downloader:
           "total_bytes": hook_data["total_bytes"],
           "downloaded_bytes": hook_data["downloaded_bytes"],
           "speed": hook_data["speed"],
-          "eta": hook_data.get("eta")
+          "eta": hook_data.get("eta"),
+          "status_msg": "In progress"
         })
 
-      update.status = DownloadStatus.DOWNLOADING
       update.total_bytes = hook_data["total_bytes"]
       update.downloaded_bytes = hook_data["downloaded_bytes"]
       update.speed = hook_data["speed"]
       update.eta = hook_data.get("eta")
       update.terminated_at = None
+      update.status_msg = "In progress"
 
       DownloadsSocket.instance().send_download_update(update)
     # END progress_hook
@@ -94,9 +95,10 @@ class Downloader:
       db_download (dict): The download data.
       download_model (db.models.Download): The download model used to get the download from the database.
     """
-    
-    # create static download update data
+
+    # create static download update data for first update and for progress hook
     update = DownloadUpdate()
+    update.status = DownloadStatus.DOWNLOADING
     update.download_id = db_download["download_id"]
     update.artist_names = TrackArtistNames([db_download["main_artist"], *db_download["other_artists"]])
     update.track_name = db_download["track_name"]
@@ -105,7 +107,12 @@ class Downloader:
     update.url = db_download["url"]
     update.created_at = db_download["created_at"]
     update.download_dir = db_download["download_dir"]
-    update.error_msg = None
+    update.status_msg = "Awaiting download"
+    update.terminated_at = None
+    update.downloaded_bytes = None
+    update.total_bytes = None
+    update.eta = None
+    update.speed = None
 
     # get the progress hook to pass to the track download function
     progress_hook = cls._create_progress_hook(update)
@@ -124,6 +131,18 @@ class Downloader:
     track_info.release_date = TrackReleaseDate.from_string(db_download["release_date"]) if db_download["release_date"] else None
     track_info.album_cover_path = db_download["album_cover_path"]
 
+    db_conn = db.connect()
+    dl = db.models.Download(db_conn)
+
+    # update db with awaiting download status
+    dl.update({
+      "status": update.status.value,
+      "status_msg": update.status_msg
+    })
+    
+    # send update with awaiting download
+    DownloadsSocket.instance().send_download_update(update)
+
     # here when spotify sync is implemented, we will pass an associated track ID to go in the filename
     is_success, result = YtDlpClient().download_track(track_info, progress_hook)
     
@@ -135,7 +154,10 @@ class Downloader:
 
     # handle success and failure cases
     if is_success:
-      update.status = DownloadStatus.COMPLETED
+      update.status_msg = "Updating metadata"
+      dl.update({ "status_msg": update.status_msg })
+      db_conn.close()
+      DownloadsSocket.instance().send_download_update(update)
 
       track_model = cast(disk.Track, result)
 
@@ -153,14 +175,16 @@ class Downloader:
       elif track_info.codec is TrackCodec.FLAC:
         metadata.set_on_flac(track_model.path)
 
+      update.status = DownloadStatus.COMPLETED
+      update.status_msg = None
       update.terminated_at = download_model.get_current_timestamp()
       download_model.set_completed(update.download_id, update.terminated_at)
     else:
       update.status = DownloadStatus.FAILED
-      update.error_msg = cast(str, result)
+      update.status_msg = cast(str, result)
 
       update.terminated_at = download_model.get_current_timestamp()
-      download_model.set_failed(update.download_id, update.terminated_at, update.error_msg)
+      download_model.set_failed(update.download_id, update.terminated_at, update.status_msg)
 
     DownloadsSocket.instance().send_download_update(update)
   # END _download
@@ -222,7 +246,7 @@ class Downloader:
     update.download_dir = track_info.download_dir
     update.terminated_at = None
     update.created_at = created_at
-    update.error_msg = None
+    update.status_msg = None
     update.eta = None
     update.speed = None
     update.downloaded_bytes = None

@@ -21,7 +21,7 @@ class DownloadUpdate:
     terminated_at (str | None): Timestamp of when the download record was set to completed or failed in the database.
     eta (int | None): The amount of time in seconds left for the download.
     download_dir (str): The directory path of where the audio file will be downloaded to.
-    error_msg (str | None): An error message if the download failed.
+    status_msg (str | None): A message giving extra status information about the download. 
   """
   
   download_id: int
@@ -38,7 +38,7 @@ class DownloadUpdate:
   downloaded_bytes: int | None
   terminated_at: str | None
   eta: int | None
-  error_msg: str | None
+  status_msg: str | None
 
 
   def get_serializable(self) -> dict:

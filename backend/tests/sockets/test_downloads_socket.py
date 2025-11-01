@@ -27,7 +27,7 @@ def download_update() -> DownloadUpdate:
   update.terminated_at = None
   update.eta = 12
   update.download_dir = "/home/user/music"
-  update.error_msg = None
+  update.status_msg = None
 
   return update
 # END download_update
@@ -74,7 +74,7 @@ class TestDownloadsSocket:
     assert data["terminated_at"] == download_update.terminated_at
     assert data["eta"] == download_update.eta
     assert data["download_dir"] == download_update.download_dir
-    assert data["error_msg"] is None
+    assert data["status_msg"] is None
   # END test_send_download_update
 
 
@@ -121,7 +121,7 @@ class TestDownloadsSocket:
     assert dl["terminated_at"] == download_update.terminated_at
     assert dl["eta"] == download_update.eta
     assert dl["download_dir"] == download_update.download_dir
-    assert dl["error_msg"] is None
+    assert dl["status_msg"] is None
   # END test_send_all_downloads
 
 # END class TestDownloadsSocket

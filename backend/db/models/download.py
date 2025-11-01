@@ -54,7 +54,7 @@ SELECT
   d.speed,
   d.eta,
   d.terminated_at,
-  d.error_msg,
+  d.status_msg,
   d.created_at,
   m.id AS metadata_id,
   m.track_name,
@@ -162,7 +162,7 @@ SELECT
   d.speed,
   d.eta,
   d.terminated_at,
-  d.error_msg,
+  d.status_msg,
   d.created_at,
   m.id AS metadata_id,
   m.track_name,
@@ -218,35 +218,35 @@ GROUP BY d.id
     
     sql = f"""
 UPDATE {self.TABLE} 
-SET status = ?, total_bytes = ?, downloaded_bytes = ?, eta = ?, speed = ?, terminated_at = ? 
+SET status = ?, total_bytes = ?, downloaded_bytes = ?, eta = ?, speed = ?, terminated_at = ?, status_msg = ?
 WHERE id = ?
 """
 
     terminated_at = terminated_at if terminated_at else self.get_current_timestamp()
-    params = (DownloadStatus.COMPLETED.value, None, None, None, None, terminated_at, download_id)
+    params = (DownloadStatus.COMPLETED.value, None, None, None, None, terminated_at, None, download_id)
 
     self._cur.execute(sql, params)
     self._conn.commit()
   # END set_terminated
 
 
-  def set_failed(self, download_id: int, terminated_at: str | None = None, error_msg: str | None = None):
+  def set_failed(self, download_id: int, terminated_at: str | None = None, status_msg: str | None = None):
     """Sets a row/download in the table to a failed state.
 
     Args:
       download_id (int): The ID of the row/download.
-      error_msg (str | None): An error message indicating the error that caused the download to fail.
+      status_msg (str | None): An error message indicating the error that caused the download to fail.
       terminated_at (str | None): The timestamp of when the download failed, gets set to the current timestamp if an empty value passed.
     """
     
     sql = f"""
 UPDATE {self.TABLE} 
-SET status = ?, terminated_at = ?, error_msg = ?, total_bytes = ?, downloaded_bytes = ?, eta = ?, speed = ? 
+SET status = ?, terminated_at = ?, status_msg = ?, total_bytes = ?, downloaded_bytes = ?, eta = ?, speed = ? 
 WHERE id = ?
 """
 
     terminated_at = terminated_at if terminated_at else self.get_current_timestamp()
-    params = (DownloadStatus.FAILED.value, terminated_at, error_msg, None, None, None, None, download_id)
+    params = (DownloadStatus.FAILED.value, terminated_at, status_msg, None, None, None, None, download_id)
 
     self._cur.execute(sql, params)
     self._conn.commit()
@@ -267,7 +267,7 @@ WHERE id = ?
     
     sql = f"""
 UPDATE {self.TABLE} 
-SET status = ?, terminated_at = ?, error_msg = ? 
+SET status = ?, terminated_at = ?, status_msg = ? 
 WHERE id IN ({download_id_placeholders}) AND status != ?
 """
 

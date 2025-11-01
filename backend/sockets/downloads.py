@@ -95,7 +95,7 @@ class DownloadsSocket(Namespace):
       d_update.speed = d["speed"]
       d_update.eta = d["eta"]
       d_update.terminated_at = d["terminated_at"]
-      d_update.error_msg = d["error_msg"]
+      d_update.status_msg = d["status_msg"]
 
       download_updates.append(d_update)
 
