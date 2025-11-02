@@ -1,42 +1,22 @@
 import * as Ch from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import EnterUrlStep from "./EnterUrlStep";
 import DownloadOptionsStep from "./DownloadOptionsStep";
-import {
-  DownloadFormProvider,
-  useDownloadFormContext,
-} from "../../context/DownloadFormContext";
+import { DownloadFormProvider } from "../../context/DownloadFormContext";
 import CompletedContent from "./CompletedContent";
 import MetadataStep from "./MetadataStep";
+import useDownloadSteps from "../../hooks/useDownloadSteps";
 
 /**
- * Represents a step-based flow of configuring a track download and then submitting to start it.
+ * Component that contains a step-based flow for configuring a track download and then starting the download.
  */
 export default function DownloadSteps() {
   const _DownloadSteps = () => {
-    const [step, setStep] = useState(0);
-    const { form } = useDownloadFormContext();
-
-    const url = form.watch("url");
-    const downloadDir = form.watch("downloadDir");
-
-    const prevDisabled = step === 3 || step === 0;
-    const nextDisabled =
-      (step === 0 && !url) || (step === 1 && !downloadDir) || step >= 2;
-
-    useEffect(() => {
-      if (form.formState.isSubmitSuccessful) {
-        setStep(3);
-      }
-    }, [form.formState.isSubmitSuccessful]);
+    const { prevDisabled, nextDisabled, step, onStepChange } =
+      useDownloadSteps();
 
     return (
-      <Ch.Steps.Root
-        step={step}
-        onStepChange={(e) => setStep(e.step)}
-        count={3}
-      >
+      <Ch.Steps.Root step={step} onStepChange={onStepChange} count={3}>
         <Ch.Steps.List flexWrap={"wrap"} gap={"3"}>
           <Ch.Steps.Item index={0} title={"Enter Source URL"}>
             <Ch.Steps.Indicator />
