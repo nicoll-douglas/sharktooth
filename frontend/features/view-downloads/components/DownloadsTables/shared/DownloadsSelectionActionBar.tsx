@@ -19,6 +19,11 @@ export interface DownloadsSelectionActionBarProps {
    * Children i.e the actions.
    */
   children: ReactNode;
+
+  /**
+   * Whether the action bar is open or not in addition to there being a selection.
+   */
+  open?: boolean;
 }
 
 /**
@@ -28,9 +33,10 @@ export default function DownloadsSelectionActionBar({
   tableStatus,
   downloadsSelection,
   children,
+  open = true,
 }: DownloadsSelectionActionBarProps) {
   return (
-    <Ch.ActionBar.Root open={downloadsSelection.hasSelection}>
+    <Ch.ActionBar.Root open={downloadsSelection.hasSelection && open}>
       <Ch.Portal>
         <Ch.ActionBar.Positioner>
           <Ch.ActionBar.Content>

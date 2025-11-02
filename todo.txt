@@ -15,16 +15,10 @@
 [Features]
 - Extra download step in download feature where we can fetch album covers (MusicBrainz integration?) and render them for the user to select for metadata
 
-- Set up button that lets user pause download queue
-- Current download will go through but next download will be prevented (downloader loop stopped)
-- Allow user to remove queued downloads if and only if the queue is paused
-- Form with checkbox card selection for playlists
+- backend logging
 - Ask the user to confirm that a couple hundred tracks will be added to the download queue.
 - Have a "syncs" page with real-time data similar to the downloads page for spotify syncs
-- Have select field for playlist file output type
-- Have checkbox field asking user if they want metadata pre-filled
 
 [Improvements]
 - make Spotify auth system more robust
-- If a refresh fails then empty all tokens in the class and settings
 - Investigate what kinds of responses the Spotify API will send back for refresh requests or requesting an access token for the first time

@@ -105,7 +105,7 @@ export default function MetadataStep() {
             type="submit"
             variant={"subtle"}
             maxW={"fit"}
-            loading={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting}
           >
             Start Download
             <LuDownload />

@@ -115,3 +115,46 @@ def delete_downloads() -> tuple[Response, Literal[400, 200]]:
 
   return jsonify(res_body.__dict__), 200
 # END delete_downloads
+
+
+@downloads_bp.route("/downloads/pause", methods=["GET"])
+def get_downloads_pause() -> tuple[Response, Literal[204]]:
+  """Pauses the downloader loop.
+
+  Returns:
+    tuple[Response, Literal[204]]: The response and status code.
+  """
+  
+  Downloader.pause_loop()
+
+  return Response(), 204
+# END get_downloads_pause
+
+
+@downloads_bp.route("/downloads/resume", methods=["GET"])
+def get_downloads_resume() -> tuple[Response, Literal[204]]:
+  """Resumes the downloader loop.
+
+  Returns:
+    tuple[Response, Literal[204]]: The response and status code.
+  """
+  
+  Downloader.resume_loop()
+
+  return Response(), 204
+# END get_downloads_resume
+
+
+@downloads_bp.route("/downloads/is-paused", methods=["GET"])
+def get_downloads_is_paused():
+  """Checks whether the downloader loop is paused or not.
+
+  Returns:
+    tuple[Response, Literal[200]]: The response and status code.
+  """
+  
+  res_body = res.GetDownloadsIsPausedResponse()
+  res_body.is_paused = not Downloader.loop_should_proceed()
+
+  return jsonify(res_body.__dict__), 200
+# END get_downloads_is_paused

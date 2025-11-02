@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import DownloadsTableEmptyState from "./DownloadsTableEmptyState";
 import type { DownloadStatus } from "../../../types";
 import getDownloadStatusColorPalette from "../../../utils/getDownloadStatusColorPalette";
+import PauseDownloadButton from "./PauseDownloadsButton";
 
 export interface DownloadsTableCardProps {
   /**
@@ -34,6 +35,11 @@ export interface DownloadsTableCardProps {
    * The description/message to show when there are no downloads.
    */
   emptyDesc: string;
+
+  /**
+   * Extra actions/buttons/data for the table.
+   */
+  actions?: ReactNode[];
 }
 
 /**
@@ -46,18 +52,29 @@ export default function DownloadsTableCard({
   emptyTitle,
   emptyDesc,
   status,
+  actions,
 }: DownloadsTableCardProps) {
   return (
     <Ch.Card.Root size={"sm"}>
       <Ch.Card.Header>
-        <Ch.Status.Root
-          size={"lg"}
-          colorPalette={getDownloadStatusColorPalette(status)}
-        >
-          <Ch.Status.Indicator />
-          <Ch.Card.Title>{title}</Ch.Card.Title>
-        </Ch.Status.Root>
-        <Ch.Card.Description>{totalItems} total</Ch.Card.Description>
+        <Ch.HStack align={"start"}>
+          <Ch.Stack>
+            <Ch.Status.Root
+              size={"lg"}
+              colorPalette={getDownloadStatusColorPalette(status)}
+            >
+              <Ch.Status.Indicator />
+              <Ch.Card.Title>{title}</Ch.Card.Title>
+            </Ch.Status.Root>
+            <Ch.Card.Description>{totalItems} total</Ch.Card.Description>
+          </Ch.Stack>
+          {actions && (
+            <>
+              <Ch.Spacer />
+              <Ch.HStack>{actions}</Ch.HStack>
+            </>
+          )}
+        </Ch.HStack>
       </Ch.Card.Header>
       <Ch.Card.Body>
         <Ch.Show when={totalItems > 0}>

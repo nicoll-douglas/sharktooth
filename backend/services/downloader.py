@@ -11,9 +11,50 @@ class Downloader:
 
   Attributes:
     _thread (threading.Thread | None): The thread where downloads run.
+    _resume_loop_event (threading.Event): The event which determines whether the downloader loop should be proceed or not.
   """
   
   _thread: threading.Thread | None = None
+  _resume_loop_event: threading.Event = threading.Event()
+
+
+  @classmethod
+  def resume_loop(cls):
+    """Sets the resume loop event flag to true, resuming the download loop.
+    """
+    
+    cls._resume_loop_event.set()
+  # END resume_loop
+
+
+  @classmethod
+  def pause_loop(cls):
+    """Sets the resume loop event flag to false, pausing the download loop.
+    """
+
+    cls._resume_loop_event.clear()
+  # END pause_loop
+
+
+  @classmethod
+  def loop_should_proceed(cls) -> bool:
+    """Determines whether the download loop should be allowed to proceed.
+
+    Returns:
+      bool: True if the resume loop event flag is true, false otherwise.
+    """
+    
+    return cls._resume_loop_event.is_set()
+  # END loop_should_proceed
+
+
+  @classmethod
+  def await_resume_loop(cls):
+    """Await for the download loop to resume i.e the resume loop event flag to be set to true.
+    """
+
+    cls._resume_loop_event.wait()
+  # END await_resume_loop
 
 
   @staticmethod
@@ -48,7 +89,6 @@ class Downloader:
       update.downloaded_bytes = hook_data["downloaded_bytes"]
       update.speed = hook_data["speed"]
       update.eta = hook_data.get("eta")
-      update.terminated_at = None
       update.status_msg = "In progress"
 
       DownloadsSocket.instance().send_download_update(update)
@@ -61,30 +101,27 @@ class Downloader:
   @classmethod
   def _thread_target(cls, resume: bool):
     """Defines the thread target to pass to the downloader thread when it is created.
+
+    Args:
+      resume (bool): Whether to resume downloads that were already in progress.
     """
+
+    db_conn = db.connect()
+    download_model = db.models.Download(db_conn)
 
     if resume:
-      cls._resume()
-    
-    with db.connect() as conn:
-      download_model = db.models.Download(conn)
-
-      while (next_download := download_model.get_next(DownloadStatus.QUEUED)):
-        cls._download(next_download, download_model)
-  # END _thread_target
-
-
-  @classmethod
-  def _resume(cls):
-    """Resumes the downloader for downloads that were in progress.
-    """
-
-    with db.connect() as conn:
-      download_model = db.models.Download(conn)
-
       while (next_download := download_model.get_next(DownloadStatus.DOWNLOADING)):
         cls._download(next_download, download_model)
-  # END resume
+    
+    while (next_download := download_model.get_next(DownloadStatus.QUEUED)):
+      if not cls.loop_should_proceed():
+        cls.await_resume_loop()
+        continue
+
+      cls._download(next_download, download_model)
+
+    db_conn.close()
+  # END _thread_target
 
 
   @classmethod
@@ -96,82 +133,145 @@ class Downloader:
       download_model (db.models.Download): The download model used to get the download from the database.
     """
 
-    # create static download update data for first update and for progress hook
-    update = DownloadUpdate()
-    update.status = DownloadStatus.DOWNLOADING
-    update.download_id = db_download["download_id"]
-    update.artist_names = TrackArtistNames([db_download["main_artist"], *db_download["other_artists"]])
-    update.track_name = db_download["track_name"]
-    update.codec = TrackCodec(db_download["codec"])
-    update.bitrate = TrackBitrate(db_download["bitrate"])
-    update.url = db_download["url"]
-    update.created_at = db_download["created_at"]
-    update.download_dir = db_download["download_dir"]
-    update.status_msg = "Awaiting download"
-    update.terminated_at = None
-    update.downloaded_bytes = None
-    update.total_bytes = None
-    update.eta = None
-    update.speed = None
+    download_id = db_download["download_id"]
+    artist_names = TrackArtistNames([db_download["main_artist"], *db_download["other_artists"]])
+    track_name = db_download["track_name"]
+    codec = TrackCodec(db_download["codec"])
+    bitrate = TrackBitrate(db_download["bitrate"])
+    album_name = db_download["album_name"]
+    download_dir = db_download["download_dir"]
+    url = db_download["url"]
+    track_number = db_download["track_number"]
+    disc_number = db_download["disc_number"]
+    release_date = TrackReleaseDate.from_string(db_download["release_date"]) if db_download["release_date"] else None
+    album_cover_path = db_download["album_cover_path"]
 
-    # get the progress hook to pass to the track download function
-    progress_hook = cls._create_progress_hook(update)
+    def _perform_initial_update() -> DownloadUpdate:
+      """Performs the initial download update using the download data.
 
-    # recreate original request object to pass as track info to the download function
-    track_info = req.PostDownloadsRequest()
-    track_info.album_name = db_download["album_name"]
-    track_info.track_name = update.track_name
-    track_info.artist_names = update.artist_names
-    track_info.bitrate = update.bitrate
-    track_info.codec = update.codec
-    track_info.disc_number = db_download["disc_number"]
-    track_info.track_number = db_download["track_number"]
-    track_info.url = update.url
-    track_info.download_dir = update.download_dir
-    track_info.release_date = TrackReleaseDate.from_string(db_download["release_date"]) if db_download["release_date"] else None
-    track_info.album_cover_path = db_download["album_cover_path"]
+      Returns:
+        DownloadUpdate: The initial update
+      """
+      
+      update = DownloadUpdate()
+      update.status = DownloadStatus.DOWNLOADING
+      update.download_id = download_id
+      update.artist_names = artist_names
+      update.track_name = track_name
+      update.codec = codec
+      update.bitrate = bitrate
+      update.url = url
+      update.created_at = db_download["created_at"]
+      update.download_dir = download_dir
+      update.status_msg = "Awaiting download"
+      update.terminated_at = None
+      update.downloaded_bytes = None
+      update.total_bytes = None
+      update.eta = None
+      update.speed = None
 
-    download_model.update(update.download_id, {
-      "status": update.status.value,
-      "status_msg": update.status_msg
-    })
+      download_model.update(update.download_id, {
+        "status": update.status.value,
+        "status_msg": update.status_msg
+      })
+      DownloadsSocket.instance().send_download_update(update)
+
+      return update
+    # END _perform_initial_update
     
-    # send update with awaiting download
-    DownloadsSocket.instance().send_download_update(update)
+    initial_update = _perform_initial_update()
 
-    # here when spotify sync is implemented, we will pass an associated track ID to go in the filename
+    def _create_track_info() -> req.PostDownloadsRequest:
+      """Create track info to pass to yt-dlp for download.
+
+      Returns:
+        req.PostDownloadsRequest: The track info.
+      """
+      
+      track_info = req.PostDownloadsRequest()
+      track_info.album_name = album_name
+      track_info.track_name = track_name
+      track_info.artist_names = artist_names
+      track_info.bitrate = bitrate
+      track_info.codec = codec
+      track_info.disc_number = disc_number
+      track_info.track_number = track_number
+      track_info.url = url
+      track_info.download_dir = download_dir
+      track_info.release_date = release_date
+      track_info.album_cover_path = album_cover_path
+
+      return track_info
+    # END _create_track_info
+
+    track_info = _create_track_info()
+    progress_hook = cls._create_progress_hook(initial_update)
+
     is_success, result = YtDlpClient().download_track(track_info, progress_hook)
     
-    # handle success and failure cases
     if is_success:
-      track_model = cast(disk.Track, result)
+      def _update_track_metadata(track: disk.Track):
+        """Updates the downloaded audio file with the track metadata.
 
-      metadata = disk.Metadata()
-      metadata.track_name = track_info.track_name
-      metadata.artist_names = track_info.artist_names
-      metadata.album_name = track_info.album_name
-      metadata.track_number = track_info.track_number
-      metadata.disc_number = track_info.disc_number
-      metadata.release_date = track_info.release_date
-      metadata.album_cover_path = track_info.album_cover_path
+        Args:
+          track (disk.Track): The track model instance representing the track on disk.
+        """
+        
+        metadata = disk.Metadata()
+        metadata.track_name = track_name
+        metadata.artist_names = artist_names
+        metadata.album_name = album_name
+        metadata.track_number = track_number
+        metadata.disc_number = disc_number
+        metadata.release_date = release_date
+        metadata.album_cover_path = album_cover_path
 
-      if track_info.codec is TrackCodec.MP3:
-        metadata.set_on_mp3(track_model.path)
-      elif track_info.codec is TrackCodec.FLAC:
-        metadata.set_on_flac(track_model.path)
+        try:
+          if track_info.codec is TrackCodec.MP3:
+            metadata.set_on_mp3(track.path)
+          elif track_info.codec is TrackCodec.FLAC:
+            metadata.set_on_flac(track.path)
+        except Exception:
+          pass
+      # END _update_track_metadata
 
-      update.status = DownloadStatus.COMPLETED
-      update.status_msg = None
-      update.terminated_at = download_model.get_current_timestamp()
-      download_model.set_completed(update.download_id, update.terminated_at)
+      track = cast(disk.Track, result)
+
+      _update_track_metadata(track)
+
+      terminated_at = download_model.get_current_timestamp()
+
+      def _perform_completion_update():
+        """Performs the final download update.
+        """
+        
+        initial_update.status = DownloadStatus.COMPLETED
+        initial_update.status_msg = None
+        initial_update.terminated_at = terminated_at
+
+        completion_update = initial_update
+
+        download_model.set_completed(download_id, terminated_at)
+        DownloadsSocket.instance().send_download_update(completion_update)
+      # END _perform_completion_update
+
+      _perform_completion_update()
     else:
-      update.status = DownloadStatus.FAILED
-      update.status_msg = cast(str, result)
+      terminated_at = download_model.get_current_timestamp()
+      status_msg = cast(str, result)
 
-      update.terminated_at = download_model.get_current_timestamp()
-      download_model.set_failed(update.download_id, update.terminated_at, update.status_msg)
+      def _perform_failed_update():
+        initial_update.status = DownloadStatus.FAILED
+        initial_update.status_msg = status_msg
+        initial_update.terminated_at = terminated_at
 
-    DownloadsSocket.instance().send_download_update(update)
+        failed_update = failed_update
+
+        download_model.set_failed(download_id, terminated_at, status_msg)
+        DownloadsSocket.instance().send_download_update(failed_update)
+      # END _perform_failed_update
+
+      _perform_failed_update()
   # END _download
 
 

@@ -19,12 +19,14 @@ export default class AppLogger {
    * @param process The process that the logger's logs will pertain to.
    */
   constructor(protected process: AppProcess) {
+    const processName = process;
+
     const logFormat = printf(({ level, message, timestamp, ...meta }) => {
       const metaString = Object.keys(meta).length
         ? `\n${JSON.stringify(meta, null, 2)}`
         : "";
 
-      return `[${timestamp}] [${level}] [${this.process}]: ${message}${metaString}`;
+      return `[${timestamp}] [${level}] [${processName}]: ${message}${metaString}`;
     });
 
     this.logger = createLogger({

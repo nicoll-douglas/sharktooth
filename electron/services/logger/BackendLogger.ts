@@ -26,6 +26,10 @@ export default class BackendLogger extends AppLogger {
 
     const [pythonLevel, message] = data.split("|");
 
+    if (data.toLowerCase().includes("http")) {
+      return this.debug(data);
+    }
+
     if (!Object.keys(logLevelMap).includes(pythonLevel)) {
       return this.logger.log(fallback, data);
     }

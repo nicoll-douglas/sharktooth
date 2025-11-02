@@ -1,9 +1,9 @@
 import { SpotifyPlaylist } from "types/shared";
-import { API_URL } from "./constants";
-import fetchAllPages from "./fetchAllPages";
-import fetchUserProfile from "./fetchUserProfile";
-import { logMain } from "../logger";
-import { resetSpotifyTokenStore } from "./tokenStore";
+import { API_URL } from "./constants.js";
+import fetchAllPages from "./fetchAllPages.js";
+import fetchUserProfile from "./fetchUserProfile.js";
+import { logMain } from "../logger/index.js";
+import { resetSpotifyTokenStore } from "./tokenStore.js";
 
 /**
  * Fetches and returns necessary Spotify API playlist metadata for all of the current user's playlists.

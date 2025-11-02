@@ -56,7 +56,7 @@ export default function PlaylistList() {
         <Ch.Card.Body>
           <Ch.Stack gap={"2"}>
             {isLoading ? (
-              <Ch.For each={Array.from({ length: 3 }, (_, i) => i)}>
+              <Ch.For each={Array.from({ length: 8 }, (_, i) => i)}>
                 {(index) => <Ch.Skeleton height={"20"} key={index} />}
               </Ch.For>
             ) : (

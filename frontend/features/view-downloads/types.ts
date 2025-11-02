@@ -153,3 +153,13 @@ export type DeleteDownloadsReseponse =
         message: string;
       };
     };
+
+/**
+ * Represents the response returned from a request to the backend API to check if the download loop is paused.
+ */
+export interface GetDownloadsIsPausedResponse {
+  /**
+   * Whether the application's download loop is paused.
+   */
+  is_paused: boolean;
+}

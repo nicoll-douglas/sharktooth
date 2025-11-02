@@ -2,34 +2,19 @@ import * as Ch from "@chakra-ui/react";
 import DownloadsTableCard from "./shared/DownloadsTableCard";
 import { useDownloadsSocketContext } from "../../context/DownloadsSocketContext";
 import getDownloadTimeAgo from "../../utils/getDownloadTimeAgo";
-import useDownloadsSelection from "../../hooks/useDownloadsSelection";
 import DownloadsTableColumnHeaderCheckbox from "./shared/DownloadsTableColumnHeaderCheckbox";
 import DownloadsTableCellCheckbox from "./shared/DownloadsTableCellCheckbox";
 import DownloadsSelectionActionBar from "./shared/DownloadsSelectionActionBar";
-import deleteDownloads from "../../services/deleteDownloads";
 import { LuCircleMinus } from "react-icons/lu";
-import { toaster } from "@/components/chakra-ui/toaster";
-import getPlural from "@/utils/getPlural";
+import useCompletedDownloads from "../../hooks/useCompletedDownloads";
+import DeleteDownloadsButton from "./shared/DeleteDownloadsButton";
 
 /**
  * Shows a table containing all complete track downloads.
  */
 export default function CompletedTable() {
   const { completed } = useDownloadsSocketContext();
-  const downloadsSelection = useDownloadsSelection(completed);
-
-  const handleDelete = async () => {
-    const res = await deleteDownloads(downloadsSelection.selection);
-
-    if (res.status === 200) {
-      toaster.create({
-        title: `Successfully removed ${downloadsSelection.selectionCount} ${getPlural("download", downloadsSelection.selectionCount)}.`,
-        type: "success",
-      });
-
-      downloadsSelection.resetSelection();
-    }
-  };
+  const { downloadsSelection, handleDelete } = useCompletedDownloads(completed);
 
   return (
     <>
@@ -87,14 +72,7 @@ export default function CompletedTable() {
         tableStatus="completed"
         downloadsSelection={downloadsSelection}
       >
-        <Ch.Button
-          colorPalette={"red"}
-          variant={"surface"}
-          onClick={handleDelete}
-        >
-          Remove
-          <LuCircleMinus />
-        </Ch.Button>
+        <DeleteDownloadsButton handleDelete={handleDelete} />
       </DownloadsSelectionActionBar>
     </>
   );

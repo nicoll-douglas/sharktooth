@@ -2,56 +2,24 @@ import * as Ch from "@chakra-ui/react";
 import DownloadsTableCard from "./shared/DownloadsTableCard";
 import { useDownloadsSocketContext } from "../../context/DownloadsSocketContext";
 import getDownloadTimeAgo from "../../utils/getDownloadTimeAgo";
-import useDownloadsSelection from "../../hooks/useDownloadsSelection";
 import DownloadsTableCellCheckbox from "./shared/DownloadsTableCellCheckbox";
 import DownloadsTableColumnHeaderCheckbox from "./shared/DownloadsTableColumnHeaderCheckbox";
 import DownloadsSelectionActionBar from "./shared/DownloadsSelectionActionBar";
 import { LuCircleMinus, LuRotateCw } from "react-icons/lu";
-import restartDownloads from "../../services/restartDownloads";
-import deleteDownloads from "../../services/deleteDownloads";
-import { toaster } from "@/components/chakra-ui/toaster";
-import getPlural from "@/utils/getPlural";
+import useFailedDownloads from "../../hooks/useFailedDownloads";
+import DeleteDownloadsButton from "./shared/DeleteDownloadsButton";
 
 /**
  * Shows a table containing all failed track downloads.
  */
 export default function FailedTable() {
   const { failed } = useDownloadsSocketContext();
-  const downloadsSelection = useDownloadsSelection(failed);
-
-  const failedWithEarliestFirst = failed.sort((a, b) => {
-    if (!a.terminated_at || !b.terminated_at) return 0;
-
-    return (
-      new Date(a.terminated_at).getTime() - new Date(b.terminated_at).getTime()
-    );
-  });
-
-  const handleRestart = async () => {
-    const res = await restartDownloads(downloadsSelection.selection);
-
-    if (res.status === 200) {
-      toaster.create({
-        title: `Successfully requeued ${downloadsSelection.selectionCount} ${getPlural("download", downloadsSelection.selectionCount)}.`,
-        type: "success",
-      });
-
-      downloadsSelection.resetSelection();
-    }
-  };
-
-  const handleDelete = async () => {
-    const res = await deleteDownloads(downloadsSelection.selection);
-
-    if (res.status === 200) {
-      toaster.create({
-        title: `Successfully removed ${downloadsSelection.selectionCount} ${getPlural("download", downloadsSelection.selectionCount)}.`,
-        type: "success",
-      });
-
-      downloadsSelection.resetSelection();
-    }
-  };
+  const {
+    downloadsSelection,
+    failedWithEarliestFirst,
+    handleDelete,
+    handleRestart,
+  } = useFailedDownloads(failed);
 
   return (
     <>
@@ -117,14 +85,7 @@ export default function FailedTable() {
           Restart
           <LuRotateCw />
         </Ch.Button>
-        <Ch.Button
-          colorPalette={"red"}
-          variant={"surface"}
-          onClick={handleDelete}
-        >
-          Remove
-          <LuCircleMinus />
-        </Ch.Button>
+        <DeleteDownloadsButton handleDelete={handleDelete} />
       </DownloadsSelectionActionBar>
     </>
   );

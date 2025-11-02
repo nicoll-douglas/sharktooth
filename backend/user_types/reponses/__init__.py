@@ -4,3 +4,4 @@ from .post_downloads_restart_response import PostDownloadsRestartResponse
 from .delete_downloads_response import DeleteDownloadsResponse
 from .get_spotify_api_auth_url import GetSpotifyApiAuthUrl
 from .post_spotify_api_auth_code_response import PostSpotifyApiAuthCodeResponse
+from .get_downloads_is_paused_response import GetDownloadsIsPausedResponse
