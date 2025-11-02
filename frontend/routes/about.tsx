@@ -1,10 +1,18 @@
 import PageHeading from "@/components/PageHeading";
 import * as Ch from "@chakra-ui/react";
 
+/**
+ * Creates route metadata for React Router.
+ *
+ * @returns The metadata.
+ */
 export function meta() {
   return [{ title: `${import.meta.env.VITE_APP_NAME} | About` }];
 }
 
+/**
+ * The application's about page.
+ */
 export default function About() {
   return (
     <>

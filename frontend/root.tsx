@@ -17,6 +17,9 @@ import { Toaster } from "./components/chakra-ui/toaster";
 
 const queryClient = new QueryClient();
 
+/**
+ * Link tag data for React Router within the head.
+ */
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -30,6 +33,9 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+/**
+ * The HTML skeleton of the application's UI.
+ */
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -48,6 +54,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * The application.
+ */
 export default function App() {
   const { pathname } = useLocation();
 

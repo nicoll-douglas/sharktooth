@@ -1,51 +1,57 @@
 import type { CheckboxCheckedChangeDetails } from "@chakra-ui/react";
 import { useState } from "react";
 
-type SelectionItemType = number | string;
-
-/**
- * Return type for the useSelection hook.
- */
 export interface UseSelectionReturn<T> {
   /**
-   * The selected items
+   * The selected items.
    */
   selection: T[];
 
   /**
-   * Whether there is a current selection of downloads.
+   * Whether there is a current selection of items i.e the selection list length is greater than 0.
    */
   hasSelection: boolean;
 
   /**
-   * The number of selected downloads.
+   * The number of selected items.
    */
   selectionCount: number;
 
   /**
-   * The state value for the "all checked" checkbox indicating whether all checkboxes are checked.
+   * The state value for an all-checked checkbox indicating whether all checkboxes are checked.
    */
   allChecked: "indeterminate" | boolean;
 
   /**
-   * Handler to run when the all checked checkbox status changes.
+   * Handler to run when an all-checked checkbox status changes.
+   *
+   * @param changes Contains details about the new checkbox state.
    */
   onAllCheckedChange: (changes: CheckboxCheckedChangeDetails) => void;
 
   /**
-   * Determines whether an item is currently checked (i.e in the selection).
+   * Determines whether an item is currently checked i.e is in the selection.
+   *
+   * @param item The item.
+   * @returns true if the item is in the selection, false otherwise.
    */
   isItemChecked: (item: T) => boolean;
 
   /**
-   * Creates a handler to run when an item's checkbox value changes that updates the selection.
+   * Creates and returns a handler to run when an item's checkbox value changes that updates the selection.
+   *
+   * @param item The item.
+   * @returns A handler that updates the selection when the item's checkbox value changes.
    */
   onItemCheckedChange: (
     item: T
   ) => (changes: CheckboxCheckedChangeDetails) => void;
 
   /**
-   * Determines the value of the data-selected attribute for a HTML element associated with the item.
+   * Determines the value of the data-selected attribute for a HTML element associated with the items's checkbox.
+   *
+   * @param item The item.
+   * @returns An empty string if the item is in the selection (data-selected attribute is on), undefined otherwise (data-selected attribute is off).
    */
   isItemDataSelected: (item: T) => "" | undefined;
 
@@ -56,6 +62,8 @@ export interface UseSelectionReturn<T> {
 
   /**
    * Removes selections from the current list of selections.
+   *
+   * @param items The items to remove from the selection.
    */
   removeSelections: (items: T[]) => void;
 }
@@ -64,9 +72,9 @@ export interface UseSelectionReturn<T> {
  * Hook to work with a checkbox selection.
  *
  * @param list The list of items to consider for selection.
- * @returns Event handlers and state values for selection state.
+ * @returns An object containing event handlers and state values for selection state.
  */
-export default function useSelection<T extends SelectionItemType>(
+export default function useSelection<T extends number | string>(
   list: T[]
 ): UseSelectionReturn<T> {
   const [selection, setSelection] = useState<T[]>([]);
