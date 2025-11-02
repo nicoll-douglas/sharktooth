@@ -1,10 +1,5 @@
 import { app } from "electron";
-import {
-  ChildProcessWithoutNullStreams,
-  spawn,
-  SpawnOptionsWithStdioTuple,
-  StdioOptions,
-} from "child_process";
+import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import chokidar from "chokidar";
 import path from "path";
 import { logBackend, logMain } from "../services/logger.js";

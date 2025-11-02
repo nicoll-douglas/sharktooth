@@ -1,5 +1,8 @@
 import { system } from "@/config/theme";
 
+/**
+ * The application logo.
+ */
 export default function Logo() {
   return (
     <svg

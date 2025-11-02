@@ -2,7 +2,7 @@ import { createContext, type ReactNode } from "react";
 import useSearchDownloadsForm, {
   type UseSearchDownloadsFormReturn,
 } from "../hooks/useSearchDownloadsForm";
-import useSafeContext from "@/hooks/useContextSafe";
+import useSafeContext from "@/hooks/useSafeContext";
 
 /**
  * The search downloads form context.

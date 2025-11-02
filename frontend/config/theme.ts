@@ -1,5 +1,8 @@
 import { defaultConfig, createSystem, defineConfig } from "@chakra-ui/react";
 
+/**
+ * The application's Chakra UI theme configuration.
+ */
 const config = defineConfig({
   globalCss: {
     html: {
@@ -20,4 +23,7 @@ const config = defineConfig({
   },
 });
 
+/**
+ * The application's Chakra UI styling engine.
+ */
 export const system = createSystem(defaultConfig, config);

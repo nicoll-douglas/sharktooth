@@ -3,11 +3,25 @@ import { Link } from "react-router";
 import { type IconType } from "react-icons";
 
 export interface SidebarButtonLinkProps {
+  /**
+   * The href of the link.
+   */
   href: string;
+
+  /**
+   * The text of the link.
+   */
   children: React.ReactNode;
+
+  /**
+   * The icon of the link.
+   */
   Icon: IconType;
 }
 
+/**
+ * A navigation link that appears as a button in the sidebar.
+ */
 export default function SidebarButtonLink({
   href,
   children,

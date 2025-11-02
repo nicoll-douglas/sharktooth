@@ -7,6 +7,9 @@ import { ColorModeButton } from "../chakra-ui/color-mode";
 import { system } from "@/config/theme";
 import SettingsButton from "./SettingsButton";
 
+/**
+ * The sidebar in the UI that contains links to navigate through the app as well as a dark mode toggle and a logo.
+ */
 export default function Sidebar() {
   return (
     <Ch.Stack

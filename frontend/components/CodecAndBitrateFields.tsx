@@ -7,9 +7,15 @@ import { audioConfig, type AudioCodec } from "@/config/audio";
 export interface CodecAndBitrateFieldsProps<
   T extends FormValuesWithCodecAndBitrate,
 > {
+  /**
+   * A form object return from a useForm hook call.
+   */
   form: UseFormReturn<T, any, T>;
 }
 
+/**
+ * Contains a pair of required fields, bitrate and codec, to use with a form.
+ */
 export default function CodecAndBitrateFields<
   T extends FormValuesWithCodecAndBitrate,
 >({ form }: CodecAndBitrateFieldsProps<T>) {

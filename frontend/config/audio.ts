@@ -1,17 +1,37 @@
 /**
- * Defines the schema for the audio configuration.
+ * Defines the schema for the configuration of supported audio values by the application.
  */
 export interface AudioConfig {
+  /**
+   * Audio codecs supported for download.
+   */
   codecs: {
+    /**
+     * Lossy codecs supported for download.
+     */
     lossy: string[];
+
+    /**
+     * Lossless codecs supported for download.
+     */
     lossless: string[];
   };
+
+  /**
+   * Audio bitrates supported for download.
+   */
   bitrates: string[];
+
+  /**
+   * Playlist file formats supported for download.
+   */
   playlistFormats: string[];
 }
 
 /**
- * The configuration object for audio-related app configurations e.g supported codecs and bitrates.
+ * The configuration of supported audio values by the application.
+ *
+ * E.g supported codecs for download.
  */
 export const audioConfig = Object.freeze({
   codecs: {
@@ -23,15 +43,18 @@ export const audioConfig = Object.freeze({
 } as const satisfies AudioConfig);
 
 /**
- * A union of all supported codecs.
+ * A union of all supported codecs for download.
  */
 export type AudioCodec =
   | (typeof audioConfig.codecs.lossless)[number]
   | (typeof audioConfig.codecs.lossy)[number];
 
 /**
- * A union of all supported bitrates.
+ * A union of all supported bitrates for download.
  */
 export type AudioBitrate = (typeof audioConfig.bitrates)[number];
 
+/**
+ * A union of all supported playlist formats for download.
+ */
 export type AudioPlaylistFormat = (typeof audioConfig.playlistFormats)[number];

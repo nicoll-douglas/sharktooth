@@ -2,7 +2,7 @@ import { createContext, type ReactNode } from "react";
 import useDownloadsSocket, {
   type UseDownloadsSocketReturn,
 } from "../hooks/useDownloadsSocket";
-import useSafeContext from "@/hooks/useContextSafe";
+import useSafeContext from "@/hooks/useSafeContext";
 
 /**
  * The downloads socket context.

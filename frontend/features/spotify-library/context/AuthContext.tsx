@@ -1,5 +1,5 @@
 import { createContext, type ReactNode } from "react";
-import useSafeContext from "@/hooks/useContextSafe";
+import useSafeContext from "@/hooks/useSafeContext";
 import useIsAuthenticated from "../hooks/useIsAuthenticated";
 import type { UseQueryResult } from "@tanstack/react-query";
 
