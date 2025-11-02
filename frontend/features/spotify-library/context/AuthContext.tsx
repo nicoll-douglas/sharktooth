@@ -4,14 +4,14 @@ import useIsAuthenticated from "../hooks/useIsAuthenticated";
 import type { UseQueryResult } from "@tanstack/react-query";
 
 /**
- * The auth context.
+ * The Spotify API auth context.
  */
 export const AuthContext = createContext<UseQueryResult<boolean, Error> | null>(
   null
 );
 
 /**
- * Provider for the auth context.
+ * Provider for the Spotify API auth context.
  *
  * Provides a shareable set of values returned from a useIsAuthenticated hook call.
  */
@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 /**
- * Hook to use the auth context.
+ * Hook to use the Spotify API auth context.
  *
  * @returns The context value.
  */

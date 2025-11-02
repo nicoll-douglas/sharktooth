@@ -4,9 +4,6 @@ import DownloadsTableEmptyState from "./DownloadsTableEmptyState";
 import type { DownloadStatus } from "../../../types";
 import getDownloadStatusColorPalette from "../../../utils/getDownloadStatusColorPalette";
 
-/**
- * Props for the DownloadsTableCard component.
- */
 export interface DownloadsTableCardProps {
   /**
    * The title of the card.

@@ -18,6 +18,9 @@ interface DownloadFormValues extends FormValuesWithCodecAndBitrate {
   albumCoverPath: string | null;
 }
 
+/**
+ * Defines the type for a set of validation rules for a field.
+ */
 type DownloadFormValidationRules = Omit<
   RegisterOptions<
     DownloadFormValues,

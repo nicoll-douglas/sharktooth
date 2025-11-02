@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 /**
- * Hook to get Spotify API authentication status via a query.
+ * Hook to get Spotify API authentication status for the current user via a query.
  *
  * @returns The query.
  */

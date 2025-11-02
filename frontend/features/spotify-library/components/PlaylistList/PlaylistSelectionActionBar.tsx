@@ -3,9 +3,6 @@ import type { ReactNode } from "react";
 import type { UseSelectionReturn } from "@/hooks/useSelection";
 import getPlural from "@/utils/getPlural";
 
-/**
- * Props for the PlaylistSelectionActionBar component.
- */
 export interface PlaylistSelectionActionBar {
   /**
    * A value returned from a useDownloadsSelection hook call.
@@ -13,7 +10,7 @@ export interface PlaylistSelectionActionBar {
   playlistSelection: UseSelectionReturn<string>;
 
   /**
-   * Children i.e the actions.
+   * Children i.e the actions buttons for the action bar.
    */
   children: ReactNode;
 }

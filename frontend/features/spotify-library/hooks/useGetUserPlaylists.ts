@@ -1,6 +1,11 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuthContext } from "../context/AuthContext";
 
+/**
+ * Hook that provides a query to retrieve the current user's Spotify playlists.
+ *
+ * @returns The query.
+ */
 export default function useGetUserPlaylists() {
   const { data: isAuthenticated } = useAuthContext();
   const queryClient = useQueryClient();

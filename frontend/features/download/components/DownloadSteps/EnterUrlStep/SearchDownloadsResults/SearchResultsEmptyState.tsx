@@ -2,9 +2,6 @@ import * as Ch from "@chakra-ui/react";
 import { LuSearchX } from "react-icons/lu";
 import type { ReactNode } from "react";
 
-/**
- * Props for the SearchResultsEmptyState component.
- */
 interface SearchResultsEmptyStateProps {
   /**
    * The title of the empty state.

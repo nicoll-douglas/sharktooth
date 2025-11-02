@@ -2,13 +2,25 @@ import * as Ch from "@chakra-ui/react";
 import { LuListX } from "react-icons/lu";
 import type { ReactNode } from "react";
 
+export interface DownloadTableEmptyState {
+  /**
+   * The title to describe the empty state.
+   */
+  title: ReactNode;
+
+  /**
+   * The description to give more details about the empty state.
+   */
+  description: ReactNode;
+}
+
+/**
+ * Shows an empty state for when there are no downloads in a downloads table.
+ */
 export default function DownloadsTableEmptyState({
   title,
   description,
-}: {
-  title: ReactNode;
-  description: ReactNode;
-}) {
+}: DownloadTableEmptyState) {
   return (
     <Ch.EmptyState.Root size={"sm"}>
       <Ch.EmptyState.Content>

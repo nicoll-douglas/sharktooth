@@ -3,6 +3,9 @@ import DownloadsTableCard from "./shared/DownloadsTableCard";
 import { useDownloadsSocketContext } from "../../context/DownloadsSocketContext";
 import getDownloadTimeAgo from "../../utils/getDownloadTimeAgo";
 
+/**
+ * Shows a table containing all queued track downloads.
+ */
 export default function QueuedTable() {
   const { queued } = useDownloadsSocketContext();
 

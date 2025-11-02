@@ -3,18 +3,18 @@ import type { ReactNode } from "react";
 
 export interface SettingsGroupProps {
   /**
-   * The heading of the settings group to go in the card header.
+   * The name of the settings group to use as the component heading.
    */
   heading: string;
 
   /**
-   * The settings management components to go in the body of the card.
+   * The settings management components.
    */
   children: ReactNode;
 }
 
 /**
- * Represents a card container for a group of related settings.
+ * A card container for a group of related application settings.
  */
 export default function SettingsGroup({
   children,

@@ -5,12 +5,9 @@ import { useState } from "react";
 import PlaylistDownloadForm from "./PlaylistDownloadForm";
 import { LuDownload } from "react-icons/lu";
 
-/**
- * Props for the PlaylistDownloadDialog component.
- */
 export interface PlaylistDownloadDialogProps {
   /**
-   * Return value from a useSelection hook call.
+   * Return value from a useSelection hook call for a selection of playlists.
    */
   playlistSelection: UseSelectionReturn<string>;
 }

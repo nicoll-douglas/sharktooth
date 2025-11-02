@@ -6,7 +6,7 @@ import useSetDefaultDownloadDir from "../hooks/useSetDefaultDownloadDir";
 import { Tooltip } from "@/components/chakra-ui/tooltip";
 
 /**
- * Represents a card component that holds related settings to do with downloads.
+ * A card component that contains related settings to do with downloads for the user to configure.
  */
 export default function DownloadSettings() {
   const { isDialogOpen, handleSetDefaultDownloadDir } =

@@ -12,6 +12,9 @@ import deleteDownloads from "../../services/deleteDownloads";
 import { toaster } from "@/components/chakra-ui/toaster";
 import getPlural from "@/utils/getPlural";
 
+/**
+ * Shows a table containing all failed track downloads.
+ */
 export default function FailedTable() {
   const { failed } = useDownloadsSocketContext();
   const downloadsSelection = useDownloadsSelection(failed);

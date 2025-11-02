@@ -1,3 +1,9 @@
+/**
+ * Gets a "time ago" string from an ISO date string.
+ *
+ * @param dateStr The date string.
+ * @returns The time ago string.
+ */
 export default function getDownloadTimeAgo(dateStr: string | null): string {
   if (!dateStr) return "";
 

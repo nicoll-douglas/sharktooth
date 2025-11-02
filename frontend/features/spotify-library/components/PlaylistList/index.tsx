@@ -7,6 +7,9 @@ import useSelection from "@/hooks/useSelection";
 import PlaylistDownloadDialog from "./PlaylistDownloadDialog";
 import { PlaylistDownloadFormProvider } from "../../context/PlaylistDownloadFormContext";
 
+/**
+ * Contains a list of playlist checkbox cards for the user to select from and download.
+ */
 export default function PlaylistList() {
   const _PlaylistList = () => {
     const { data: playlists, isLoading: playlistsLoading } =

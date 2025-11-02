@@ -1,6 +1,5 @@
 import * as Ch from "@chakra-ui/react";
 import useGetUserProfile from "../hooks/useGetUserProfile";
-import { useAuthContext } from "../context/AuthContext";
 import useIsAuthenticated from "../hooks/useIsAuthenticated";
 
 /**

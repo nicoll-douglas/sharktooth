@@ -2,6 +2,9 @@ import { useForm, type UseFormReturn } from "react-hook-form";
 import { type PlaylistDownloadFormValues } from "../forms/playlistDownloadForm";
 
 export interface UsePlaylistDownloadFormReturn {
+  /**
+   * The playlist download form.
+   */
   form: UseFormReturn<
     PlaylistDownloadFormValues,
     any,
@@ -9,6 +12,11 @@ export interface UsePlaylistDownloadFormReturn {
   >;
 }
 
+/**
+ * Hook to provide a form for downloading playlists.
+ *
+ * @returns The form.
+ */
 export default function usePlaylistDownloadForm() {
   const form = useForm<PlaylistDownloadFormValues>({
     defaultValues: {

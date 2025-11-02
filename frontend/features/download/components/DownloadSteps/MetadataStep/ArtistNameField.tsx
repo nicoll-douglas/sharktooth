@@ -2,9 +2,6 @@ import * as Ch from "@chakra-ui/react";
 import { useDownloadFormContext } from "../../../context/DownloadFormContext";
 import { LuCircleMinus } from "react-icons/lu";
 
-/**
- * Props for the ArtistNameField component.
- */
 export interface ArtistNameFieldProps {
   /**
    * The index of the field in the artist name field array.

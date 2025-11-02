@@ -1,9 +1,6 @@
 import * as Ch from "@chakra-ui/react";
 import { type UseDownloadsSelectionReturn } from "../../../hooks/useDownloadsSelection";
 
-/**
- * Props for the DownloadsTableColumnHeaderCheckbox component.
- */
 export interface DownloadsTableColumnHeaderCheckboxProps {
   /**
    * A value returned from a useDownloadsSelection hook call.

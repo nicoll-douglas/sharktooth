@@ -4,9 +4,6 @@ import getDownloadStatusColorPalette from "../../../utils/getDownloadStatusColor
 import type { ReactNode } from "react";
 import type { UseDownloadsSelectionReturn } from "../../../hooks/useDownloadsSelection";
 
-/**
- * Props for the DownloadsSelectionActionBar component.
- */
 export interface DownloadsSelectionActionBarProps {
   /**
    * The status of the associated table of downloads.

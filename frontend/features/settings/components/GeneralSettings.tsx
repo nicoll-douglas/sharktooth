@@ -4,7 +4,7 @@ import { LuRefreshCw } from "react-icons/lu";
 import useResetSettings from "../hooks/useResetSettings";
 
 /**
- * Represents a card component that holds general application settings.
+ * A card component that contains general application settings for the user to configure.
  */
 export default function GeneralSettings() {
   const handleResetSettings = useResetSettings();

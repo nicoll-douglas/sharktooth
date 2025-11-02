@@ -6,9 +6,6 @@ import {
 } from "../../../forms/downloadForm";
 import { useDownloadFormContext } from "../../../context/DownloadFormContext";
 
-/**
- * Props for the ControlledNumberInput component.
- */
 export interface ControlledNumberInputProps {
   /**
    * The name of the field in the download form.

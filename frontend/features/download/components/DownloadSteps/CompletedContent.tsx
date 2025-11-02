@@ -2,7 +2,7 @@ import * as Ch from "@chakra-ui/react";
 import { Link } from "react-router";
 
 /**
- * Represents a card that shows the completed content when all download steps are completed and the form submitted.
+ * A card that shows the completed content when all download steps are completed.
  */
 export default function CompletedContent() {
   return (

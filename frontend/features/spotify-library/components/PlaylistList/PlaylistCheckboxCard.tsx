@@ -2,21 +2,21 @@ import * as Ch from "@chakra-ui/react";
 import type { SpotifyPlaylist } from "types/shared";
 import type { UseSelectionReturn } from "@/hooks/useSelection";
 
-/**
- * Props for the PlaylistCheckboxCard component.
- */
 export interface PlaylistCheckboxCardProps {
   /**
-   * A value returned from a useSelection hook call.
+   * A value returned from a useSelection hook call for a selection of playlists.
    */
   playlistSelection: UseSelectionReturn<string>;
 
   /**
-   * The Spotify Playlist data that the checkbox card renders and uses.
+   * The Spotify playlist data that the checkbox card renders and uses.
    */
   playlist: SpotifyPlaylist;
 }
 
+/**
+ * Represents a checkbox card to select a playlist.
+ */
 export default function PlaylistCheckboxCard({
   playlistSelection,
   playlist,

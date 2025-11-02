@@ -6,14 +6,29 @@ import type { DownloadUpdate, DownloadInitData } from "../types";
  * Return type for the useDownloadsSocket hook.
  */
 export interface UseDownloadsSocketReturn {
+  /**
+   * Update data for all current completed downloads.
+   */
   completed: DownloadUpdate[];
+
+  /**
+   * Update data for all current failed downloads.
+   */
   failed: DownloadUpdate[];
+
+  /**
+   * Update data for all current queued downloads.
+   */
   queued: DownloadUpdate[];
+
+  /**
+   * Update data for all downloads currently in progress.
+   */
   downloading: DownloadUpdate[];
 }
 
 /**
- * Hook that interfaces with downloads socket and returns the live data.
+ * Hook that interfaces with the downloads socket and returns the live data.
  *
  * @returns The live data which are lists of downloads based on status.
  */

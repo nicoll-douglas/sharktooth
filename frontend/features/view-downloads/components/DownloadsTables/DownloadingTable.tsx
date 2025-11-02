@@ -5,7 +5,10 @@ import getDownloadProgress from "../../utils/getDownloadProgress";
 import formatEta from "../../utils/formatEta";
 import formatDownloadSpeed from "../../utils/formatDownloadSpeed";
 
-export default function DownloadsTable() {
+/**
+ * Shows a table containing all track downloads that are in progress.
+ */
+export default function DownloadingTable() {
   const { downloading } = useDownloadsSocketContext();
 
   return (

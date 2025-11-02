@@ -2,9 +2,6 @@ import { useState } from "react";
 import { toaster } from "@/components/chakra-ui/toaster";
 import { useQueryClient } from "@tanstack/react-query";
 
-/**
- * Return value for the useSpotifyAuthWindow hook.
- */
 export interface UseSpotifyAuthWindowReturn {
   /**
    * Whether the Spotify authentication window is open.

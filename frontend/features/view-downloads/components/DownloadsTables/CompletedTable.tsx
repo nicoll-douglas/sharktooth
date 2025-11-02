@@ -11,6 +11,9 @@ import { LuCircleMinus } from "react-icons/lu";
 import { toaster } from "@/components/chakra-ui/toaster";
 import getPlural from "@/utils/getPlural";
 
+/**
+ * Shows a table containing all complete track downloads.
+ */
 export default function CompletedTable() {
   const { completed } = useDownloadsSocketContext();
   const downloadsSelection = useDownloadsSelection(completed);

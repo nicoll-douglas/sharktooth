@@ -10,9 +10,6 @@ import startDownload from "../services/startDownload";
 import type { PostDownloadsResponse } from "../types";
 import { useGetSetting } from "@/features/settings";
 
-/**
- * Return type of the useDownloadForm hook.
- */
 export interface UseDownloadFormReturn {
   /**
    * The response to the form submission request if submitted.
@@ -21,6 +18,8 @@ export interface UseDownloadFormReturn {
 
   /**
    * The form submission handler.
+   *
+   * @param e The event.
    */
   onFormSubmit: (
     e?: BaseSyntheticEvent<object, any, any> | undefined
@@ -51,6 +50,8 @@ export interface UseDownloadFormReturn {
 
     /**
      * A helper function to remove an artist name from the field array.
+     *
+     * @param index The index of the artist in the array.
      */
     removeArtistName: (index: number) => void;
   };

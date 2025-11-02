@@ -2,7 +2,7 @@ import { toaster } from "@/components/chakra-ui/toaster";
 import { useQueryClient } from "@tanstack/react-query";
 
 /**
- * Hook that provides the reset settings handler.
+ * Hook that provides a handler to reset the application's settings.
  *
  * @returns The handler.
  */

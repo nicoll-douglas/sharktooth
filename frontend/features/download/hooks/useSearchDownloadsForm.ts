@@ -26,6 +26,8 @@ export interface UseSearchDownloadsFormReturn {
 
   /**
    * The form submission handler.
+   *
+   * @param e The event.
    */
   onFormSubmit: (
     e?: BaseSyntheticEvent<object, any, any> | undefined
