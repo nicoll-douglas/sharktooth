@@ -26,7 +26,6 @@ async function killBackend() {
 
     await new Promise<void>((resolve) => {
       backendProcess?.once("close", () => resolve());
-      setTimeout(() => resolve(), 5000);
     });
   }
 }
