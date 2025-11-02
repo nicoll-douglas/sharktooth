@@ -49,7 +49,8 @@ def create_app(db_conn: sqlite3.Connection | None = None) -> tuple[Flask, Socket
   return app, socketio
 # END create_app
 
+
 if __name__ == "__main__":
   app, socketio = create_app()
-  socketio.run(app, host="127.0.0.1", port=8888, allow_unsafe_werkzeug=True)
   Downloader.start(True)
+  socketio.run(app, host="127.0.0.1", port=8888, allow_unsafe_werkzeug=True)

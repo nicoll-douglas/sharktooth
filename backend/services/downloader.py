@@ -131,11 +131,7 @@ class Downloader:
     track_info.release_date = TrackReleaseDate.from_string(db_download["release_date"]) if db_download["release_date"] else None
     track_info.album_cover_path = db_download["album_cover_path"]
 
-    db_conn = db.connect()
-    dl = db.models.Download(db_conn)
-
-    # update db with awaiting download status
-    dl.update({
+    download_model.update(update.download_id, {
       "status": update.status.value,
       "status_msg": update.status_msg
     })
@@ -146,19 +142,8 @@ class Downloader:
     # here when spotify sync is implemented, we will pass an associated track ID to go in the filename
     is_success, result = YtDlpClient().download_track(track_info, progress_hook)
     
-    # add fields to the static download update data with new data
-    update.downloaded_bytes = None
-    update.total_bytes = None
-    update.eta = None
-    update.speed = None
-
     # handle success and failure cases
     if is_success:
-      update.status_msg = "Updating metadata"
-      dl.update({ "status_msg": update.status_msg })
-      db_conn.close()
-      DownloadsSocket.instance().send_download_update(update)
-
       track_model = cast(disk.Track, result)
 
       metadata = disk.Metadata()
