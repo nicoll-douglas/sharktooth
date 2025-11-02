@@ -156,7 +156,7 @@ An object containing information about a download update for a track being downl
   "created_at": string,
   "terminated_at": string | null,
   "download_dir": string,
-  "error_msg": string | null
+  "status_msg": string | null
 }
 ```
 
@@ -174,7 +174,7 @@ An object containing information about a download update for a track being downl
 - `created_at` - A timestamp indicating when the download record was created.
 - `terminated_at` - A timestamp indicating when the download completed or failed if so.
 - `download_dir` - The directory where the download will be saved to.
-- `error_msg` - An error message if the download failed.
+- `status_msg` - A status message giving extra information about the download.
 
 ## REST API
 

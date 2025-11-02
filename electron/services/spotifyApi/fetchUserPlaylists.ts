@@ -3,6 +3,11 @@ import { API_URL } from "./constants";
 import fetchAllPages from "./fetchAllPages";
 import fetchUserProfile from "./fetchUserProfile";
 
+/**
+ * Fetches and returns necessary Spotify API playlist metadata for all of the current user's playlists.
+ *
+ * @returns An array containing a success flag and the playlist data on success or null otherwise.
+ */
 export default async function fetchUserPlaylists(): Promise<
   [true, SpotifyPlaylist[]] | [false, null]
 > {

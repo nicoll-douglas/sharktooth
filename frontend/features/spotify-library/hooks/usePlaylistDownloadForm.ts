@@ -14,6 +14,8 @@ export default function usePlaylistDownloadForm() {
     defaultValues: {
       codec: "mp3",
       bitrate: "320",
+      playlistFormat: "m3u8",
+      prefillMetadata: true,
     },
   });
 

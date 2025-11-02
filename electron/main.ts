@@ -12,8 +12,11 @@ import { registerHandlers as registerSettingsIpcHandlers } from "./ipc/settings.
 import { registerHandlers as registerDialogIpcHandlers } from "./ipc/dialog.js";
 import { registerHandlers as registerSpotifyApiIpcHandlers } from "./ipc/spotifyApi.js";
 import startAccessTokenRefreshing from "./services/spotifyApi/startAccessTokenRefreshing.js";
+import { logMain } from "./services/logger.js";
 
 app.whenReady().then(() => {
+  logMain.info("Starting application...");
+
   startBackend();
 
   if (process.env.APP_ENV === "development") {

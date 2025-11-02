@@ -27,6 +27,7 @@ export default function DownloadsTable() {
             <Ch.Table.ColumnHeader>Progress</Ch.Table.ColumnHeader>
             <Ch.Table.ColumnHeader>ETA</Ch.Table.ColumnHeader>
             <Ch.Table.ColumnHeader>Speed</Ch.Table.ColumnHeader>
+            <Ch.Table.ColumnHeader>Status</Ch.Table.ColumnHeader>
           </Ch.Table.Row>
         </Ch.Table.Header>
         <Ch.Table.Body>
@@ -62,6 +63,7 @@ export default function DownloadsTable() {
                 <Ch.Table.Cell>
                   {formatDownloadSpeed(download.speed)}
                 </Ch.Table.Cell>
+                <Ch.Table.Cell>{download.status_msg}</Ch.Table.Cell>
               </Ch.Table.Row>
             )}
           </Ch.For>

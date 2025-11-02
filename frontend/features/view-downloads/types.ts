@@ -81,9 +81,9 @@ export interface DownloadUpdate {
   eta: number | null;
 
   /**
-   * An error message indicating the error that occurred if the download failed.
+   * A status message giving extra information download.
    */
-  error_msg: string | null;
+  status_msg: string | null;
 }
 
 /**

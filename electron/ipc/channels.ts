@@ -1,7 +1,7 @@
 /**
  * Represents the names of different IPC channels in the application.
  */
-export enum IpcChannels {
+export enum IpcChannel {
   GET_SETTING = "settings:get",
   SET_SETTING = "settings:set",
   RESET_SETTINGS = "settings:reset",

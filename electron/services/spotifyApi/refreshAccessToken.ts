@@ -1,3 +1,4 @@
+import { logMain } from "../logger.js";
 import { CLIENT_ID, TOKEN_URL } from "./constants.js";
 import { spotifyTokenStore, resetSpotifyTokenStore } from "./tokenStore.js";
 
@@ -10,8 +11,8 @@ export default async function refreshAccessToken(): Promise<boolean> {
   const refreshToken = spotifyTokenStore.get("refresh_token");
 
   if (!refreshToken) {
-    console.log(
-      "refreshAccessToken: no refresh token in store, resetting store."
+    logMain.debug(
+      "No refresh token in store available for refresh, resetting token store..."
     );
 
     resetSpotifyTokenStore();
@@ -33,12 +34,18 @@ export default async function refreshAccessToken(): Promise<boolean> {
 
   if (!res.ok) {
     const body = await res.json();
-    console.log(body);
-    console.log("refreshAccessToken: req not OK, resetting store.");
+
+    logMain.debug("Failed to refresh access token, resetting token store...", {
+      response: body,
+      status: res.status,
+    });
+
     resetSpotifyTokenStore();
 
     return false;
   }
+
+  logMain.debug("Access token refreshed successfully, updating token store...");
 
   const body = await res.json();
 

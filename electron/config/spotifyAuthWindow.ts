@@ -1,6 +1,8 @@
 import { BrowserWindowConstructorOptions } from "electron";
 
-// configuration for the window where Spotify authentication happens
+/**
+ * Configuration for the window where Spotify authentication happens.
+ */
 const spotifyAuthWindow: BrowserWindowConstructorOptions = {
   width: 500,
   height: 600,

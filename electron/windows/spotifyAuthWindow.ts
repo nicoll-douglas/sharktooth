@@ -1,6 +1,6 @@
 import { BrowserWindow } from "electron";
 import authWindowConfig from "../config/spotifyAuthWindow.js";
-import { IpcChannels } from "../ipc/channels.js";
+import { IpcChannel } from "../ipc/channels.js";
 import createCodeVerifier from "../services/spotifyApi/createCodeVerifier.js";
 import createAuthUrl from "../services/spotifyApi/createAuthUrl.js";
 import exchangeAuthCodeForAccessToken from "../services/spotifyApi/exchangeAuthCodeForAccessToken.js";
@@ -31,7 +31,7 @@ async function createSpotifyAuthWindow(mainWindow: BrowserWindow) {
 
       if (!authCode) {
         mainWindow.webContents.send(
-          IpcChannels.SPOTIFY_AUTH_COMPLETE,
+          IpcChannel.SPOTIFY_AUTH_COMPLETE,
           false,
           error
         );
@@ -46,7 +46,7 @@ async function createSpotifyAuthWindow(mainWindow: BrowserWindow) {
 
       if (status < 400) {
         mainWindow.webContents.send(
-          IpcChannels.SPOTIFY_AUTH_COMPLETE,
+          IpcChannel.SPOTIFY_AUTH_COMPLETE,
           true,
           null
         );
@@ -57,7 +57,7 @@ async function createSpotifyAuthWindow(mainWindow: BrowserWindow) {
       }
 
       mainWindow.webContents.send(
-        IpcChannels.SPOTIFY_AUTH_COMPLETE,
+        IpcChannel.SPOTIFY_AUTH_COMPLETE,
         false,
         null
       );
@@ -67,7 +67,7 @@ async function createSpotifyAuthWindow(mainWindow: BrowserWindow) {
   );
 
   authWindow.on("closed", () => {
-    mainWindow.webContents.send(IpcChannels.SPOTIFY_AUTH_WINDOW_CLOSED);
+    mainWindow.webContents.send(IpcChannel.SPOTIFY_AUTH_WINDOW_CLOSED);
   });
 
   authWindow.loadURL(authUrl);

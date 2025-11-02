@@ -1,18 +1,21 @@
 import { ipcMain } from "electron";
 import { pickDirectory, pickImageFile } from "../services/dialog.js";
-import { IpcChannels } from "./channels.js";
+import { IpcChannel } from "./channels.js";
+import { logMain } from "../services/logger.js";
 
 /**
- * Registers the dialog-related IPC handlers.
+ * Registers the dialog related IPC handlers.
  */
 function registerHandlers() {
-  ipcMain.handle(IpcChannels.PICK_DIRECTORY, async (_, dialogTitle: string) =>
+  ipcMain.handle(IpcChannel.PICK_DIRECTORY, async (_, dialogTitle: string) =>
     pickDirectory(dialogTitle)
   );
 
-  ipcMain.handle(IpcChannels.PICK_IMAGE_FILE, async (_, dialogTitle: string) =>
+  ipcMain.handle(IpcChannel.PICK_IMAGE_FILE, async (_, dialogTitle: string) =>
     pickImageFile(dialogTitle)
   );
+
+  logMain.debug("Registered dialog related IPC handlers.");
 }
 
 export { registerHandlers };

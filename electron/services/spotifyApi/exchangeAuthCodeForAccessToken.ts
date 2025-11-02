@@ -2,11 +2,13 @@ import { CLIENT_ID, REDIRECT_URI, TOKEN_URL } from "./constants.js";
 import { spotifyTokenStore } from "./tokenStore.js";
 
 /**
- * Attempts to exchange an auth code received from an authorization for an access token and save them to disk.
+ * Attempts to exchange an auth code received from an authorization request for an access token and refresh token.
+ *
+ * Received tokens will be saved in the token store.
  *
  * @param codeVerifier The code verifier used to create the code challenge used in the authorization request.
- * @param authCode The auth code.
- * @returns The status code of the response.
+ * @param authCode The auth code received.
+ * @returns The status code of the HTTP request response.
  */
 export default async function exchangeAuthCodeForAccessToken(
   codeVerifier: string,

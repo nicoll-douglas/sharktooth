@@ -1,6 +1,7 @@
 import { BrowserWindow } from "electron";
 import mainWindowConfig from "../config/mainWindow.js";
 import path from "path";
+import { logMain } from "../services/logger.js";
 
 /**
  * Creates the main application window with the respective configuration.
@@ -16,9 +17,15 @@ function createMainWindow(): BrowserWindow {
       mainWindow.minimize();
     });
 
-    mainWindow.loadURL(String(process.env.VITE_APP_URL));
+    const url = String(process.env.VITE_APP_URL);
+    mainWindow.loadURL(url);
+
+    logMain.info("Created main window.", { url });
   } else {
-    mainWindow.loadFile(path.join(__dirname, "../../frontend/index.html"));
+    const filename = path.join(__dirname, "../../frontend/index.html");
+    mainWindow.loadFile(filename);
+
+    logMain.info("Created main window", { filename });
   }
 
   return mainWindow;

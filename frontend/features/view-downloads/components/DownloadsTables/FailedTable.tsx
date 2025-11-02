@@ -92,7 +92,7 @@ export default function FailedTable() {
                   <Ch.Table.Cell>
                     {download.codec === "mp3" && download.bitrate}
                   </Ch.Table.Cell>
-                  <Ch.TableCell>{download.error_msg}</Ch.TableCell>
+                  <Ch.TableCell>{download.status_msg}</Ch.TableCell>
                   <Ch.TableCell>
                     {getDownloadTimeAgo(download.terminated_at)}
                   </Ch.TableCell>

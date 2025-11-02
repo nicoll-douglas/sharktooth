@@ -26,28 +26,28 @@ export default function PlaylistList() {
           {isLoading ? (
             <Ch.SkeletonText noOfLines={2} />
           ) : (
-            <Ch.Flex align={"start"}>
-              <Ch.Stack>
-                <Ch.Card.Title>Playlists</Ch.Card.Title>
+            <Ch.Stack>
+              <Ch.Card.Title>Playlists</Ch.Card.Title>
+              <Ch.HStack gap={"2"}>
                 <Ch.Card.Description>
                   {playlists.length} total
                 </Ch.Card.Description>
-              </Ch.Stack>
-
-              <Ch.Spacer />
-
-              {playlists.length > 0 && (
-                <Ch.Checkbox.Root
-                  checked={playlistSelection.allChecked}
-                  onCheckedChange={playlistSelection.onAllCheckedChange}
-                  size={"sm"}
-                >
-                  <Ch.Checkbox.Label>Select all</Ch.Checkbox.Label>
-                  <Ch.Checkbox.HiddenInput />
-                  <Ch.Checkbox.Control />
-                </Ch.Checkbox.Root>
-              )}
-            </Ch.Flex>
+                {playlists.length > 0 && (
+                  <>
+                    <Ch.Separator height={"4"} orientation={"vertical"} />
+                    <Ch.Checkbox.Root
+                      checked={playlistSelection.allChecked}
+                      onCheckedChange={playlistSelection.onAllCheckedChange}
+                      size={"sm"}
+                    >
+                      <Ch.Checkbox.Label>Select all</Ch.Checkbox.Label>
+                      <Ch.Checkbox.HiddenInput />
+                      <Ch.Checkbox.Control />
+                    </Ch.Checkbox.Root>
+                  </>
+                )}
+              </Ch.HStack>
+            </Ch.Stack>
           )}
         </Ch.Card.Header>
         <Ch.Card.Body>

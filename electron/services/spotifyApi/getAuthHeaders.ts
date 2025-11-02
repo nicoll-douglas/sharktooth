@@ -1,7 +1,7 @@
 import { spotifyTokenStore } from "./tokenStore.js";
 
 /**
- * Gets the authorization headers necessary for Spotify API requests.
+ * Gets the authorization headers necessary for Spotify API data requests.
  *
  * @returns The headers.
  */

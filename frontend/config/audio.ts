@@ -7,6 +7,7 @@ export interface AudioConfig {
     lossless: string[];
   };
   bitrates: string[];
+  playlistFormats: string[];
 }
 
 /**
@@ -18,6 +19,7 @@ export const audioConfig = Object.freeze({
     lossy: ["mp3"],
   },
   bitrates: ["128", "192", "320"],
+  playlistFormats: ["m3u8"],
 } as const satisfies AudioConfig);
 
 /**
@@ -31,3 +33,5 @@ export type AudioCodec =
  * A union of all supported bitrates.
  */
 export type AudioBitrate = (typeof audioConfig.bitrates)[number];
+
+export type AudioPlaylistFormat = (typeof audioConfig.playlistFormats)[number];

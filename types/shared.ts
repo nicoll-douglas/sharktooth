@@ -21,6 +21,8 @@ export interface SpotifyPlaylist {
   tracks_href: string;
 }
 
+export type AppProcess = "main" | "renderer" | "backend";
+
 export interface ElectronAPI {
   getSetting: (key: SettingsKey) => Promise<SettingsValue>;
 

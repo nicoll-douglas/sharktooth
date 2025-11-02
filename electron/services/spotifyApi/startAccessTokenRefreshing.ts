@@ -1,3 +1,4 @@
+import { logMain } from "../logger.js";
 import refreshAccessToken from "./refreshAccessToken.js";
 import { spotifyTokenStore } from "./tokenStore.js";
 
@@ -9,6 +10,8 @@ import { spotifyTokenStore } from "./tokenStore.js";
 export default async function startAccessTokenRefreshing(
   initialRefresh: boolean = false
 ) {
+  logMain.debug("Started access token refreshing.");
+
   let accessTokenExpiresIn = spotifyTokenStore.get("access_token_expires_in");
 
   if (initialRefresh) {
@@ -16,11 +19,18 @@ export default async function startAccessTokenRefreshing(
   }
 
   while (accessTokenExpiresIn !== null) {
-    const timeout = 0.9 * accessTokenExpiresIn * 1000;
+    const timeoutSecs = 0.9 * accessTokenExpiresIn;
+    const timeoutMillisecs = timeoutSecs * 1000;
 
-    await new Promise((resolve) => setTimeout(resolve, timeout));
+    logMain.debug(
+      `Waiting ${Math.floor(timeoutSecs)} seconds before next access token refresh.`
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, timeoutMillisecs));
     await refreshAccessToken();
 
     accessTokenExpiresIn = spotifyTokenStore.get("access_token_expires_in");
   }
+
+  logMain.debug("Ended access token refreshing.");
 }

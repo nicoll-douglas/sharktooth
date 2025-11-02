@@ -1,10 +1,10 @@
 import getAuthHeaders from "./getAuthHeaders";
 
 /**
- * Fetches all pages as an array for a paginated dataset from the Spotify API.
+ * Fetches all items as an array for a paginated dataset from the Spotify API.
  *
- * @param initial The URL of the initial page
- * @returns The full dataset.
+ * @param initial The URL of the initial page.
+ * @returns The items array.
  */
 export default async function fetchAllPages(initial: string) {
   let next = initial;

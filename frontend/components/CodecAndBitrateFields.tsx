@@ -40,7 +40,9 @@ export default function CodecAndBitrateFields<
           {form.formState.errors.codec?.message as any}
         </Ch.Field.ErrorText>
 
-        <Ch.Field.HelperText>The desired file output type.</Ch.Field.HelperText>
+        <Ch.Field.HelperText>
+          The desired audio file output type.
+        </Ch.Field.HelperText>
       </Ch.Field.Root>
 
       <Ch.Show when={isCodecType(codec, "lossy")}>

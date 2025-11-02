@@ -1,10 +1,19 @@
 import { app } from "electron";
-import { ChildProcessWithoutNullStreams, spawn } from "child_process";
+import {
+  ChildProcessWithoutNullStreams,
+  spawn,
+  SpawnOptionsWithStdioTuple,
+  StdioOptions,
+} from "child_process";
 import chokidar from "chokidar";
 import path from "path";
-import logger from "../services/logger.js";
+import { logBackend, logMain } from "../services/logger.js";
 
+/**
+ * Source code directory for the Python backend.
+ */
 const backendSrcFolder = path.join(__dirname, "../../../backend");
+
 let backendProcess: ChildProcessWithoutNullStreams | null = null;
 
 /**
@@ -12,7 +21,7 @@ let backendProcess: ChildProcessWithoutNullStreams | null = null;
  */
 function killBackend() {
   if (backendProcess) {
-    logger.debug("Killing existing backend process...");
+    logMain.debug("Killing existing backend process...");
     backendProcess.kill();
   }
 }
@@ -23,28 +32,46 @@ function killBackend() {
  * @param proc The backend process.
  */
 function registerBackendEventHandlers(proc: ChildProcessWithoutNullStreams) {
-  proc.stdout.pipe(process.stdout);
-  proc.stderr.pipe(process.stderr);
+  proc.stdout.on("data", (chunk: Buffer) => {
+    const message = chunk.toString().trim();
 
-  proc.on("error", logger.error);
-  proc.stdout.on("error", logger.error);
+    if (!message) return;
+
+    logBackend.info(message);
+  });
+
+  proc.stderr.on("data", (chunk: Buffer) => {
+    const message = chunk.toString().trim();
+
+    if (!message) return;
+
+    logBackend.error(message);
+  });
+
+  proc.stdout.on("error", (error) =>
+    logBackend.error("Failed to read backend log stream.", { error })
+  );
+
+  proc.on("error", (error) =>
+    logMain.error("Failed to start backend.", { error })
+  );
 
   proc.on("spawn", () => {
-    logger.info("Backend process spawned.");
+    logMain.info("Backend process spawned.");
   });
 
   proc.on("close", (code, signal) => {
     if (code) {
-      logger.info(`Backend process exited with code ${code}.`);
+      logMain.info("Backend process exited.", { code });
       return;
     }
 
     if (signal) {
-      logger.info(`Backend process terminated with signal ${signal}.`);
+      logMain.info("Backend process terminated.", { signal });
       return;
     }
 
-    logger.warn(
+    logMain.warn(
       "Abnormal termination of backend process, no code or signal was captured."
     );
   });
@@ -58,6 +85,7 @@ function startBackend() {
 
   const pyPath = path.join(__dirname, "../../../.venv/bin/python");
   const script = path.join(backendSrcFolder, "app.py");
+
   const spawnOptions = {
     cwd: backendSrcFolder,
     env: {
@@ -70,12 +98,15 @@ function startBackend() {
     },
   };
 
+  logMain.info("Starting backend...");
   backendProcess = spawn(pyPath, [script], spawnOptions);
   registerBackendEventHandlers(backendProcess);
 }
 
 /**
  * Starts the backend Python process of the application in watch mode.
+ *
+ * Should be used in development only.
  */
 function watchBackend() {
   const watcher = chokidar.watch(backendSrcFolder, {
@@ -84,14 +115,15 @@ function watchBackend() {
   });
 
   watcher.on("all", (event, filePath) => {
-    logger.info(
-      `Backend source file ${filePath} changed with event ${event}, restarting backend...`
-    );
+    logMain.debug("Backend source file changed, restarting backend...", {
+      filePath,
+      event,
+    });
     startBackend();
   });
 
   watcher.on("ready", () => {
-    logger.info("Watching backend source files for changes...");
+    logMain.debug("Watching backend source files for changes...");
   });
 }
 

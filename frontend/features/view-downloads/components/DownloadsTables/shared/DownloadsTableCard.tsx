@@ -60,7 +60,7 @@ export default function DownloadsTableCard({
           <Ch.Status.Indicator />
           <Ch.Card.Title>{title}</Ch.Card.Title>
         </Ch.Status.Root>
-        <Ch.Card.Description>{totalItems} total.</Ch.Card.Description>
+        <Ch.Card.Description>{totalItems} total</Ch.Card.Description>
       </Ch.Card.Header>
       <Ch.Card.Body>
         <Ch.Show when={totalItems > 0}>
