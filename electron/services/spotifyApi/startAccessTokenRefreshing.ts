@@ -23,7 +23,7 @@ export default async function startAccessTokenRefreshing(
     const timeoutMillisecs = timeoutSecs * 1000;
 
     logMain.debug(
-      `Waiting ${Math.floor(timeoutSecs)} seconds before next access token refresh.`
+      `Waiting ${timeoutSecs} seconds before next access token refresh.`
     );
 
     await new Promise((resolve) => setTimeout(resolve, timeoutMillisecs));

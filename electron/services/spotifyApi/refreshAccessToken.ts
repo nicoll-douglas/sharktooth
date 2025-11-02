@@ -20,6 +20,10 @@ export default async function refreshAccessToken(): Promise<boolean> {
     return false;
   }
 
+  logMain.debug(
+    "Requesting a new access token using the current refresh token..."
+  );
+
   const res = await fetch(TOKEN_URL, {
     method: "POST",
     body: new URLSearchParams({
@@ -32,29 +36,34 @@ export default async function refreshAccessToken(): Promise<boolean> {
     },
   });
 
-  if (!res.ok) {
-    const body = await res.json();
+  const body = await res.json();
 
-    logMain.debug("Failed to refresh access token, resetting token store...", {
-      response: body,
+  if (!res.ok) {
+    logMain.debug(
+      "Refresh request got a bad response, resetting token store...",
+      {
+        status: res.status,
+        body,
+      }
+    );
+
+    resetSpotifyTokenStore();
+  } else {
+    logMain.debug("Refresh request got an ok response.", {
       status: res.status,
     });
 
-    resetSpotifyTokenStore();
+    spotifyTokenStore.set("access_token", body.access_token);
+    spotifyTokenStore.set("access_token_expires_in", body.expires_in);
 
-    return false;
+    if (body.refresh_token) {
+      spotifyTokenStore.set("refresh_token", body.refresh_token);
+    }
+
+    logMain.debug(
+      "Access token refreshed successfully, token store was updated with new token data."
+    );
   }
 
-  logMain.debug("Access token refreshed successfully, updating token store...");
-
-  const body = await res.json();
-
-  spotifyTokenStore.set("access_token", body.access_token);
-  spotifyTokenStore.set("access_token_expires_in", body.expires_in);
-
-  if (body.refresh_token) {
-    spotifyTokenStore.set("refresh_token", body.refresh_token);
-  }
-
-  return true;
+  return res.ok;
 }

@@ -1,3 +1,4 @@
+import { logMain } from "../logger.js";
 import { CLIENT_ID, REDIRECT_URI, TOKEN_URL } from "./constants.js";
 import { spotifyTokenStore } from "./tokenStore.js";
 
@@ -14,6 +15,10 @@ export default async function exchangeAuthCodeForAccessToken(
   codeVerifier: string,
   authCode: string
 ): Promise<number> {
+  logMain.debug(
+    "Exchanging auth code for access and refresh token from the Spotify API..."
+  );
+
   const res = await fetch(TOKEN_URL, {
     method: "POST",
     body: new URLSearchParams({
@@ -28,12 +33,23 @@ export default async function exchangeAuthCodeForAccessToken(
     },
   });
 
+  const body = await res.json();
+
   if (res.ok) {
-    const body = await res.json();
+    logMain.debug("Auth code exchange request got an ok response.", {
+      status: res.status,
+    });
 
     spotifyTokenStore.set("access_token", body.access_token);
     spotifyTokenStore.set("refresh_token", body.refresh_token);
     spotifyTokenStore.set("access_token_expires_in", body.expires_in);
+
+    logMain.debug("Updated token store with with new token data.");
+  } else {
+    logMain.debug("Auth code exchange request got a bad response.", {
+      status: res.status,
+      body,
+    });
   }
 
   return res.status;

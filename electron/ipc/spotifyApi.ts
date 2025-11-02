@@ -13,18 +13,24 @@ import { logMain } from "../services/logger.js";
  */
 function registerHandlers(mainWindow: BrowserWindow) {
   ipcMain.handle(IpcChannel.OPEN_SPOTIFY_AUTH_WINDOW, async () => {
+    logMain.ipc(IpcChannel.OPEN_SPOTIFY_AUTH_WINDOW, false);
     createSpotifyAuthWindow(mainWindow);
   });
 
-  ipcMain.handle(IpcChannel.SPOTIFY_IS_AUTH, async () => isAuthenticated());
+  ipcMain.handle(IpcChannel.SPOTIFY_IS_AUTH, async () => {
+    logMain.ipc(IpcChannel.SPOTIFY_IS_AUTH, false);
+    return isAuthenticated();
+  });
 
-  ipcMain.handle(IpcChannel.GET_SPOTIFY_USER_PROFILE, async () =>
-    fetchUserProfile()
-  );
+  ipcMain.handle(IpcChannel.GET_SPOTIFY_USER_PROFILE, async () => {
+    logMain.ipc(IpcChannel.GET_SPOTIFY_USER_PROFILE, false);
+    return fetchUserProfile();
+  });
 
-  ipcMain.handle(IpcChannel.GET_SPOTIFY_USER_PLAYLISTS, async () =>
-    fetchUserPlaylists()
-  );
+  ipcMain.handle(IpcChannel.GET_SPOTIFY_USER_PLAYLISTS, async () => {
+    logMain.ipc(IpcChannel.GET_SPOTIFY_USER_PLAYLISTS, false);
+    return fetchUserPlaylists();
+  });
 
   logMain.debug("Registered Spotify API related IPC handlers.");
 }

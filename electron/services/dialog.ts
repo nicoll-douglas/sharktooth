@@ -1,4 +1,5 @@
 import { dialog } from "electron";
+import { logMain } from "./logger";
 
 /**
  * Opens a dialog for the user to pick a directory.
@@ -7,12 +8,26 @@ import { dialog } from "electron";
  * @returns The first file path selected, or `null` if the dialog was canceled.
  */
 async function pickDirectory(dialogTitle: string): Promise<string | null> {
+  logMain.info("User opened directory picker.");
+
   const result = await dialog.showOpenDialog({
     properties: ["openDirectory"],
     title: dialogTitle,
   });
 
-  return result.canceled ? null : result.filePaths[0];
+  if (result.canceled) {
+    logMain.info("User canceled directory picker dialog.");
+
+    return null;
+  }
+
+  const selected = result.filePaths[0];
+
+  logMain.info("User selected a directory.", {
+    selected,
+  });
+
+  return selected;
 }
 
 /**
@@ -22,6 +37,8 @@ async function pickDirectory(dialogTitle: string): Promise<string | null> {
  * @returns The first file selected, or `null` if the dialog was canceled.
  */
 async function pickImageFile(dialogTitle: string): Promise<string | null> {
+  logMain.info("User opened image file picker dialog.");
+
   const result = await dialog.showOpenDialog({
     title: dialogTitle,
     buttonLabel: "Select",
@@ -29,7 +46,19 @@ async function pickImageFile(dialogTitle: string): Promise<string | null> {
     filters: [{ name: "Images", extensions: ["jpg", "jpeg", "png"] }],
   });
 
-  return result.canceled ? null : result.filePaths[0];
+  if (result.canceled) {
+    logMain.info("User canceled image file picker dialog.");
+
+    return null;
+  }
+
+  const selected = result.filePaths[0];
+
+  logMain.info("User selected an image file", {
+    selected,
+  });
+
+  return selected;
 }
 
 export { pickDirectory, pickImageFile };

@@ -118,7 +118,10 @@ class AppLogger {
    * @returns The logger instance.
    */
   ipc(channel: IpcChannel, out: boolean, payload?: Record<string, any>) {
-    return this.debug(`IPC ${out ? "→" : "←"} ${channel}, Payload:`, payload);
+    return this.debug(
+      `IPC ${out ? "→" : "←"} ${channel}${payload ? ", Payload:" : ""}`,
+      payload
+    );
   }
 }
 

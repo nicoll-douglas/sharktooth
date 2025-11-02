@@ -46,7 +46,9 @@ const electronAPI: ElectronAPI = {
   onSpotifyAuthWindowClosed: async (callback: () => void | Promise<void>) => {
     ipcRenderer.removeAllListeners(IpcChannel.SPOTIFY_AUTH_WINDOW_CLOSED);
 
-    ipcRenderer.on(IpcChannel.SPOTIFY_AUTH_WINDOW_CLOSED, () => callback());
+    ipcRenderer.on(IpcChannel.SPOTIFY_AUTH_WINDOW_CLOSED, () => {
+      callback();
+    });
   },
 
   spotifyUserIsAuth: async () => ipcRenderer.invoke(IpcChannel.SPOTIFY_IS_AUTH),

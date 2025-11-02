@@ -2,6 +2,8 @@ import { SpotifyPlaylist } from "types/shared";
 import { API_URL } from "./constants";
 import fetchAllPages from "./fetchAllPages";
 import fetchUserProfile from "./fetchUserProfile";
+import { logMain } from "../logger";
+import { resetSpotifyTokenStore } from "./tokenStore";
 
 /**
  * Fetches and returns necessary Spotify API playlist metadata for all of the current user's playlists.
@@ -11,9 +13,13 @@ import fetchUserProfile from "./fetchUserProfile";
 export default async function fetchUserPlaylists(): Promise<
   [true, SpotifyPlaylist[]] | [false, null]
 > {
+  logMain.debug("Fetching user playlists...");
+
   const [success, userProfile] = await fetchUserProfile();
 
   if (!success) {
+    logMain.debug("User profile prerequisite to fetch user playlists failed.");
+
     return [false, null];
   }
 
@@ -23,7 +29,17 @@ export default async function fetchUserPlaylists(): Promise<
 
   const rawPlaylists = await fetchAllPages(initial);
 
-  if (!rawPlaylists) return [false, null];
+  if (!rawPlaylists) {
+    logMain.debug(
+      "Failed to fetch all pages of the user's playlists, resetting token store..."
+    );
+
+    resetSpotifyTokenStore();
+
+    return [false, null];
+  }
+
+  logMain.debug("Successfully fetched user playlists.");
 
   const playlists = rawPlaylists.map(
     (playlist): SpotifyPlaylist => ({

@@ -1,3 +1,4 @@
+import { logMain } from "../logger.js";
 import { API_URL } from "./constants.js";
 import getAuthHeaders from "./getAuthHeaders";
 import { resetSpotifyTokenStore } from "./tokenStore.js";
@@ -11,19 +12,31 @@ import type { SpotifyUser } from "types/shared.js";
 export default async function fetchUserProfile(): Promise<
   [true, SpotifyUser] | [false, null]
 > {
+  logMain.debug("Fetching Spotify user profile for current user...");
+
   const res = await fetch(`${API_URL}/me`, {
     headers: getAuthHeaders(),
   });
 
+  const body = await res.json();
+
   if (!res.ok) {
-    console.log("fetchUserProfile: req not ok, resetting store.");
+    logMain.debug(
+      "User profile request got a bad response, resetting token store...",
+      {
+        status: res.status,
+        body,
+      }
+    );
 
     resetSpotifyTokenStore();
 
     return [false, null];
   }
 
-  const body = await res.json();
+  logMain.debug("User profile request got an ok response.", {
+    status: res.status,
+  });
 
   const userData: SpotifyUser = {
     display_name: body.display_name || null,
