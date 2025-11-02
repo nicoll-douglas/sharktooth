@@ -1,7 +1,7 @@
 import { Conf } from "electron-conf/main";
 import { app } from "electron";
 import { SettingsKey, type SettingsSchema } from "../../types/shared.js";
-import { logMain } from "./logger.js";
+import { logMain } from "./logger/index.js";
 
 /**
  * The default values for the settings store.

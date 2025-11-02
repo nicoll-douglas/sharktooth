@@ -2,7 +2,7 @@ import { app } from "electron";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import chokidar from "chokidar";
 import path from "path";
-import { logBackend, logMain } from "../services/logger.js";
+import { logBackend, logMain } from "../services/logger/index.js";
 
 /**
  * Source code directory for the Python backend.
@@ -31,24 +31,20 @@ async function killBackend() {
  * @param proc The backend process.
  */
 function registerBackendEventHandlers(proc: ChildProcessWithoutNullStreams) {
-  proc.stdout.on("data", (chunk: Buffer) => {
-    const message = chunk.toString().trim();
+  const handleStreamOutput =
+    (fallback: "info" | "error") => (chunk: Buffer) => {
+      const data = chunk.toString().trim();
 
-    if (!message) return;
+      if (!data) return;
 
-    logBackend.info(message);
-  });
+      logBackend.log(data, fallback);
+    };
 
-  proc.stderr.on("data", (chunk: Buffer) => {
-    const message = chunk.toString().trim();
-
-    if (!message) return;
-
-    logBackend.error(message);
-  });
+  proc.stdout.on("data", handleStreamOutput("info"));
+  proc.stderr.on("data", handleStreamOutput("error"));
 
   proc.stdout.on("error", (error) =>
-    logBackend.error("Failed to read backend log stream.", { error })
+    logMain.error("Failed to read backend log stream.", { error })
   );
 
   proc.on("error", (error) =>

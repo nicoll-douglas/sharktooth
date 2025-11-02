@@ -12,7 +12,7 @@ import { registerHandlers as registerSettingsIpcHandlers } from "./ipc/settings.
 import { registerHandlers as registerDialogIpcHandlers } from "./ipc/dialog.js";
 import { registerHandlers as registerSpotifyApiIpcHandlers } from "./ipc/spotifyApi.js";
 import startAccessTokenRefreshing from "./services/spotifyApi/startAccessTokenRefreshing.js";
-import { logMain } from "./services/logger.js";
+import { logMain } from "./services/logger/index.js";
 
 app.whenReady().then(async () => {
   logMain.info("Starting application...");

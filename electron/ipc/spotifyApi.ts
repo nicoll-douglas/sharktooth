@@ -4,7 +4,7 @@ import { createSpotifyAuthWindow } from "../windows/spotifyAuthWindow.js";
 import isAuthenticated from "../services/spotifyApi/isAuthenticated.js";
 import fetchUserProfile from "../services/spotifyApi/fetchUserProfile.js";
 import fetchUserPlaylists from "../services/spotifyApi/fetchUserPlaylists.js";
-import { logMain } from "../services/logger.js";
+import { logMain } from "../services/logger/index.js";
 
 /**
  * Registers the Spotify API related IPC handlers.

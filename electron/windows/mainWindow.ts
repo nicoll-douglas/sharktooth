@@ -1,7 +1,7 @@
 import { BrowserWindow } from "electron";
 import mainWindowConfig from "../config/mainWindow.js";
 import path from "path";
-import { logMain } from "../services/logger.js";
+import { logMain } from "../services/logger/index.js";
 import windowManager from "./windowManager.js";
 
 /**

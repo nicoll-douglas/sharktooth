@@ -1,42 +1,34 @@
-import { app } from "electron";
-import { IpcChannel } from "../ipc/channels.js";
 import { format, transports, createLogger, Logger } from "winston";
-import path from "path";
 import { type AppProcess } from "types/shared.js";
+import { LOG_LEVEL, APP_LOG_FILE, ERROR_LOG_FILE } from "./constants.js";
 
 const { combine, timestamp, printf, colorize } = format;
-
-const logsDir = app.getPath("logs");
-const appLogFile = path.join(logsDir, "app.log");
-const errorLogFile = path.join(logsDir, "error.log");
-
-const logLevel = process.env.APP_ENV === "production" ? "info" : "debug";
 
 /**
  * Custom class for creating application loggers.
  */
-class AppLogger {
+export default class AppLogger {
   /**
    * The logger instance.
    */
-  private logger: Logger;
+  protected logger: Logger;
 
   /**
    * Instantiates the logger to the base Winston logger.
    *
    * @param process The process that the logger's logs will pertain to.
    */
-  constructor(private process: AppProcess) {
+  constructor(protected process: AppProcess) {
     const logFormat = printf(({ level, message, timestamp, ...meta }) => {
       const metaString = Object.keys(meta).length
         ? `\n${JSON.stringify(meta, null, 2)}`
         : "";
 
-      return `[${this.process.toUpperCase()}] [${timestamp}] [${level}]: ${message}${metaString}`;
+      return `[${timestamp}] [${level}] [${this.process}]: ${message}${metaString}`;
     });
 
     this.logger = createLogger({
-      level: logLevel,
+      level: LOG_LEVEL,
       format: combine(timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), logFormat),
       transports: [
         new transports.Console({
@@ -47,13 +39,13 @@ class AppLogger {
           ),
         }),
         new transports.File({
-          filename: appLogFile,
+          filename: APP_LOG_FILE,
           maxsize: 5 * 1024 * 1024,
           maxFiles: 5,
           tailable: true,
         }),
         new transports.File({
-          filename: errorLogFile,
+          filename: ERROR_LOG_FILE,
           level: "error",
           maxsize: 2 * 1024 * 1024,
           maxFiles: 10,
@@ -108,27 +100,4 @@ class AppLogger {
   warn(message: string, ...meta: any[]): Logger {
     return this.logger.log("warn", message, ...meta);
   }
-
-  /**
-   * Logs IPC events.
-   *
-   * @param channel The channel of the event.
-   * @param out Whether the event was sent into or out of the main process, true for in, false or out.
-   * @param payload The payload attached to the event signal.
-   * @returns The logger instance.
-   */
-  ipc(channel: IpcChannel, out: boolean, payload?: Record<string, any>) {
-    return this.debug(
-      `IPC ${out ? "→" : "←"} ${channel}${payload ? ", Payload:" : ""}`,
-      payload
-    );
-  }
 }
-
-/**
- * Logger for the main process.
- */
-const logMain = new AppLogger("main");
-const logBackend = new AppLogger("backend");
-
-export { logMain, logBackend };

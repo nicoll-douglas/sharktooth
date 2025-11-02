@@ -1,4 +1,4 @@
-import { logMain } from "../logger.js";
+import { logMain } from "../logger/index.js";
 import { API_URL } from "./constants.js";
 import getAuthHeaders from "./getAuthHeaders";
 import { resetSpotifyTokenStore } from "./tokenStore.js";

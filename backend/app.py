@@ -1,11 +1,15 @@
 from flask_cors import CORS
 from flask import Flask, jsonify
-import os, sqlite3
+import os, sqlite3, warnings
 from routes import register_routes
 from sockets import register_sockets
 import config, db
 from flask_socketio import SocketIO
 from services import Downloader
+from waitress import serve
+
+# ignore only specific Werkzeug/Flask warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="werkzeug")
 
 def create_app(db_conn: sqlite3.Connection | None = None) -> tuple[Flask, SocketIO]:
   """Sets up and creates the application and returns it.
@@ -53,4 +57,4 @@ def create_app(db_conn: sqlite3.Connection | None = None) -> tuple[Flask, Socket
 if __name__ == "__main__":
   app, socketio = create_app()
   Downloader.start(True)
-  socketio.run(app, host="127.0.0.1", port=8888, allow_unsafe_werkzeug=True)
+  socketio.run(app, host="127.0.0.1", port=8888, allow_unsafe_werkzeug=True, debug=False, use_reloader=False)

@@ -1,4 +1,4 @@
-import { logMain } from "../logger.js";
+import { logMain } from "../logger/index.js";
 import refreshAccessToken from "./refreshAccessToken.js";
 import { spotifyTokenStore } from "./tokenStore.js";
 

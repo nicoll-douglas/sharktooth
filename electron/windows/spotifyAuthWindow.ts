@@ -7,7 +7,7 @@ import exchangeAuthCodeForAccessToken from "../services/spotifyApi/exchangeAuthC
 import { REDIRECT_URI } from "../services/spotifyApi/constants.js";
 import startAccessTokenRefreshing from "../services/spotifyApi/startAccessTokenRefreshing.js";
 import windowManager from "./windowManager.js";
-import { logMain } from "../services/logger.js";
+import { logMain } from "../services/logger/index.js";
 
 /**
  * Create the Spotify authentication window using the respective configuration.

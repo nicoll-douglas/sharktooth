@@ -1,4 +1,4 @@
-import { logMain } from "../logger.js";
+import { logMain } from "../logger/index.js";
 import { CLIENT_ID, REDIRECT_URI, TOKEN_URL } from "./constants.js";
 import { spotifyTokenStore } from "./tokenStore.js";
 

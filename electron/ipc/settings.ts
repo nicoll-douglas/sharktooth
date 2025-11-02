@@ -2,7 +2,7 @@ import { ipcMain } from "electron";
 import { settings, resetSettings } from "../services/settings.js";
 import { IpcChannel } from "./channels.js";
 import type { SettingsKey, SettingsValue } from "../../types/shared.js";
-import { logMain } from "../services/logger.js";
+import { logMain } from "../services/logger/index.js";
 
 /**
  * Registers the settings related IPC handlers.

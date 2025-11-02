@@ -1,7 +1,7 @@
 import { ipcMain } from "electron";
 import { pickDirectory, pickImageFile } from "../services/dialog.js";
 import { IpcChannel } from "./channels.js";
-import { logMain } from "../services/logger.js";
+import { logMain } from "../services/logger/index.js";
 
 /**
  * Registers the dialog related IPC handlers.
