@@ -2,6 +2,7 @@ import { BrowserWindow } from "electron";
 import mainWindowConfig from "../config/mainWindow.js";
 import path from "path";
 import { logMain } from "../services/logger.js";
+import windowManager from "./windowManager.js";
 
 /**
  * Creates the main application window with the respective configuration.
@@ -10,6 +11,13 @@ import { logMain } from "../services/logger.js";
  */
 function createMainWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow(mainWindowConfig);
+
+  mainWindow.on("closed", () => {
+    logMain.info("Main window closed, closing all windows...");
+    windowManager.closeAll();
+  });
+
+  windowManager.register(mainWindow);
 
   if (process.env.APP_ENV === "development") {
     mainWindow.once("ready-to-show", () => {

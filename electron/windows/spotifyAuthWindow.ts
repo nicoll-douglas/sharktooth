@@ -6,6 +6,7 @@ import createAuthUrl from "../services/spotifyApi/createAuthUrl.js";
 import exchangeAuthCodeForAccessToken from "../services/spotifyApi/exchangeAuthCodeForAccessToken.js";
 import { REDIRECT_URI } from "../services/spotifyApi/constants.js";
 import startAccessTokenRefreshing from "../services/spotifyApi/startAccessTokenRefreshing.js";
+import windowManager from "./windowManager.js";
 
 /**
  * Create the Spotify authentication window using the respective configuration.
@@ -18,6 +19,8 @@ async function createSpotifyAuthWindow(mainWindow: BrowserWindow) {
   const codeVerifier = createCodeVerifier();
   const authUrl = await createAuthUrl(codeVerifier);
   const filter = { urls: [`${REDIRECT_URI}*`] };
+
+  windowManager.register(authWindow);
 
   authWindow.webContents.session.webRequest.onBeforeRequest(
     filter,
@@ -67,6 +70,8 @@ async function createSpotifyAuthWindow(mainWindow: BrowserWindow) {
   );
 
   authWindow.on("closed", () => {
+    if (!mainWindow || mainWindow.isDestroyed()) return;
+
     mainWindow.webContents.send(IpcChannel.SPOTIFY_AUTH_WINDOW_CLOSED);
   });
 

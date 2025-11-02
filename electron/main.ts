@@ -14,10 +14,10 @@ import { registerHandlers as registerSpotifyApiIpcHandlers } from "./ipc/spotify
 import startAccessTokenRefreshing from "./services/spotifyApi/startAccessTokenRefreshing.js";
 import { logMain } from "./services/logger.js";
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   logMain.info("Starting application...");
 
-  startBackend();
+  await startBackend();
 
   if (process.env.APP_ENV === "development") {
     watchBackend();
@@ -32,12 +32,29 @@ app.whenReady().then(() => {
   registerSpotifyApiIpcHandlers(mainWindow);
 });
 
-app.on("will-quit", () => {
-  killBackend();
+let isQuitting = false;
+
+app.on("before-quit", async (e) => {
+  if (isQuitting) return;
+
+  e.preventDefault();
+  isQuitting = true;
+
+  logMain.info("Quitting application...");
+
+  await killBackend();
+  app.quit();
+});
+
+app.on("quit", () => {
+  logMain.info("Application quit.");
 });
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+  if (process.platform !== "darwin") {
+    logMain.info("All windows closed.");
+    app.quit();
+  }
 });
 
 app.on("activate", () => {

@@ -19,10 +19,15 @@ let backendProcess: ChildProcessWithoutNullStreams | null = null;
 /**
  * Kill the backend Python process of the application.
  */
-function killBackend() {
-  if (backendProcess) {
+async function killBackend() {
+  if (backendProcess && !backendProcess.killed) {
     logMain.debug("Killing existing backend process...");
     backendProcess.kill();
+
+    await new Promise<void>((resolve) => {
+      backendProcess?.once("close", () => resolve());
+      setTimeout(() => resolve(), 5000);
+    });
   }
 }
 
@@ -62,12 +67,12 @@ function registerBackendEventHandlers(proc: ChildProcessWithoutNullStreams) {
 
   proc.on("close", (code, signal) => {
     if (code) {
-      logMain.info("Backend process exited.", { code });
+      logMain.debug("Backend process exited.", { code });
       return;
     }
 
     if (signal) {
-      logMain.info("Backend process terminated.", { signal });
+      logMain.debug("Backend process terminated.", { signal });
       return;
     }
 
@@ -80,8 +85,8 @@ function registerBackendEventHandlers(proc: ChildProcessWithoutNullStreams) {
 /**
  * Starts the backend Python process of the application.
  */
-function startBackend() {
-  killBackend();
+async function startBackend() {
+  await killBackend();
 
   const pyPath = path.join(__dirname, "../../../.venv/bin/python");
   const script = path.join(backendSrcFolder, "app.py");
@@ -98,7 +103,7 @@ function startBackend() {
     },
   };
 
-  logMain.info("Starting backend...");
+  logMain.debug("Starting backend...");
   backendProcess = spawn(pyPath, [script], spawnOptions);
   registerBackendEventHandlers(backendProcess);
 }
@@ -114,12 +119,12 @@ function watchBackend() {
     ignoreInitial: true,
   });
 
-  watcher.on("all", (event, filePath) => {
+  watcher.on("all", async (event, filePath) => {
     logMain.debug("Backend source file changed, restarting backend...", {
       filePath,
       event,
     });
-    startBackend();
+    await startBackend();
   });
 
   watcher.on("ready", () => {
