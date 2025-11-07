@@ -6,9 +6,10 @@ import {
 } from "react-hook-form";
 import { useEffect, useState, type BaseSyntheticEvent } from "react";
 import type { DownloadFormValues } from "../forms/downloadForm";
-import startDownload from "../services/startDownload";
-import type { PostDownloadsResponse } from "../types";
+import queueDownloads from "../services/queueDownloads";
+import type { NewDownload, PostDownloadsResponse } from "../types";
 import { useGetSetting } from "@/features/settings";
+import extractDownloadFormData from "../utils/extractDownloadFormData";
 
 export interface UseDownloadFormReturn {
   /**
@@ -99,7 +100,8 @@ export default function useDownloadForm(): UseDownloadFormReturn {
   const removeArtistName = (index: number) => remove(index);
 
   const onFormSubmit = form.handleSubmit(async (data) => {
-    const res = await startDownload(data);
+    const download: NewDownload = extractDownloadFormData(data);
+    const res = await queueDownloads([download]);
     setResponse(res);
   });
 

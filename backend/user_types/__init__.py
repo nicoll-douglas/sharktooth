@@ -8,3 +8,4 @@ from .track_release_date import TrackReleaseDate
 from .enum_validate import enum_validate
 from . import reponses
 from . import requests
+from .new_download import NewDownload

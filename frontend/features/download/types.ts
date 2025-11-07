@@ -86,9 +86,9 @@ export type GetDownloadsSearchResponse =
     };
 
 /**
- * Represents the request body structure that must be sent with a track download backend API request.
+ * Represents track download data that will be send to the backend to download.
  */
-export interface PostDownloadsRequest {
+export interface NewDownload {
   /**
    * The artist name metadata to use for the track.
    */
@@ -146,13 +146,23 @@ export interface PostDownloadsRequest {
 }
 
 /**
+ * Represents the request body structure that must be sent with a track download backend API request.
+ */
+export interface PostDownloadsRequest {
+  /**
+   * A list of downloads.
+   */
+  downloads: NewDownload[];
+}
+
+/**
  * Represents the various reponses that may be returned from a track download backend API request.
  */
 export type PostDownloadsResponse =
   | {
       status: 200;
       body: {
-        download_id: number;
+        download_ids: number[];
         message: string;
       };
     }
@@ -161,5 +171,6 @@ export type PostDownloadsResponse =
       body: {
         field: string;
         message: string;
+        item_index: number;
       };
     };

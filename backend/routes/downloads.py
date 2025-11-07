@@ -10,7 +10,7 @@ downloads_bp = Blueprint("downloads", __name__)
 
 @downloads_bp.route("/downloads", methods=["POST"])
 def post_downloads() -> tuple[Response, Literal[400, 200]]:
-  """Adds a track to the download queue for the downloader thread to pick up and download.
+  """Adds tracks to the download queue for the downloader thread to pick up and download.
   
   Returns:
     tuple[Response, Literal[400, 200]]: The response and status code.
@@ -25,7 +25,7 @@ def post_downloads() -> tuple[Response, Literal[400, 200]]:
   
   req_body = cast(req.PostDownloadsRequest, validation_result_data)
   res_body = res.PostDownloadsResponse.Ok()
-  res_body.download_id = Downloader.queue(req_body)
+  res_body.download_ids = Downloader.queue(req_body.downloads)
 
   Downloader.start()
   

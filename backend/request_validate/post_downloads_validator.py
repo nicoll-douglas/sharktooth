@@ -1,8 +1,8 @@
-from user_types import TrackArtistNames, TrackCodec, TrackBitrate, TrackReleaseDate, enum_validate
-from typing import Any, Literal, Callable
+from user_types import TrackArtistNames, TrackCodec, TrackBitrate, TrackReleaseDate, enum_validate, NewDownload
+from typing import Any, Literal, Callable, cast
 from user_types.requests import PostDownloadsRequest
 from user_types.reponses import PostDownloadsResponse
-import copy, os
+import copy
 from pathvalidate import is_valid_filepath
 
 class PostDownloadsValidator:
@@ -36,17 +36,98 @@ class PostDownloadsValidator:
     if body is None or not isinstance(body, dict):
       self._response.field = ""
       self._response.message = "Body must be an object."
+      self._response.item_index = None
       return False
     
     return copy.deepcopy(body)
   # END _validate_body
 
 
-  def _validate_artist_names(self, body: dict) -> Literal[False] | TrackArtistNames:
-    """Helper that validates the `artist_names` field of the request body.
+  def _validate_download(self, download: Any) -> Literal[False] | NewDownload:
+    """Validates that a download is of the correct structure.
 
     Args:
-      body (dict): The request body.
+      download (Any): The download.
+      download_index (int): The index of the download in the `downloads` list field.
+
+    Returns:
+      Literal[False] | NewDownload: False if validation failed, the sanitized download value otherwise.
+    """
+    
+    if download is None or not isinstance(download, dict):
+      self._response.field = "downloads"
+      self._response.message = "Download must be an object."
+      return False
+
+    validators: list[tuple[Callable[[dict], Literal[False] | Any], str]] = [
+      # (validator function, attribute name on download)
+      (self._validate_artist_names, "artist_names"),
+      (self._validate_track_name, "track_name"),
+      (self._validate_url, "url"),
+      (self._validate_download_dir, "download_dir"),
+      (self._validate_album_cover_path, "album_cover_path"),
+      (self._validate_codec, "codec"),
+      (self._validate_bitrate, "bitrate"),
+      (self._validate_album_name, "album_name"),
+      (lambda download: self._validate_track_or_disc_number(download, "track_number"), "track_number"),
+      (lambda download: self._validate_track_or_disc_number(download, "disc_number"), "disc_number"),
+      (self._validate_release_date, "release_date")
+    ]
+
+    validated_download = NewDownload()
+
+    for validator_func, download_attr_name in validators:
+      result = validator_func(download)
+
+      if result is False:
+        return False
+      
+      setattr(validated_download, download_attr_name, result)
+
+    return validated_download
+  # END _validate_download
+
+  
+  def _validate_downloads_list(self, body: dict) -> Literal[False] | list[Any]:
+    """Validates the downloads field of the request body.
+
+    Args:
+      body (dict): The validate request body.
+
+    Returns:
+      Literal[False] | list[Any]: False if the field is invalid, the validated field value otherwise.
+    """
+    
+    self._response.field = "downloads"
+    downloads = body.get(self._response.field)
+
+    if downloads is None:
+      self._response.message = f"Field `{self._response.field}` is required."
+      self._response.item_index = None
+
+      return False
+    
+    if not isinstance(downloads, list):
+      self._response.message = f"Field `{self._response.field}` must be an array."
+      self._response.item_index = None
+
+      return False
+
+    if len(downloads) == 0:
+      self._response.message = f"Field `{self._response.field}` must be of at least length 1."
+      self._response.item_index = None
+
+      return False
+
+    return downloads
+  # END _validate_downloads_list
+  
+
+  def _validate_artist_names(self, download: dict) -> Literal[False] | TrackArtistNames:
+    """Helper that validates the `artist_names` field of a download.
+
+    Args:
+      download (dict): The download.
 
     Returns:
       Literal[False] | TrackArtistNames: False if the field is invalid, a TrackArtistNames instance otherwise.
@@ -55,7 +136,7 @@ class PostDownloadsValidator:
     self._response.field = "artist_names"
     
     try:
-      artist_names = TrackArtistNames(body.get(self._response.field), self._response.field)
+      artist_names = TrackArtistNames(download.get(self._response.field), self._response.field)
     except ValueError as e:
       self._response.message = str(e)
       return False
@@ -64,18 +145,18 @@ class PostDownloadsValidator:
   # END _validate_artist_names
 
 
-  def _validate_track_name(self, body: dict) -> Literal[False] | str:
-    """Helper that validates the `track_name` field of the request body.
+  def _validate_track_name(self, download: dict) -> Literal[False] | str:
+    """Helper that validates the `track_name` field of a download.
 
     Args:
-      body (dict): The request body.
+      download (dict): The download.
 
     Returns:
       Literal[False] | str: False if the field is invalid, the validated field value otherwise.
     """
 
     self._response.field = "track_name"
-    track_name = body.get(self._response.field)
+    track_name = download.get(self._response.field)
 
     if track_name is None or track_name == "":
       self._response.message = f"Field `{self._response.field}` is required."
@@ -89,18 +170,18 @@ class PostDownloadsValidator:
   # END _validate_track_name
 
 
-  def _validate_url(self, body: dict) -> Literal[False] | str:
-    """Helper that validates the `url` field of the request body.
+  def _validate_url(self, download: dict) -> Literal[False] | str:
+    """Helper that validates the `url` field of a download.
 
     Args:
-      body (dict): The request body.
+      download (dict): The download.
 
     Returns:
       Literal[False] | str: False is the field is invalid, the validated field value otherwise.
     """
 
     self._response.field = "url"
-    url = body.get(self._response.field)
+    url = download.get(self._response.field)
 
     if url is None or url == "":
       self._response.message = f"Field `{self._response.field}` is required."
@@ -114,18 +195,18 @@ class PostDownloadsValidator:
   # END _validate_url
 
 
-  def _validate_codec(self, body: dict) -> Literal[False] | TrackCodec:
-    """Helper that validates the `codec` field of the request body.
+  def _validate_codec(self, download: dict) -> Literal[False] | TrackCodec:
+    """Helper that validates the `codec` field of a download.
 
     Args:
-      body (dict): The request body.
+      download (dict): The download.
 
     Returns:
       Literal[False] | TrackCodec: False is the field is invalid, a TrackCodec instance otherwise.
     """
     
     self._response.field = "codec"
-    codec = body.get(self._response.field)
+    codec = download.get(self._response.field)
     codec_valid, codec_validation_message = enum_validate(TrackCodec, self._response.field, codec)
 
     if not codec_valid:
@@ -136,18 +217,18 @@ class PostDownloadsValidator:
   # END _validate_codec
 
 
-  def _validate_bitrate(self, body: dict) -> Literal[False] | TrackBitrate:
-    """Helper that validates the `bitrate` field of the request body.
+  def _validate_bitrate(self, download: dict) -> Literal[False] | TrackBitrate:
+    """Helper that validates the `bitrate` field of a download.
 
     Args:
-      body (dict): The request body.
+      download (dict): The download.
 
     Returns:
       Literal[False] | TrackBitrate: False is the field is invalid, a TrackBitrate instance otherwise.
     """
     
     self._response.field = "bitrate"
-    bitrate = body.get(self._response.field)
+    bitrate = download.get(self._response.field)
     bitrate_valid, bitrate_validation_message = enum_validate(TrackBitrate, self._response.field, bitrate)
 
     if not bitrate_valid:
@@ -158,18 +239,18 @@ class PostDownloadsValidator:
   # END _validate_bitrate
   
 
-  def _validate_album_name(self, body: dict) -> Literal[False] | str | None:
-    """Helper that validates the `album_name` field of the request body.
+  def _validate_album_name(self, download: dict) -> Literal[False] | str | None:
+    """Helper that validates the `album_name` field of a download.
 
     Args:
-      body (dict): The request body.
+      body (dict): The download.
 
     Returns:
       Literal[False] | str | None: False is the field is invalid, the validated field's value otherwise.
     """
     
     self._response.field = "album_name"
-    album_name = body.get(self._response.field)
+    album_name = download.get(self._response.field)
 
     if album_name is not None and not isinstance(album_name, str):
       self._response.message = f"Field `{self._response.field}` must be a string or null."
@@ -179,11 +260,11 @@ class PostDownloadsValidator:
   # END _validate_album_name
 
 
-  def _validate_track_or_disc_number(self, body: dict, field_name: str) -> Literal[False] | int | None:
-    """Helper that validates the `track_number` or `disc_number` field of the request body.
+  def _validate_track_or_disc_number(self, download: dict, field_name: str) -> Literal[False] | int | None:
+    """Helper that validates the `track_number` or `disc_number` field of a download.
 
     Args:
-      body (dict): The request body.
+      download (dict): The download.
       field_name (str): The name of the field.
 
     Returns:
@@ -191,7 +272,7 @@ class PostDownloadsValidator:
     """
     
     self._response.field = field_name
-    value = body.get(self._response.field)
+    value = download.get(self._response.field)
 
     if value is not None:
       if not isinstance(value, int):
@@ -210,18 +291,18 @@ class PostDownloadsValidator:
   # END _validate_track_or_disc_number
 
 
-  def _validate_release_date(self, body: dict) -> Literal[False] | TrackReleaseDate:
-    """Helper that validates the `release_date` field of the request body.
+  def _validate_release_date(self, download: dict) -> Literal[False] | TrackReleaseDate:
+    """Helper that validates the `release_date` field of a download.
 
     Args:
-      body (dict): The request body.
+      download (dict): The download.
 
     Returns:
       Literal[False] | TrackReleaseDate: False is the field is invalid, a TrackReleaseDate instance otherwise.
     """
     
     self._response.field = "release_date"
-    release_date = body.get(self._response.field)
+    release_date = download.get(self._response.field)
 
     if release_date is not None:
       try:
@@ -236,18 +317,18 @@ class PostDownloadsValidator:
   # END _validate_release_date
 
 
-  def _validate_download_dir(self, body: dict) -> Literal[False] | str:
-    """Helper that validates the `download_dir` field of the request body.
+  def _validate_download_dir(self, download: dict) -> Literal[False] | str:
+    """Helper that validates the `download_dir` field of a download.
 
     Args:
-      body (dict): The request body.
+      download (dict): The download.
 
     Returns:
       Literal[False] | str: False is the field is invalid, the validated field's value otherwise.
     """
     
     self._response.field = "download_dir"
-    download_dir = body.get(self._response.field)
+    download_dir = download.get(self._response.field)
 
     if download_dir is None or download_dir == "":
       self._response.message = f"Field `{self._response.field}` is required."
@@ -265,18 +346,18 @@ class PostDownloadsValidator:
   # END _validate_download_dir
 
 
-  def _validate_album_cover_path(self, body: dict) -> Literal[False] | str | None:
-    """Helper that validates the `album_cover_path` field of the request body.
+  def _validate_album_cover_path(self, download: dict) -> Literal[False] | str | None:
+    """Helper that validates the `album_cover_path` field of a download.
 
     Args:
-      body (dict): The request body.
+      download (dict): The download.
 
     Returns:
       Literal[False] | str | None: False is the field is invalid, the validated field's value otherwise.
     """
     
     self._response.field = "album_cover_path"
-    album_cover_path = body.get(self._response.field)
+    album_cover_path = download.get(self._response.field)
 
     if album_cover_path is None or album_cover_path == "":
       return album_cover_path
@@ -304,34 +385,31 @@ class PostDownloadsValidator:
     """
 
     bad_request = (False, self._response)
-    validated_body = self._validate_body(body)
+    result = self._validate_body(body)
 
-    if validated_body is False:
+    if result is False:
       return bad_request
     
-    validators: list[tuple[Callable[[dict], Literal[False] | Any], str]] = [
-      # (validator function, attribute name on self._request)
-      (self._validate_artist_names, "artist_names"),
-      (self._validate_track_name, "track_name"),
-      (self._validate_url, "url"),
-      (self._validate_download_dir, "download_dir"),
-      (self._validate_album_cover_path, "album_cover_path"),
-      (self._validate_codec, "codec"),
-      (self._validate_bitrate, "bitrate"),
-      (self._validate_album_name, "album_name"),
-      (lambda validated_body: self._validate_track_or_disc_number(validated_body, "track_number"), "track_number"),
-      (lambda validated_body: self._validate_track_or_disc_number(validated_body, "disc_number"), "disc_number"),
-      (self._validate_release_date, "release_date")
-    ]
+    validated_body = cast(dict, result)
+    result = self._validate_downloads_list(validated_body)
 
-    for validator_func, request_attr_name in validators:
-      result = validator_func(validated_body)
+    if result is False:
+      return bad_request
+    
+    request_downloads_list = cast(list[Any], result)
+    downloads_list = []
+
+    for index, item in enumerate(request_downloads_list):
+      result = self._validate_download(item)
 
       if result is False:
+        self._response.item_index = index
         return bad_request
       
-      setattr(self._request, request_attr_name, result)
-    
+      downloads_list.append(result)
+      
+    self._request.downloads = downloads_list
+
     return True, self._request
   # END validate
 

@@ -1,6 +1,6 @@
 from services import YtDlpClient
 import user_types.requests as req
-from user_types import TrackBitrate, TrackCodec, TrackReleaseDate, DownloadUpdate, DownloadStatus, TrackArtistNames
+from user_types import TrackBitrate, TrackCodec, TrackReleaseDate, DownloadUpdate, DownloadStatus, TrackArtistNames, NewDownload
 import db, disk
 import threading
 from typing import cast, Callable
@@ -276,70 +276,79 @@ class Downloader:
 
 
   @staticmethod
-  def queue(track_info: req.PostDownloadsRequest) -> int:
+  def queue(tracks: list[NewDownload]) -> list[int]:
     """Inserts the track info into the database and inserts a download row as queued.
 
     Args:
-      track_info (PostDownloadsRequest): Metadata and details about a track that is to be downloaded.
+      tracks (list[NewDownload]): Metadata and details about tracks that are to be downloaded.
 
     Returns:
-      int: The ID of the newly inserted download.
+      list[int]: The IDs of the newly inserted downloads.
     """
 
+    inserted_ids = []
+
     with db.connect() as conn:
-      other_artist_ids = db.models.Artist(conn).insert_many([
-        { "name": n } 
-        for n in track_info.artist_names.get_other_artists()
-      ])
+      artists_table = db.models.Artist(conn)
+      mdata_table = db.models.Metadata(conn)
+      mdata_artists_table = db.models.MetadataArtist(conn)
+      downloads_table = db.models.Download(conn)
 
-      metadata_id = db.models.Metadata(conn).insert({
-        "track_name": track_info.track_name,
-        "main_artist": track_info.artist_names.get_main_artist(),
-        "album_name": track_info.album_name,
-        "track_number": track_info.track_number,
-        "disc_number": track_info.disc_number,
-        "release_date": str(track_info.release_date) if track_info.release_date else None,
-        "album_cover_path": track_info.album_cover_path
-      })
-      metadata_id = cast(int, metadata_id)
+      for track in tracks:
+        other_artist_ids = artists_table.insert_many([
+          { "name": n } 
+          for n in track.artist_names.get_other_artists()
+        ])
 
-      db.models.MetadataArtist(conn).insert_many([
-        { "metadata_id": metadata_id, "artist_id": aid }
-        for aid in other_artist_ids
-      ])
+        metadata_id = mdata_table.insert({
+          "track_name": track.track_name,
+          "main_artist": track.artist_names.get_main_artist(),
+          "album_name": track.album_name,
+          "track_number": track.track_number,
+          "disc_number": track.disc_number,
+          "release_date": str(track.release_date) if track.release_date else None,
+          "album_cover_path": track.album_cover_path
+        })
+        metadata_id = cast(int, metadata_id)
 
-      download_model = db.models.Download(conn)
-      created_at = download_model.get_current_timestamp()
+        mdata_artists_table.insert_many([
+          { "metadata_id": metadata_id, "artist_id": aid }
+          for aid in other_artist_ids
+        ])
 
-      download_id = download_model.insert_as_queued({
-        "url": track_info.url,
-        "codec": track_info.codec.value,
-        "bitrate": track_info.bitrate.value,
-        "metadata_id": metadata_id,
-        "created_at": created_at,
-        "download_dir": track_info.download_dir
-      })
+        created_at = downloads_table.get_current_timestamp()
 
-    update = DownloadUpdate()
-    update.status = DownloadStatus.QUEUED
-    update.download_id = download_id
-    update.artist_names = track_info.artist_names
-    update.track_name = track_info.track_name
-    update.codec = track_info.codec
-    update.bitrate = track_info.bitrate
-    update.url = track_info.url
-    update.download_dir = track_info.download_dir
-    update.terminated_at = None
-    update.created_at = created_at
-    update.status_msg = None
-    update.eta = None
-    update.speed = None
-    update.downloaded_bytes = None
-    update.total_bytes = None
+        download_id = downloads_table.insert_as_queued({
+          "url": track.url,
+          "codec": track.codec.value,
+          "bitrate": track.bitrate.value,
+          "metadata_id": metadata_id,
+          "created_at": created_at,
+          "download_dir": track.download_dir
+        })
 
-    DownloadsSocket.instance().send_download_update(update)
+        inserted_ids.append(download_id)
 
-    return download_id
+        update = DownloadUpdate()
+        update.status = DownloadStatus.QUEUED
+        update.download_id = download_id
+        update.artist_names = track.artist_names
+        update.track_name = track.track_name
+        update.codec = track.codec
+        update.bitrate = track.bitrate
+        update.url = track.url
+        update.download_dir = track.download_dir
+        update.terminated_at = None
+        update.created_at = created_at
+        update.status_msg = None
+        update.eta = None
+        update.speed = None
+        update.downloaded_bytes = None
+        update.total_bytes = None
+
+        DownloadsSocket.instance().send_download_update(update)
+
+    return inserted_ids
   # END queue
 
 

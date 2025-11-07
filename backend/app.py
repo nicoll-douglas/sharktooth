@@ -7,9 +7,6 @@ import config, db
 from flask_socketio import SocketIO
 from services import Downloader
 
-# ignore only specific Werkzeug/Flask warnings
-warnings.filterwarnings("ignore", category=UserWarning, module="werkzeug")
-
 def create_app(db_conn: sqlite3.Connection | None = None) -> tuple[Flask, SocketIO]:
   """Sets up and creates the application and returns it.
 

@@ -26,7 +26,7 @@ def validate_body_fixture(request: pytest.FixtureRequest) ->  tuple[Any, Validat
 
 
 @pytest.fixture(params=[
-  # (body test value, assertion type)
+  # (download test value, assertion type)
   ({}, ValidationCase.INVALID),
   ({ "track_name": None }, ValidationCase.INVALID),
   ({ "track_name": "" }, ValidationCase.INVALID),
@@ -41,7 +41,7 @@ def validate_track_name_fixture(request: pytest.FixtureRequest) -> tuple[dict, V
     request (pytest.FixtureRequest): Provides the current parameter.
 
   Returns:
-    tuple[dict, ValidationCase]: The parameter; is a tuple containing the mock HTTP request body and the assertion type of the test case.
+    tuple[dict, ValidationCase]: The parameter; is a tuple containing the mock download and the assertion type of the test case.
   """
   
   return request.param
@@ -49,7 +49,7 @@ def validate_track_name_fixture(request: pytest.FixtureRequest) -> tuple[dict, V
 
 
 @pytest.fixture(params=[
-  # (body test value, assertion type)
+  # (download test value, assertion type)
   ({}, ValidationCase.INVALID),
   ({ "url": None }, ValidationCase.INVALID),
   ({ "url": "" }, ValidationCase.INVALID),
@@ -64,7 +64,7 @@ def validate_url_fixture(request: pytest.FixtureRequest) -> tuple[dict, Validati
     request (pytest.FixtureRequest): Provides the current parameter.
 
   Returns:
-    tuple[dict, ValidationCase]: The parameter; is a tuple containing the mock HTTP request body and the assertion type of the test case.
+    tuple[dict, ValidationCase]: The parameter; is a tuple containing the mock download and the assertion type of the test case.
   """
   
   return request.param
@@ -72,7 +72,7 @@ def validate_url_fixture(request: pytest.FixtureRequest) -> tuple[dict, Validati
 
 
 @pytest.fixture(params=[
-  # (body test value, assertion type)
+  # (download test value, assertion type)
   ({}, ValidationCase.VALID),
   ({ "album_name": None }, ValidationCase.VALID),
   ({ "album_name": "" }, ValidationCase.VALID),
@@ -87,7 +87,7 @@ def validate_album_name_fixture(request: pytest.FixtureRequest) -> tuple[dict, V
     request (pytest.FixtureRequest): Provides the current parameter.
 
   Returns:
-    tuple[dict, ValidationCase]: The parameter; is a tuple containing the mock HTTP request body and the assertion type of the test case.
+    tuple[dict, ValidationCase]: The parameter; is a tuple containing the mock download and the assertion type of the test case.
   """
   
   return request.param
@@ -95,7 +95,7 @@ def validate_album_name_fixture(request: pytest.FixtureRequest) -> tuple[dict, V
 
 
 @pytest.fixture(params=[
-  # (field name test value, body test value, assertion type)
+  # (field name test value, download test value, assertion type)
   ("track_number", {}, ValidationCase.VALID),
   ("disc_number", { "disc_number": None }, ValidationCase.VALID),
   ("track_number", { "track_number": "234" }, ValidationCase.INVALID),
@@ -115,7 +115,7 @@ def validate_track_or_disc_number_fixture(request: pytest.FixtureRequest) -> tup
     request (pytest.FixtureRequest): Provides the current parameter.
 
   Returns:
-    tuple[Literal["track_number", "disc_number"], dict, ValidationCase]: The parameter; is a tuple containing the mock field name, the mock HTTP request body and the assertion type of the test case.
+    tuple[Literal["track_number", "disc_number"], dict, ValidationCase]: The parameter; is a tuple containing the mock field name, the mock download and the assertion type of the test case.
   """
   
   return request.param
