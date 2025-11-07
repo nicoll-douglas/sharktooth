@@ -2,7 +2,7 @@ import type {
   AudioBitrate,
   AudioCodec,
   AudioPlaylistFormat,
-} from "@/config/audio";
+} from "shared/config/audio";
 
 /**
  * Represents the reponses that may be returned from a get Spotify API auth URL backend API request.

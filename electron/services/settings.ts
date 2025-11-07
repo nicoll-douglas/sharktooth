@@ -1,6 +1,6 @@
 import { Conf } from "electron-conf/main";
 import { app } from "electron";
-import { SettingsKey, type SettingsSchema } from "../../types/shared.js";
+import { SettingsKey, type SettingsSchema } from "shared/types/settings";
 import { logMain } from "./logger/index.js";
 
 /**

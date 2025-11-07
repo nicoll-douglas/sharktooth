@@ -2,7 +2,7 @@ import type { FormValuesWithCodecAndBitrate } from "@/types";
 import isCodecType from "@/utils/isCodecType";
 import * as Ch from "@chakra-ui/react";
 import type { UseFormReturn } from "react-hook-form";
-import { audioConfig, type AudioCodec } from "@/config/audio";
+import { audioConfig, type AudioCodec } from "shared/config/audio";
 
 export interface CodecAndBitrateFieldsProps<
   T extends FormValuesWithCodecAndBitrate,

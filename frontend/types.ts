@@ -1,4 +1,4 @@
-import type { AudioBitrate, AudioCodec } from "./config/audio";
+import type { AudioBitrate, AudioCodec } from "shared/config/audio";
 
 /**
  * Represents artist name metadata.

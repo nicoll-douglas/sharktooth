@@ -1,5 +1,5 @@
 import type { TrackArtistNames } from "@/types";
-import type { AudioCodec, AudioBitrate } from "@/config/audio";
+import type { AudioCodec, AudioBitrate } from "shared/config/audio";
 
 /**
  * Represents the possible statuses that a download can be in.

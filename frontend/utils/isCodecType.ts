@@ -1,4 +1,4 @@
-import { audioConfig, type AudioCodec } from "@/config/audio";
+import { audioConfig, type AudioCodec } from "shared/config/audio";
 
 /**
  * Checks whether an audio codec is lossless or lossy.

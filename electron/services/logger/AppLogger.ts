@@ -1,6 +1,6 @@
 import { format, transports, createLogger, Logger } from "winston";
-import { type AppProcess } from "types/shared.js";
-import { LOG_LEVEL, APP_LOG_FILE, ERROR_LOG_FILE } from "./constants.js";
+import { type AppProcess } from "shared/types/processes";
+import { LOG_LEVEL, APP_LOG_FILE, ERROR_LOG_FILE } from "./constants";
 
 const { combine, timestamp, printf, colorize } = format;
 

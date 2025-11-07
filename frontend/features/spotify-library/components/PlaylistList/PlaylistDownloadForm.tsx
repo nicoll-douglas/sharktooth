@@ -1,7 +1,7 @@
 import * as Ch from "@chakra-ui/react";
 import { usePlaylistDownloadFormContext } from "../../context/PlaylistDownloadFormContext";
 import CodecAndBitrateFields from "@/components/CodecAndBitrateFields";
-import { audioConfig } from "@/config/audio";
+import { audioConfig } from "shared/config/audio";
 import { Controller } from "react-hook-form";
 
 /**

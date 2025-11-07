@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { SettingsKey } from "types/shared";
+import type { SettingsKey } from "shared/types/settings";
 
 /**
  * Hook that provides a query to get a settings value.
