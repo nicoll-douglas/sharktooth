@@ -47,7 +47,7 @@ The project is architected as a full-stack desktop application with an Electron 
 
 The backend is a download management system designed around concurrency and data persistence. Downloads are processed via a threaded queue-based loop, allowing multiple tasks to be scheduled, paused, or resumed without blocking the main Flask application. Each download’s metadata, progress, and history are tracked using an SQLite database, providing local persistence for session restoration and history tracking.
 
-The frontend talks to the backend using a combination of REST endpoints for commands (e.g., start, pause, queue, or cancel downloads) and real-time WebSocket events for continuous updates on progress, errors, and task completion. The main process in the electron app also talks to the Spotify API feeding data to the renderer via IPC.
+The frontend talks to the backend using a combination of REST endpoints for commands (e.g., start, pause, queue, or cancel downloads) and real-time WebSocket events for continuous updates on progress, errors, and task completion. The main process in the Electron app also talks to the Spotify API feeding data to the renderer via IPC.
 
 Below you can see a diagram that illustrates this architecture:
 
