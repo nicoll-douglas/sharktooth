@@ -1,5 +1,22 @@
 [Chores]
 - do more testing to make sure current features are solid
+- make sure exceptions are handled gracefully (add try catch for Spotify API requests and look at response codes)
+- backend logging
+- Need to show empty state if there are no playlists
+
+[Features]
+- Extra download step in download feature where we can fetch album covers (MusicBrainz integration?) and render them for the user to select for metadata
+- Fill in artist name and track name metadata in download flow from youtube search form
+
+- When the user submits the playlist download form, fetch all tracks and queue all of them.
+- Have a "syncs" page with real-time data similar to the downloads page for spotify syncs
+- In the database we will have syncs and downloads ties to syncs
+- Render the syncs and real-time data on the syncs page
+- Allow the user to cancel a sync only if download loop is paused
+- When a user cancel's a sync, we remove all queued downloads related to that sync from the db
+- We also have playlists in the db so that we can render data about that
+- For tracks who's download fails, we also need to render that data in the sync (e.g x failed tracks, y successful)
+- Limit syncs to only one at a time the same way with downloads
 
 [Release]
 - implement an updater mechanism (electron-updater?)
@@ -11,14 +28,3 @@
 - test with a VM that the application works cross-platform
 - Add developer documentation
 - Add user guides + about
-
-[Features]
-- Extra download step in download feature where we can fetch album covers (MusicBrainz integration?) and render them for the user to select for metadata
-
-- backend logging
-- Ask the user to confirm that a couple hundred tracks will be added to the download queue.
-- Have a "syncs" page with real-time data similar to the downloads page for spotify syncs
-
-[Improvements]
-- make Spotify auth system more robust
-- Investigate what kinds of responses the Spotify API will send back for refresh requests or requesting an access token for the first time
