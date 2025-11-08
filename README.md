@@ -5,8 +5,7 @@
   <h1>Sharktooth</h1>
 
   <div>
-  <img src="https://img.shields.io/badge/License-MIT-green
-  " />
+  <img src="https://img.shields.io/badge/License-MIT-green" />
   <img src="https://img.shields.io/badge/First_Release-Expected%201%20Jan%202026-blue" />
   </div>
 
