@@ -22,7 +22,7 @@
 
 ## About
 
-Sharktooth is a feature-rich music downloader desktop application. You can download audio from YouTube in a range of different audio codecs such as mp3, flac, and so on. You can also authenticate with Spotify and download your Spotify music library and playlists into m3u8 or XML files. Sharktooth aims to
+Sharktooth is a feature-rich music downloader desktop application. You can download audio from YouTube in a range of different audio codecs such as mp3, flac, and so on. You can also authenticate with Spotify and download your Spotify music library and playlists into m3u8 or XML files.
 
 ### Disclaimer
 
