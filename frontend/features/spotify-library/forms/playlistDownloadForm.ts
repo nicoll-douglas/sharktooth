@@ -1,4 +1,4 @@
-import type { AudioPlaylistFormat } from "@/config/audio";
+import type { AudioPlaylistFormat } from "shared/config/audio";
 import type { FormValuesWithCodecAndBitrate } from "@/types";
 
 /**

@@ -1,5 +1,5 @@
 import type { DownloadFormValues } from "../forms/downloadForm";
-import type { NewDownload } from "../types";
+import type { NewDownload } from "shared/types/download";
 
 /**
  * Extracts the form data values in a download form to a download object.

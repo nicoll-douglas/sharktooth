@@ -1,4 +1,4 @@
-import { SpotifyPlaylist } from "types/shared";
+import type { SpotifyPlaylist } from "shared/types/spotify";
 import { API_URL } from "./constants.js";
 import fetchAllPages from "./fetchAllPages.js";
 import fetchUserProfile from "./fetchUserProfile.js";
@@ -13,44 +13,56 @@ import { resetSpotifyTokenStore } from "./tokenStore.js";
 export default async function fetchUserPlaylists(): Promise<
   [true, SpotifyPlaylist[]] | [false, null]
 > {
-  logMain.debug("Fetching user playlists...");
+  try {
+    logMain.debug("Fetching user playlists...");
 
-  const [success, userProfile] = await fetchUserProfile();
+    const [success, userProfile] = await fetchUserProfile();
 
-  if (!success) {
-    logMain.debug("User profile prerequisite to fetch user playlists failed.");
+    if (!success) {
+      logMain.debug(
+        "User profile prerequisite to fetch user playlists failed."
+      );
 
-    return [false, null];
-  }
+      return [false, null];
+    }
 
-  const limit = 50;
-  const offset = 0;
-  const initial = `${API_URL}/users/${userProfile.id}/playlists?limit=${limit}&offset=${offset}`;
+    const limit = 50;
+    const offset = 0;
+    const initial = `${API_URL}/users/${userProfile.id}/playlists?limit=${limit}&offset=${offset}`;
 
-  const rawPlaylists = await fetchAllPages(initial);
+    const rawPlaylists = await fetchAllPages(initial);
 
-  if (!rawPlaylists) {
+    if (!rawPlaylists) {
+      logMain.debug(
+        "Failed to fetch all pages of the user's playlists, resetting token store..."
+      );
+
+      resetSpotifyTokenStore();
+
+      return [false, null];
+    }
+
+    logMain.debug("Successfully fetched user playlists.");
+
+    const playlists = rawPlaylists.map(
+      (playlist): SpotifyPlaylist => ({
+        id: playlist.id,
+        name: playlist.name,
+        owner: playlist.owner.display_name,
+        total_tracks: playlist.tracks.total,
+        tracks_href: playlist.tracks.href,
+        playlist_cover: playlist.images[0].url,
+      })
+    );
+
+    return [true, playlists];
+  } catch (e: any) {
     logMain.debug(
-      "Failed to fetch all pages of the user's playlists, resetting token store..."
+      "User playlist request failed (fetch error), resetting token store..."
     );
 
     resetSpotifyTokenStore();
 
     return [false, null];
   }
-
-  logMain.debug("Successfully fetched user playlists.");
-
-  const playlists = rawPlaylists.map(
-    (playlist): SpotifyPlaylist => ({
-      id: playlist.id,
-      name: playlist.name,
-      owner: playlist.owner.display_name,
-      total_tracks: playlist.tracks.total,
-      tracks_href: playlist.tracks.href,
-      playlist_cover: playlist.images[0].url,
-    })
-  );
-
-  return [true, playlists];
 }

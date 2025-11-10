@@ -1,4 +1,4 @@
-import type { TrackArtistNames } from "@/types";
+import type { TrackArtistNames } from "shared/types/download";
 import type { AudioCodec, AudioBitrate } from "shared/config/audio";
 
 /**

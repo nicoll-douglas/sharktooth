@@ -13,7 +13,9 @@ CREATE TABLE IF NOT EXISTS downloads (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   terminated_at TIMESTAMP,
   status_msg TEXT,
-  FOREIGN KEY (metadata_id) REFERENCES metadata(id) ON DELETE CASCADE
+  playlist_id INTEGER,
+  FOREIGN KEY (metadata_id) REFERENCES metadata(id) ON DELETE CASCADE,
+  FOREIGN KEY (playlist_id) REFERENCES playlists(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS artists (
@@ -38,4 +40,11 @@ CREATE TABLE IF NOT EXISTS metadata_artists (
   FOREIGN KEY (metadata_id) REFERENCES metadata(id) ON DELETE CASCADE,
   FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
   PRIMARY KEY (metadata_id, artist_id)
+);
+
+CREATE TABLE IF NOT EXISTS playlists (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  playlist_cover TEXT NOT NULL,
+  owner TEXT NOT NULL
 );

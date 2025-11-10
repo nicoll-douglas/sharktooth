@@ -7,7 +7,8 @@ import {
 import { useEffect, useState, type BaseSyntheticEvent } from "react";
 import type { DownloadFormValues } from "../forms/downloadForm";
 import queueDownloads from "../services/queueDownloads";
-import type { NewDownload, PostDownloadsResponse } from "../types";
+import type { PostDownloadsResponse } from "../types";
+import type { NewDownload } from "shared/types/download";
 import { useGetSetting } from "@/features/settings";
 import extractDownloadFormData from "../utils/extractDownloadFormData";
 

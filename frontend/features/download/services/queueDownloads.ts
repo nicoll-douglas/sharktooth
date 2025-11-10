@@ -1,8 +1,5 @@
-import type {
-  PostDownloadsResponse,
-  PostDownloadsRequest,
-  NewDownload,
-} from "../types";
+import type { PostDownloadsResponse, PostDownloadsRequest } from "../types";
+import type { NewDownload } from "shared/types/download";
 
 /**
  * Hits the backend API to queue downloads.

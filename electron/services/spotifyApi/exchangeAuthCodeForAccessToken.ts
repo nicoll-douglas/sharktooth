@@ -18,39 +18,44 @@ export default async function exchangeAuthCodeForAccessToken(
   logMain.debug(
     "Exchanging auth code for access and refresh token from the Spotify API..."
   );
-
-  const res = await fetch(TOKEN_URL, {
-    method: "POST",
-    body: new URLSearchParams({
-      grant_type: "authorization_code",
-      code: authCode,
-      redirect_uri: REDIRECT_URI,
-      client_id: CLIENT_ID,
-      code_verifier: codeVerifier,
-    }),
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  });
-
-  const body = await res.json();
-
-  if (res.ok) {
-    logMain.debug("Auth code exchange request got an ok response.", {
-      status: res.status,
+  try {
+    const res = await fetch(TOKEN_URL, {
+      method: "POST",
+      body: new URLSearchParams({
+        grant_type: "authorization_code",
+        code: authCode,
+        redirect_uri: REDIRECT_URI,
+        client_id: CLIENT_ID,
+        code_verifier: codeVerifier,
+      }),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     });
 
-    spotifyTokenStore.set("access_token", body.access_token);
-    spotifyTokenStore.set("refresh_token", body.refresh_token);
-    spotifyTokenStore.set("access_token_expires_in", body.expires_in);
+    const body = await res.json();
 
-    logMain.debug("Updated token store with with new token data.");
-  } else {
-    logMain.debug("Auth code exchange request got a bad response.", {
-      status: res.status,
-      body,
-    });
+    if (res.ok) {
+      logMain.debug("Auth code exchange request got an ok response.", {
+        status: res.status,
+      });
+
+      spotifyTokenStore.set("access_token", body.access_token);
+      spotifyTokenStore.set("refresh_token", body.refresh_token);
+      spotifyTokenStore.set("access_token_expires_in", body.expires_in);
+
+      logMain.debug("Updated token store with with new token data.");
+    } else {
+      logMain.debug("Auth code exchange request got a bad response.", {
+        status: res.status,
+        body,
+      });
+    }
+
+    return res.status;
+  } catch (e: any) {
+    logMain.debug("Auth code exchange request failed (fetch error).");
+
+    return 500;
   }
-
-  return res.status;
 }

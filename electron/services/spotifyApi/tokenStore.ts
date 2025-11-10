@@ -4,7 +4,7 @@ import { logMain } from "../logger";
 /**
  * Schema for the Spotify API token store on disk.
  */
-interface SpotifyTokenStoreSchema {
+export interface SpotifyTokenStoreSchema {
   access_token: string | null;
   access_token_expires_in: number | null;
   refresh_token: string | null;
@@ -42,9 +42,4 @@ function resetSpotifyTokenStore() {
   logMain.debug("Reset Spotify token store.");
 }
 
-export {
-  SpotifyTokenStoreSchema,
-  defaultSpotifyTokenStore,
-  spotifyTokenStore,
-  resetSpotifyTokenStore,
-};
+export { defaultSpotifyTokenStore, spotifyTokenStore, resetSpotifyTokenStore };
