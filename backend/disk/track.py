@@ -1,6 +1,6 @@
 import os, mimetypes
 from pathvalidate import sanitize_filename
-from user_types.requests import PostDownloadsRequest
+from user_types import NewDownload
 
 mimetypes.add_type("audio/flac", ".flac")
 
@@ -8,14 +8,14 @@ class Track:
   """A model class for interfacing with an audio/track file path on disk.
 
   Attributes:
-    track_info (PostDownloadsRequest): Metadata about the track.
+    track_info (NewDownload): Metadata about the track.
     track_id (str | None): A unique ID associated with the track that will go in the file name if not None.
     ext (str): The extension (including the ".") of the track file associated with the codec in the track info.
     mimetype (str): The mimetype of the track file.
     output_template (str): The output filepath template for `yt_dlp` to know where to download the track to.
   """
 
-  track_info: PostDownloadsRequest
+  track_info: NewDownload
   track_id: str | None
   ext: str
   mimetype: str
@@ -23,7 +23,7 @@ class Track:
   output_template: str
 
 
-  def __init__(self, track_info: PostDownloadsRequest, track_id: str | None = None):
+  def __init__(self, track_info: NewDownload, track_id: str | None = None):
     """Initializes Track.
 
     Will assign the appropriate save directory to `save_dir` and create the track file path's directories if they don't exist.

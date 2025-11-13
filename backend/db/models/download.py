@@ -64,6 +64,8 @@ SELECT
   m.disc_number,
   m.release_date,
   m.album_cover_path,
+  m.album_artist,
+  m.genre,
   json_group_array(a.name) AS other_artists
 FROM {self.TABLE} d
 LEFT JOIN {Metadata.TABLE} m ON d.metadata_id = m.id
@@ -113,6 +115,8 @@ SELECT
   m.disc_number,
   m.release_date,
   m.album_cover_path,
+  m.genre,
+  m.album_artist,
   json_group_array(a.name) AS other_artists
 FROM {self.TABLE} d
 LEFT JOIN {Metadata.TABLE} m ON d.metadata_id = m.id
@@ -172,6 +176,8 @@ SELECT
   m.disc_number,
   m.release_date,
   m.album_cover_path,
+  m.genre,
+  m.album_artist,
   json_group_array(a.name) AS other_artists
 FROM {self.TABLE} d
 LEFT JOIN {Metadata.TABLE} m ON d.metadata_id = m.id

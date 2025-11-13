@@ -18,6 +18,8 @@ class NewDownload:
     url (str): The URL to use as the audio source for the track download.
     download_dir (str): The directory where the associated audio file should be saved to.
     album_cover_path (str | None): The path to an album cover image file.
+    genre (str | None): Genre metadata.
+    album_artist (str | None): Album artist metadata.
   """
   
   artist_names: TrackArtistNames
@@ -31,5 +33,7 @@ class NewDownload:
   url: str
   download_dir: str
   album_cover_path: str | None
+  genre: str | None
+  album_artist: str | None
   
 # END class NewDownload

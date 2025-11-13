@@ -145,6 +145,8 @@ class Downloader:
     disc_number = db_download["disc_number"]
     release_date = TrackReleaseDate.from_string(db_download["release_date"]) if db_download["release_date"] else None
     album_cover_path = db_download["album_cover_path"]
+    album_artist = db_download["album_artist"]
+    genre = db_download["genre"]
 
     def _perform_initial_update() -> DownloadUpdate:
       """Performs the initial download update using the download data.
@@ -181,14 +183,14 @@ class Downloader:
     
     initial_update = _perform_initial_update()
 
-    def _create_track_info() -> req.PostDownloadsRequest:
+    def _create_track_info() -> NewDownload:
       """Create track info to pass to yt-dlp for download.
 
       Returns:
-        req.PostDownloadsRequest: The track info.
+        NewDownload: The track info.
       """
       
-      track_info = req.PostDownloadsRequest()
+      track_info = NewDownload()
       track_info.album_name = album_name
       track_info.track_name = track_name
       track_info.artist_names = artist_names
@@ -200,6 +202,8 @@ class Downloader:
       track_info.download_dir = download_dir
       track_info.release_date = release_date
       track_info.album_cover_path = album_cover_path
+      track_info.album_artist = album_artist
+      track_info.genre = genre
 
       return track_info
     # END _create_track_info
@@ -225,6 +229,8 @@ class Downloader:
         metadata.disc_number = disc_number
         metadata.release_date = release_date
         metadata.album_cover_path = album_cover_path
+        metadata.album_artist = album_artist
+        metadata.genre = genre
 
         try:
           if track_info.codec is TrackCodec.MP3:
@@ -307,7 +313,9 @@ class Downloader:
           "track_number": track.track_number,
           "disc_number": track.disc_number,
           "release_date": str(track.release_date) if track.release_date else None,
-          "album_cover_path": track.album_cover_path
+          "album_cover_path": track.album_cover_path,
+          "album_artist": track.album_artist,
+          "genre": track.genre
         })
         metadata_id = cast(int, metadata_id)
 

@@ -68,7 +68,9 @@ class PostDownloadsValidator:
       (self._validate_album_cover_path, "album_cover_path"),
       (self._validate_codec, "codec"),
       (self._validate_bitrate, "bitrate"),
-      (self._validate_album_name, "album_name"),
+      (lambda download: self._validate_string_or_null(download, "album_name"), "album_name"),
+      (lambda download: self._validate_string_or_null(download, "genre"), "genre"),
+      (lambda download: self._validate_string_or_null(download, "album_artist"), "album_artist"),
       (lambda download: self._validate_track_or_disc_number(download, "track_number"), "track_number"),
       (lambda download: self._validate_track_or_disc_number(download, "disc_number"), "disc_number"),
       (self._validate_release_date, "release_date")
@@ -239,25 +241,26 @@ class PostDownloadsValidator:
   # END _validate_bitrate
   
 
-  def _validate_album_name(self, download: dict) -> Literal[False] | str | None:
-    """Helper that validates the `album_name` field of a download.
+  def _validate_string_or_null(self, download: dict, field: str) -> Literal[False] | str | None:
+    """Helper that validates a field of a download that should be a string or null.
 
     Args:
-      body (dict): The download.
+      download (dict): The download.
+      field (str): The name of the field.
 
     Returns:
       Literal[False] | str | None: False is the field is invalid, the validated field's value otherwise.
     """
     
-    self._response.field = "album_name"
-    album_name = download.get(self._response.field)
+    self._response.field = field
+    field_value = download.get(self._response.field)
 
-    if album_name is not None and not isinstance(album_name, str):
+    if field_value is not None and not isinstance(field_value, str):
       self._response.message = f"Field `{self._response.field}` must be a string or null."
       return False
     
-    return album_name
-  # END _validate_album_name
+    return field_value
+  # END _validate_string_or_null
 
 
   def _validate_track_or_disc_number(self, download: dict, field_name: str) -> Literal[False] | int | None:

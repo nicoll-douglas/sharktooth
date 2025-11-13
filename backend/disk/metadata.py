@@ -1,4 +1,4 @@
-from mutagen.id3 import ID3, APIC, TIT2, TPE1, TALB, TRCK, TPOS, TDRC, TYER, TDAT
+from mutagen.id3 import ID3, APIC, TIT2, TPE1, TALB, TRCK, TPOS, TYER, TDAT, TCON, TPE2
 from mutagen.mp3 import MP3
 from mutagen.flac import FLAC, Picture
 from .album_cover import AlbumCover
@@ -15,6 +15,8 @@ class Metadata:
     track_number (int | None): Track number metadata.
     disc_number (int | None): Disc number metadata.
     release_date (TrackReleaseDate | None): Track release date metadata.
+    album_artist (str | None): Album artist metadata.
+    genre (str | None): Genre metadata.
   """
   
   album_cover_path: str | None
@@ -24,6 +26,8 @@ class Metadata:
   track_number: int | None
   disc_number: int | None
   release_date: TrackReleaseDate | None
+  album_artist: str | None
+  genre: str | None
   
 
   def set_on_mp3(self, file_path: str):
@@ -41,6 +45,12 @@ class Metadata:
 
     if self.album_name:
       audio.tags.add(TALB(encoding=3, text=self.album_name))
+
+    if self.album_artist:
+      audio.tags.add(TPE2(encoding=3, text=self.album_artist))
+
+    if self.genre:
+      audio.tags.add(TCON(encoding=3, text=self.genre))
 
     if self.track_number is not None:
       audio.tags.add(TRCK(encoding=3, text=str(self.track_number)))
@@ -99,6 +109,12 @@ class Metadata:
     
     if self.release_date is not None:
       audio["DATE"] = str(self.release_date)
+    
+    if self.album_artist:
+      audio["ALBUMARTIST"] = self.album_artist
+    
+    if self.genre:
+      audio["GENRE"] = self.genre
 
     if self.album_cover_path:
       p = Picture()

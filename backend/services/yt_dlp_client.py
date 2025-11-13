@@ -1,6 +1,6 @@
 import yt_dlp
-from user_types.requests import PostDownloadsRequest, GetDownloadsSearchRequest
-from user_types import DownloadSearchResult
+from user_types.requests import GetDownloadsSearchRequest
+from user_types import DownloadSearchResult, NewDownload
 from typing import Callable, Literal
 from yt_dlp.utils import DownloadError, ExtractorError, UnsupportedError
 from utils import get_bin_dir
@@ -64,14 +64,14 @@ class YtDlpClient:
 
   
   def download_track(self,
-    track_info: PostDownloadsRequest,
+    track_info: NewDownload,
     progress_hook: Callable[[dict], None],
     track_id: str | None = None 
   ) -> tuple[Literal[True], disk.Track] | tuple[Literal[False], str]:
     """Uses the yt-dlp downloader to download a track.
 
     Args:
-      track_info (PostDownloadsRequest): Contains all information about the track.
+      track_info (NewDownload): Contains all information about the track.
       progress_hook (Callable[[dict], None]): The progress hook function to be passed to the downloader.
       track_id (str | None): A unique identifier that will go in the downloaded track filename.
 
