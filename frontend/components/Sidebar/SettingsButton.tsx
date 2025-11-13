@@ -1,6 +1,6 @@
 import * as Ch from "@chakra-ui/react";
 import { LuSettings } from "react-icons/lu";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import type { IconButtonProps } from "@chakra-ui/react";
 
 /**

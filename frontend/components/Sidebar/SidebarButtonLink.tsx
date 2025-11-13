@@ -1,5 +1,5 @@
 import * as Ch from "@chakra-ui/react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { type IconType } from "react-icons";
 
 export interface SidebarButtonLinkProps {

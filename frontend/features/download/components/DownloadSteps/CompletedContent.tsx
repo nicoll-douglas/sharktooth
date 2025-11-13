@@ -1,5 +1,5 @@
 import * as Ch from "@chakra-ui/react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 /**
  * A card that shows the completed content when all download steps are completed.

@@ -1,11 +1,5 @@
 {
-  "include": [
-    "frontend/**/*",
-    "shared/**/*",
-    "**/.server/**/*",
-    "**/.client/**/*",
-    ".react-router/types/**/*"
-  ],
+  "include": ["frontend/**/*", "shared/**/*"],
   "exclude": ["electron", "node_modules", "dist"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
@@ -14,10 +8,10 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
-    "rootDirs": [".", "./.react-router/types"],
+    "rootDirs": ["."],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./frontend/*"]
+      "@/*": ["frontend/*"]
     },
     "esModuleInterop": true,
     "verbatimModuleSyntax": true,
