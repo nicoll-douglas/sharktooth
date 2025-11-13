@@ -53,6 +53,8 @@ export default function extractDownloadFormData(
     album_cover_path:
       formData.albumCoverPath === "" ? null : formData.albumCoverPath,
     release_date: releaseDate,
+    genre: formData.genre,
+    album_artist: formData.albumArtist,
   };
 
   return download;

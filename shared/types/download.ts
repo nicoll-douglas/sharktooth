@@ -78,4 +78,14 @@ export interface NewDownload {
    * A file path to an image file to use for album cover metadata.
    */
   album_cover_path: string | null;
+
+  /**
+   * The genere metadata to use for the track.
+   */
+  genre: string | null;
+
+  /**
+   * The album artist metadata to use for the track.
+   */
+  album_artist: string | null;
 }

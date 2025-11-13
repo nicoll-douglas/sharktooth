@@ -16,6 +16,8 @@ interface DownloadFormValues extends FormValuesWithCodecAndBitrate {
   downloadDir: string;
   url: string;
   albumCoverPath: string | null;
+  genre: string;
+  albumArtist: string;
 }
 
 /**

@@ -67,6 +67,17 @@ export default function MetadataStep() {
             </Ch.Field.ErrorText>
           </Ch.Field.Root>
 
+          <Ch.Field.Root>
+            <Ch.Field.Label>Album Artist</Ch.Field.Label>
+            <Ch.Input
+              placeholder="Daft Punk"
+              {...form.register("albumArtist")}
+            />
+            <Ch.Field.ErrorText>
+              {form.formState.errors.albumArtist?.message}
+            </Ch.Field.ErrorText>
+          </Ch.Field.Root>
+
           <AlbumCoverPicker />
 
           <Ch.Field.Root invalid={!!form.formState.errors.trackNumber}>
@@ -97,6 +108,14 @@ export default function MetadataStep() {
             <Ch.Field.HelperText>
               The album disc the track is on.
             </Ch.Field.HelperText>
+          </Ch.Field.Root>
+
+          <Ch.Field.Root>
+            <Ch.Field.Label>Genre</Ch.Field.Label>
+            <Ch.Input placeholder="French House" {...form.register("genre")} />
+            <Ch.Field.ErrorText>
+              {form.formState.errors.genre?.message}
+            </Ch.Field.ErrorText>
           </Ch.Field.Root>
 
           <ReleaseDateFieldset />
