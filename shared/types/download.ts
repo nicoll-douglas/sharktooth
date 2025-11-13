@@ -88,4 +88,9 @@ export interface NewDownload {
    * The album artist metadata to use for the track.
    */
   album_artist: string | null;
+
+  /**
+   * The filename for the download.
+   */
+  filename: string;
 }

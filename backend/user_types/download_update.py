@@ -20,7 +20,7 @@ class DownloadUpdate:
     downloaded_bytes (int | None): The number of bytes already downloaded.
     terminated_at (str | None): Timestamp of when the download record was set to completed or failed in the database.
     eta (int | None): The amount of time in seconds left for the download.
-    download_dir (str): The directory path of where the audio file will be downloaded to.
+    download_path (str): The path of where the audio file will be downloaded to.
     status_msg (str | None): A message giving extra status information about the download. 
   """
   
@@ -31,7 +31,7 @@ class DownloadUpdate:
   codec: TrackCodec
   bitrate: TrackBitrate
   url: str
-  download_dir: str
+  download_path: str
   created_at: str
   total_bytes: int | None
   speed: int | float | None

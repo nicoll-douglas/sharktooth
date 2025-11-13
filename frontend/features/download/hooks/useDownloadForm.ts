@@ -83,6 +83,9 @@ export default function useDownloadForm(): UseDownloadFormReturn {
       downloadDir: defaultDownloadDir ?? "",
       url: "",
       albumCoverPath: "",
+      genre: "",
+      albumArtist: "",
+      filename: "",
     },
   });
 

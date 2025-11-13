@@ -17,6 +17,20 @@ export default function DownloadOptionsStep() {
       <Ch.Card.Body>
         <Ch.Stack gap={"5"} maxW={"lg"}>
           <DownloadDirectoryPicker />
+
+          <Ch.Field.Root required invalid={!!form.formState.errors.filename}>
+            <Ch.Field.Label>
+              Filename <Ch.Field.RequiredIndicator />
+            </Ch.Field.Label>
+            <Ch.Input
+              placeholder="One_More_Time"
+              {...form.register("filename")}
+            />
+            <Ch.Field.ErrorText>
+              {form.formState.errors.filename?.message}
+            </Ch.Field.ErrorText>
+          </Ch.Field.Root>
+
           <CodecAndBitrateFields form={form} />
         </Ch.Stack>
       </Ch.Card.Body>

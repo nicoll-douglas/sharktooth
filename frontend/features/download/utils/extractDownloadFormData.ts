@@ -55,6 +55,7 @@ export default function extractDownloadFormData(
     release_date: releaseDate,
     genre: formData.genre,
     album_artist: formData.albumArtist,
+    filename: formData.filename,
   };
 
   return download;

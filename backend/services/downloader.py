@@ -2,9 +2,10 @@ from services import YtDlpClient
 import user_types.requests as req
 from user_types import TrackBitrate, TrackCodec, TrackReleaseDate, DownloadUpdate, DownloadStatus, TrackArtistNames, NewDownload
 import db, disk
-import threading
+import threading, os
 from typing import cast, Callable
 from sockets import DownloadsSocket
+from pathvalidate import sanitize_filename
 
 class Downloader:
   """A singleton class that acts as the controller for track downloads in the application.
@@ -140,6 +141,7 @@ class Downloader:
     bitrate = TrackBitrate(db_download["bitrate"])
     album_name = db_download["album_name"]
     download_dir = db_download["download_dir"]
+    filename = db_download["filename"]
     url = db_download["url"]
     track_number = db_download["track_number"]
     disc_number = db_download["disc_number"]
@@ -164,7 +166,7 @@ class Downloader:
       update.bitrate = bitrate
       update.url = url
       update.created_at = db_download["created_at"]
-      update.download_dir = download_dir
+      update.download_path = disk.Track.build_path(download_dir, filename, codec)
       update.status_msg = "Awaiting download"
       update.terminated_at = None
       update.downloaded_bytes = None
@@ -332,7 +334,8 @@ class Downloader:
           "bitrate": track.bitrate.value,
           "metadata_id": metadata_id,
           "created_at": created_at,
-          "download_dir": track.download_dir
+          "download_dir": track.download_dir,
+          "filename": track.filename
         })
 
         inserted_ids.append(download_id)
@@ -345,7 +348,7 @@ class Downloader:
         update.codec = track.codec
         update.bitrate = track.bitrate
         update.url = track.url
-        update.download_dir = track.download_dir
+        update.download_path = disk.Track.build_path(track.download_dir, track.filename, track.codec)
         update.terminated_at = None
         update.created_at = created_at
         update.status_msg = None

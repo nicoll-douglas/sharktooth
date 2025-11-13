@@ -66,21 +66,19 @@ class YtDlpClient:
   def download_track(self,
     track_info: NewDownload,
     progress_hook: Callable[[dict], None],
-    track_id: str | None = None 
   ) -> tuple[Literal[True], disk.Track] | tuple[Literal[False], str]:
     """Uses the yt-dlp downloader to download a track.
 
     Args:
       track_info (NewDownload): Contains all information about the track.
       progress_hook (Callable[[dict], None]): The progress hook function to be passed to the downloader.
-      track_id (str | None): A unique identifier that will go in the downloaded track filename.
 
     Returns:
       tuple[Literal[True], disk.Track] | tuple[Literal[False], str]: A tuple where on download success the first element is True and the second is a track model instance, otherwise the first element is False and the second is an error message indicating the error that occurred.
     """
 
     try:
-      track = disk.Track(track_info, track_id)
+      track = disk.Track(track_info)
     except PermissionError as e:
       return False, "The application does not have permission to create the provided download directory."
     except OSError as e:
