@@ -74,11 +74,14 @@ export default function Sidebar() {
 
             <SettingsButton display={{ lg: "none" }} />
 
-            <Ch.Separator display={{ lgDown: "none" }} />
-
-            <SidebarButtonLink Icon={LuInfo} href="/about">
-              About
-            </SidebarButtonLink>
+            {import.meta.env.FEATURE_ABOUT === "true" && (
+              <>
+                <Ch.Separator display={{ lgDown: "none" }} />
+                <SidebarButtonLink Icon={LuInfo} href="/about">
+                  About
+                </SidebarButtonLink>
+              </>
+            )}
           </Ch.Stack>
         </Ch.Card.Body>
       </Ch.Card.Root>
