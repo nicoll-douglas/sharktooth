@@ -1,6 +1,6 @@
 from flask_socketio import Namespace
 from user_types import DownloadUpdate, DownloadStatus, TrackArtistNames, TrackCodec, TrackBitrate
-import db
+import db, disk
 from typing import Self
 import sqlite3
 
@@ -80,15 +80,17 @@ class DownloadsSocket(Namespace):
     download_updates = []
 
     for d in downloads:
+      codec = TrackCodec(d["codec"])
+
       d_update = DownloadUpdate()
       d_update.download_id = d["download_id"]
       d_update.status = DownloadStatus(d["status"])
       d_update.artist_names = TrackArtistNames([d["main_artist"], *d["other_artists"]])
       d_update.track_name = d["track_name"]
-      d_update.codec = TrackCodec(d["codec"])
+      d_update.codec = codec
       d_update.bitrate = TrackBitrate(d["bitrate"])
       d_update.url = d["url"]
-      d_update.download_dir = d["download_dir"]
+      d_update.download_path = disk.Track.build_path(d["download_dir"], d["filename"], codec)
       d_update.created_at = d["created_at"]
       d_update.total_bytes = d["total_bytes"]
       d_update.downloaded_bytes = d["downloaded_bytes"]

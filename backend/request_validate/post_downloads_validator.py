@@ -63,7 +63,8 @@ class PostDownloadsValidator:
       # (validator function, attribute name on download)
       (self._validate_artist_names, "artist_names"),
       (self._validate_track_name, "track_name"),
-      (self._validate_url, "url"),
+      (lambda download: self._validate_required_string(download, "url"), "url"),
+      (lambda download: self._validate_required_string(download, "filename"), "filename"),
       (self._validate_download_dir, "download_dir"),
       (self._validate_album_cover_path, "album_cover_path"),
       (self._validate_codec, "codec"),
@@ -172,29 +173,30 @@ class PostDownloadsValidator:
   # END _validate_track_name
 
 
-  def _validate_url(self, download: dict) -> Literal[False] | str:
-    """Helper that validates the `url` field of a download.
+  def _validate_required_string(self, download: dict, field: str) -> Literal[False] | str:
+    """Helper that validates a field that should be a required string.
 
     Args:
       download (dict): The download.
+      field (str): The name of the field
 
     Returns:
       Literal[False] | str: False is the field is invalid, the validated field value otherwise.
     """
 
-    self._response.field = "url"
-    url = download.get(self._response.field)
+    self._response.field = field
+    field_value = download.get(self._response.field)
 
-    if url is None or url == "":
+    if field_value is None or field_value == "":
       self._response.message = f"Field `{self._response.field}` is required."
       return False
     
-    if not isinstance(url, str):
+    if not isinstance(field_value, str):
       self._response.message = f"Field `{self._response.field}` must be a string."
       return False
     
-    return url
-  # END _validate_url
+    return field_value
+  # END _validate_required_string
 
 
   def _validate_codec(self, download: dict) -> Literal[False] | TrackCodec:

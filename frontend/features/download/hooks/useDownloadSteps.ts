@@ -36,11 +36,14 @@ export default function useDownloadSteps() {
   const { form } = useDownloadFormContext();
 
   const url = form.watch("url");
+  const filename = form.watch("filename");
   const downloadDir = form.watch("downloadDir");
 
   const prevDisabled = step === 3 || step === 0;
   const nextDisabled =
-    (step === 0 && !url) || (step === 1 && !downloadDir) || step >= 2;
+    (step === 0 && !url) ||
+    (step === 1 && (!downloadDir || !filename)) ||
+    step >= 2;
 
   const onStepChange = (e: StepsChangeDetails) => setStep(e.step);
 

@@ -35,7 +35,7 @@ export default function CompletedTable() {
               <Ch.Table.ColumnHeader>Track Name</Ch.Table.ColumnHeader>
               <Ch.Table.ColumnHeader>Codec</Ch.Table.ColumnHeader>
               <Ch.Table.ColumnHeader>Bitrate</Ch.Table.ColumnHeader>
-              <Ch.Table.ColumnHeader>Output Directory</Ch.Table.ColumnHeader>
+              <Ch.Table.ColumnHeader>Output File Path</Ch.Table.ColumnHeader>
               <Ch.Table.ColumnHeader>Completed At</Ch.Table.ColumnHeader>
             </Ch.Table.Row>
           </Ch.Table.Header>
@@ -58,7 +58,7 @@ export default function CompletedTable() {
                   <Ch.Table.Cell>
                     {download.codec === "mp3" && download.bitrate}
                   </Ch.Table.Cell>
-                  <Ch.TableCell>{download.download_dir}</Ch.TableCell>
+                  <Ch.TableCell>{download.download_path}</Ch.TableCell>
                   <Ch.Table.Cell>
                     {getDownloadTimeAgo(download.terminated_at)}
                   </Ch.Table.Cell>

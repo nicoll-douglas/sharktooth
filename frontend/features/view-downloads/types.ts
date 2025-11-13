@@ -46,9 +46,9 @@ export interface DownloadUpdate {
   url: string;
 
   /**
-   * The target save directory of the download.
+   * The file path of the downloaded track.
    */
-  download_dir: string;
+  download_path: string;
 
   /**
    * Timestamp of when the download was created.

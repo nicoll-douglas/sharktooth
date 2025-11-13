@@ -53,7 +53,7 @@ class Track:
 
     return os.path.join(
       download_dir, 
-      sanitize_filename(filename, platform="auto") + codec.value
+      sanitize_filename(filename, platform="auto") + "." + codec.value
     )
   # END build_path
     

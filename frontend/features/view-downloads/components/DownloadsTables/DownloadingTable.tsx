@@ -26,7 +26,7 @@ export default function DownloadingTable() {
             <Ch.Table.ColumnHeader>Main Artist</Ch.Table.ColumnHeader>
             <Ch.Table.ColumnHeader>Codec</Ch.Table.ColumnHeader>
             <Ch.Table.ColumnHeader>Bitrate</Ch.Table.ColumnHeader>
-            <Ch.Table.ColumnHeader>Output Directory</Ch.Table.ColumnHeader>
+            <Ch.Table.ColumnHeader>Output File Path</Ch.Table.ColumnHeader>
             <Ch.Table.ColumnHeader>Progress</Ch.Table.ColumnHeader>
             <Ch.Table.ColumnHeader>ETA</Ch.Table.ColumnHeader>
             <Ch.Table.ColumnHeader>Speed</Ch.Table.ColumnHeader>
@@ -43,7 +43,7 @@ export default function DownloadingTable() {
                 <Ch.Table.Cell>
                   {download.codec === "mp3" && download.bitrate}
                 </Ch.Table.Cell>
-                <Ch.TableCell>{download.download_dir}</Ch.TableCell>
+                <Ch.TableCell>{download.download_path}</Ch.TableCell>
                 <Ch.Table.Cell>
                   {download.downloaded_bytes !== null &&
                     download.total_bytes !== null && (

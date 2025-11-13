@@ -50,7 +50,7 @@ export default function QueuedTable() {
                 <Ch.Table.ColumnHeader>Track Name</Ch.Table.ColumnHeader>
                 <Ch.Table.ColumnHeader>Codec</Ch.Table.ColumnHeader>
                 <Ch.Table.ColumnHeader>Bitrate</Ch.Table.ColumnHeader>
-                <Ch.Table.ColumnHeader>Ouput Directory</Ch.Table.ColumnHeader>
+                <Ch.Table.ColumnHeader>Ouput File Path</Ch.Table.ColumnHeader>
                 <Ch.Table.ColumnHeader>Queued At</Ch.Table.ColumnHeader>
               </Ch.Table.Row>
             </Ch.Table.Header>
@@ -80,7 +80,7 @@ export default function QueuedTable() {
                     <Ch.Table.Cell>
                       {download.codec === "mp3" && download.bitrate}
                     </Ch.Table.Cell>
-                    <Ch.TableCell>{download.download_dir}</Ch.TableCell>
+                    <Ch.TableCell>{download.download_path}</Ch.TableCell>
                     <Ch.TableCell>
                       {getDownloadTimeAgo(download.created_at)}
                     </Ch.TableCell>

@@ -149,6 +149,7 @@ class Downloader:
     album_cover_path = db_download["album_cover_path"]
     album_artist = db_download["album_artist"]
     genre = db_download["genre"]
+    download_path = disk.Track.build_path(download_dir, filename, codec)
 
     def _perform_initial_update() -> DownloadUpdate:
       """Performs the initial download update using the download data.
@@ -166,7 +167,7 @@ class Downloader:
       update.bitrate = bitrate
       update.url = url
       update.created_at = db_download["created_at"]
-      update.download_path = disk.Track.build_path(download_dir, filename, codec)
+      update.download_path = download_path
       update.status_msg = "Awaiting download"
       update.terminated_at = None
       update.downloaded_bytes = None
@@ -206,6 +207,7 @@ class Downloader:
       track_info.album_cover_path = album_cover_path
       track_info.album_artist = album_artist
       track_info.genre = genre
+      track_info.filename = filename
 
       return track_info
     # END _create_track_info
@@ -273,7 +275,7 @@ class Downloader:
         initial_update.status_msg = status_msg
         initial_update.terminated_at = terminated_at
 
-        failed_update = failed_update
+        failed_update = initial_update
 
         download_model.set_failed(download_id, terminated_at, status_msg)
         DownloadsSocket.instance().send_download_update(failed_update)
