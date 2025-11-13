@@ -23,7 +23,8 @@ from typing import Callable
       "release_date": "1982",
       "other_artists": ["Paul McCartney"],
       "download_dir": "/home/user/music",
-      "album_cover_path": None
+      "album_cover_path": None,
+      "filename": "the_girl_is_mine"
     }
   ),
   (
@@ -43,7 +44,8 @@ from typing import Callable
       "release_date": "20-02-1984",
       "other_artists": [],
       "download_dir": "/home/user/music",
-      "album_cover_path": "/home/user/pictures/cover.jpg"
+      "album_cover_path": "/home/user/pictures/cover.jpg",
+      "filename": "radio_ga_ga"
     }
   ),
   (None, None)

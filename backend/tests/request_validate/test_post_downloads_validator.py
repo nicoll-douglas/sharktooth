@@ -57,8 +57,8 @@ def validate_track_name_fixture(request: pytest.FixtureRequest) -> tuple[dict, V
   ({ "url": ["abcd"] }, ValidationCase.INVALID),
   ({ "url": "abcd" }, ValidationCase.VALID)
 ])
-def validate_url_fixture(request: pytest.FixtureRequest) -> tuple[dict, ValidationCase]:
-  """Parametrized fixture providing test cases for the test_validate_url method.
+def validate_required_string_fixture(request: pytest.FixtureRequest) -> tuple[dict, ValidationCase]:
+  """Parametrized fixture providing test cases for the test__validate_required_string method.
   
   Args:
     request (pytest.FixtureRequest): Provides the current parameter.
@@ -68,7 +68,7 @@ def validate_url_fixture(request: pytest.FixtureRequest) -> tuple[dict, Validati
   """
   
   return request.param
-# END validate_url_fixture
+# END validate_required_string_fixture
 
 
 @pytest.fixture(params=[
@@ -80,8 +80,8 @@ def validate_url_fixture(request: pytest.FixtureRequest) -> tuple[dict, Validati
   ({ "album_name": ["abcd"] }, ValidationCase.INVALID),
   ({ "album_name": "abcd" }, ValidationCase.VALID)
 ])
-def validate_album_name_fixture(request: pytest.FixtureRequest) -> tuple[dict, ValidationCase]:
-  """Parametrized fixture providing test cases for the test_validation_album_name method.
+def validate_string_or_null_fixture(request: pytest.FixtureRequest) -> tuple[dict, ValidationCase]:
+  """Parametrized fixture providing test cases for the test__validate_string_or_null method.
   
   Args:
     request (pytest.FixtureRequest): Provides the current parameter.
@@ -91,7 +91,7 @@ def validate_album_name_fixture(request: pytest.FixtureRequest) -> tuple[dict, V
   """
   
   return request.param
-# END validate_album_name_fixture
+# END validate_string_or_null_fixture
 
 
 @pytest.fixture(params=[
@@ -178,16 +178,16 @@ class TestPostDownloadsValidator:
   # test__validate_track_name
 
 
-  def test__validate_url(self, validate_url_fixture: tuple[dict, ValidationCase]):
-    """Verifies that the _validate_url method validates the HTTP request body correctly with respect to a URL field.
+  def test__validate_required_string(self, validate_required_string_fixture: tuple[dict, ValidationCase]):
+    """Verifies that the _validate_required_string method validates the HTTP request body correctly with respect to a URL field.
 
     Args:
-      validate_url_fixture (tuple[dict, ValidationCase]): The parametrized fixture value containing the request body test case and the assertion type.
+      validate_required_string_fixture (tuple[dict, ValidationCase]): The parametrized fixture value containing the request body test case and the assertion type.
     """
     
-    body_test_value, assertion = validate_url_fixture
+    body_test_value, assertion = validate_required_string_fixture
     validator = PostDownloadsValidator()
-    validation_result = validator._validate_url(body_test_value)
+    validation_result = validator._validate_required_string(body_test_value, "url")
 
     if assertion is ValidationCase.INVALID:
       assert validation_result is False
@@ -204,16 +204,16 @@ class TestPostDownloadsValidator:
   # test__validate_url
 
 
-  def test__validate_album_name(self, validate_album_name_fixture: tuple[dict, ValidationCase]):
-    """Verifies that the _validate_album_name method validates the HTTP request body correctly with respect to an album name field.
+  def test__validate_string_or_null(self, validate_string_or_null_fixture: tuple[dict, ValidationCase]):
+    """Verifies that the _validate_string_or_null method validates the HTTP request body correctly with respect to an album name field.
 
     Args:
-      validate_album_name_fixture (tuple[dict, ValidationCase]): The parametrized fixture value containing the request body test case and the assertion type.
+      validate_string_or_null_fixture (tuple[dict, ValidationCase]): The parametrized fixture value containing the request body test case and the assertion type.
     """
     
-    body_test_value, assertion = validate_album_name_fixture
+    body_test_value, assertion = validate_string_or_null_fixture
     validator = PostDownloadsValidator()
-    validation_result = validator._validate_album_name(body_test_value)
+    validation_result = validator._validate_string_or_null(body_test_value, "album_name")
 
     if assertion is ValidationCase.INVALID:
       assert validation_result is False
