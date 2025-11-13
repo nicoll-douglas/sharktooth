@@ -62,9 +62,11 @@ export default function Sidebar() {
               Downloads
             </SidebarButtonLink>
 
-            <SidebarButtonLink Icon={FaSpotify} href="/spotify-library">
-              My Spotify Library
-            </SidebarButtonLink>
+            {import.meta.env.FEATURE_SPOTIFY_LIBRARY === "true" && (
+              <SidebarButtonLink Icon={FaSpotify} href="/spotify-library">
+                My Spotify Library
+              </SidebarButtonLink>
+            )}
 
             <Ch.Spacer />
 

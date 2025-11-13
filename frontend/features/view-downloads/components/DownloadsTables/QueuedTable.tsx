@@ -35,7 +35,11 @@ export default function QueuedTable() {
           totalItems={queued.length}
           emptyTitle="No Queued Downloads"
           emptyDesc="Queued downloads will appear here."
-          actions={[<PauseDownloadButton disabled={isDeleting} />]}
+          actions={
+            import.meta.env.FEATURE_DOWNLOAD_PAUSE === "true"
+              ? [<PauseDownloadButton disabled={isDeleting} />]
+              : undefined
+          }
         >
           <Ch.Table.Root>
             <Ch.Table.Header>
