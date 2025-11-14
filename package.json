@@ -19,7 +19,7 @@
     "build:backend": "pyinstaller backend/app.py --onefile --name backend --distpath dist/backend --hidden-import flask_socketio --hidden-import socketio --hidden-import socketio.async_drivers --hidden-import socketio.async_drivers.threading --hidden-import engineio --hidden-import engineio.async_drivers --hidden-import engineio.async_drivers.threading && cp -r bin dist && cp backend/db/schema.sql dist/backend/schema.sql",
     "start:electron": "electron dist/electron/main.js",
     "release:local": "npm run build && electron-builder",
-    "release:publish": "npm run build && electron-build --publish always"
+    "release:publish": "npm run build && electron-builder --publish always"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.26.0",
