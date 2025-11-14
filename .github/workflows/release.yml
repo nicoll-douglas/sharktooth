@@ -32,6 +32,18 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Create .env.production
+        run: |
+          touch .env.production
+          echo "APP_ENV=production" >> .env.production
+          echo "VITE_APP_NAME=${{ vars.VITE_APP_NAME }}" >> .env.production
+          echo "VITE_BACKEND_URL=${{ vars.VITE_BACKEND_URL }}" >> .env.production
+          echo "VITE_FEATURE_ABOUT=${{ vars.VITE_FEATURE_ABOUT }}" >> .env.production
+          echo "VITE_FEATURE_DOWNLOAD_PAUSE=${{ vars.VITE_FEATURE_DOWNLOAD_PAUSE }}" >> .env.production
+          echo "VITE_FEATURE_SPOTIFY_LIBRARY=${{ vars.VITE_FEATURE_SPOTIFY_LIBRARY }}" >> .env.production
+          echo "VITE_SPOTIFY_REDIRECT_URI=${{ vars.VITE_SPOTIFY_REDIRECT_URI }}" >> .env.production
+          echo "VITE_SPOTIFY_CLIENT_ID=${{ vars.VITE_SPOTIFY_CLIENT_ID }}" >> .env.production
+
       - name: Build and Publish
         run: npm run release:publish
         env:
