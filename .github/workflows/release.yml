@@ -53,9 +53,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: List artifacts
-        run: ls -lh release/
-
-      - name: List artifacts
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
             dir release
