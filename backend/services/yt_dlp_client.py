@@ -86,8 +86,6 @@ class YtDlpClient:
     except Exception as e:
       return False, "An unexpected error ocurred."
     
-    print(get_bin_dir())
-
     ydl_opts = {
       "format": "bestaudio/best",
       "progress_hooks": [progress_hook],

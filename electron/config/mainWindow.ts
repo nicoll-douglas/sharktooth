@@ -1,5 +1,6 @@
 import { BrowserWindowConstructorOptions } from "electron";
 import path from "path";
+import getPlatformIcon from "../windows/getPlatformIcon.js";
 
 /**
  * Configuration for the window where the main application runs.
@@ -11,9 +12,13 @@ const mainWindowConfig: BrowserWindowConstructorOptions = {
   webPreferences: {
     contextIsolation: true,
     nodeIntegration: false,
-    preload: path.join(__dirname, "../preload/mainWindow.js"),
+    preload: path.join(__dirname, "..", "preload", "mainWindow.js"),
     sandbox: false,
   },
+  icon:
+    process.env.APP_ENV === "development"
+      ? path.join(__dirname, "..", "..", "assets", "icons", getPlatformIcon())
+      : path.join(process.resourcesPath, "assets", "icons", getPlatformIcon()),
 };
 
 export default mainWindowConfig;

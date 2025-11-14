@@ -36,7 +36,7 @@ export default function QueuedTable() {
           emptyTitle="No Queued Downloads"
           emptyDesc="Queued downloads will appear here."
           actions={
-            import.meta.env.FEATURE_DOWNLOAD_PAUSE === "true"
+            import.meta.env.VITE_FEATURE_DOWNLOAD_PAUSE === "true"
               ? [<PauseDownloadButton disabled={isDeleting} />]
               : undefined
           }

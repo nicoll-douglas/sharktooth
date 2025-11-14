@@ -17,9 +17,11 @@ __pycache__
 # js
 node_modules
 /.react-router/
-/build/
 
 # build
 dist
+build
+release
+*.spec
 
 .DS_Store

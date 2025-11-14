@@ -19,4 +19,6 @@ export default defineConfig({
     emptyOutDir: true,
     ssr: false,
   },
+  envDir: path.resolve(__dirname),
+  base: "./",
 });

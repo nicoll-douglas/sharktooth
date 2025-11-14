@@ -11,8 +11,9 @@ def get_bin_dir() -> str:
   """
   
   system = platform.system().lower()
-  base_dir = os.path.dirname(os.path.abspath(__file__))
-  bin_dir = os.path.join(base_dir, "..", "..", "bin")
+  is_dev = os.getenv("APP_ENV") == "development"
+  base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..") if is_dev else os.getenv("RESOURCES_PATH")
+  bin_dir = os.path.join(base_dir, "bin")
 
   if "windows" in system:
     return os.path.join(bin_dir, "windows")

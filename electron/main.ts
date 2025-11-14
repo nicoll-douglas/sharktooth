@@ -1,7 +1,13 @@
 import dotenv from "dotenv";
-dotenv.config();
-
+import path from "path";
 import { app, BrowserWindow } from "electron";
+
+const envPath = app.isPackaged
+  ? path.join(process.resourcesPath, ".env")
+  : path.join(process.cwd(), ".env");
+
+dotenv.config({ path: envPath });
+
 import { createMainWindow } from "./windows/mainWindow.js";
 import {
   startBackend,

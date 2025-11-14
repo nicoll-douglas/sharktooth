@@ -78,23 +78,35 @@ function registerBackendEventHandlers(proc: ChildProcessWithoutNullStreams) {
 async function startBackend() {
   await killBackend();
 
-  const pyPath = path.join(__dirname, "../../../.venv/bin/python");
-  const script = path.join(backendSrcFolder, "app.py");
+  const execPath =
+    process.env.APP_ENV === "development"
+      ? path.join(__dirname, "..", "..", "..", ".venv", "bin", "python")
+      : path.join(
+          process.resourcesPath,
+          "backend",
+          process.platform === "win32" ? "backend.exe" : "backend"
+        );
+
+  const args =
+    process.env.APP_ENV === "development"
+      ? [path.join(backendSrcFolder, "app.py")]
+      : [];
 
   const spawnOptions = {
-    cwd: backendSrcFolder,
+    cwd: path.dirname(execPath),
     env: {
       USER_DATA_DIR: app.getPath("userData"),
       APP_NAME: process.env.VITE_APP_NAME,
       FRONTEND_APP_URL: process.env.VITE_APP_URL,
       APP_ENV: process.env.APP_ENV,
-      SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
-      SPOTIFY_REDIRECT_URI: process.env.SPOTIFY_REDIRECT_URI,
+      SPOTIFY_CLIENT_ID: process.env.VITE_SPOTIFY_CLIENT_ID,
+      SPOTIFY_REDIRECT_URI: process.env.VITE_SPOTIFY_REDIRECT_URI,
+      RESOURCES_PATH: process.resourcesPath,
     },
   };
 
   logMain.debug("Starting backend...");
-  backendProcess = spawn(pyPath, [script], spawnOptions);
+  backendProcess = spawn(execPath, args, spawnOptions);
   registerBackendEventHandlers(backendProcess);
 }
 

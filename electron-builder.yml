@@ -1,0 +1,50 @@
+appId: xyz.nicolldouglas.sharktooth
+productName: Sharktooth
+directories:
+  output: release
+  buildResources: assets
+
+publish:
+  - provider: github
+    owner: nicoll-douglas
+    repo: sharktooth
+
+files:
+  - dist/electron/**
+  - dist/shared/**
+  - package.json
+  - .env.production
+  - "!release/**"
+  - "!**/.venv"
+  - "!**/.venv/**"
+
+extraResources:
+  - from: dist/backend
+    to: backend
+
+  - from: dist/bin
+    to: bin
+
+  - from: dist/renderer
+    to: renderer
+
+  - from: .env.production
+    to: .env
+
+  - from: dist/assets
+    to: assets
+
+win:
+  target: nsis
+  icon: assets/icon.ico
+
+mac:
+  target: dmg
+  icon: assets/icon.icns
+  category: public.app-category.music
+
+linux:
+  target:
+    - AppImage
+  icon: assets/icon.png
+  category: AudioVideo

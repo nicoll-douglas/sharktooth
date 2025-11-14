@@ -30,10 +30,10 @@ function createMainWindow(): BrowserWindow {
 
     logMain.info("Created main window.", { url });
   } else {
-    const filename = path.join(__dirname, "../../frontend/index.html");
+    const filename = path.join(process.resourcesPath, "renderer", "index.html");
     mainWindow.loadFile(filename);
 
-    logMain.info("Created main window", { filename });
+    logMain.info("Created main window.", { filename });
   }
 
   return mainWindow;

@@ -62,7 +62,7 @@ export default function Sidebar() {
               Downloads
             </SidebarButtonLink>
 
-            {import.meta.env.FEATURE_SPOTIFY_LIBRARY === "true" && (
+            {import.meta.env.VITE_FEATURE_SPOTIFY_LIBRARY === "true" && (
               <SidebarButtonLink Icon={FaSpotify} href="/spotify-library">
                 My Spotify Library
               </SidebarButtonLink>
@@ -74,7 +74,7 @@ export default function Sidebar() {
 
             <SettingsButton display={{ lg: "none" }} />
 
-            {import.meta.env.FEATURE_ABOUT === "true" && (
+            {import.meta.env.VITE_FEATURE_ABOUT === "true" && (
               <>
                 <Ch.Separator display={{ lgDown: "none" }} />
                 <SidebarButtonLink Icon={LuInfo} href="/about">
