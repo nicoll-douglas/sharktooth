@@ -8,7 +8,10 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
       - name: Checkout Repo
@@ -51,3 +54,12 @@ jobs:
 
       - name: List artifacts
         run: ls -lh release/
+
+      - name: List artifacts
+        run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            dir release
+          else
+            ls -lh release/
+          fi
+        shell: bash
