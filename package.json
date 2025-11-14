@@ -15,8 +15,8 @@
     "dev:electron": "concurrently \"tsc -w -p tsconfig.electron.json\" \"wait-on http://localhost:5173 && nodemon\"",
     "build": "npm run build:frontend && npm run build:electron && npm run build:backend",
     "build:frontend": "vite build --mode production",
-    "build:electron": "tsc -p tsconfig.electron.json && mkdir -p dist/assets && cp -r assets/icons dist/assets",
-    "build:backend": "pyinstaller backend/app.py --onefile --name backend --distpath dist/backend --hidden-import flask_socketio --hidden-import socketio --hidden-import socketio.async_drivers --hidden-import socketio.async_drivers.threading --hidden-import engineio --hidden-import engineio.async_drivers --hidden-import engineio.async_drivers.threading && cp -r bin dist && cp backend/db/schema.sql dist/backend/schema.sql",
+    "build:electron": "tsc -p tsconfig.electron.json && node scripts/copyIcons.js",
+    "build:backend": "pyinstaller backend/app.py --onefile --name backend --distpath dist/backend --hidden-import flask_socketio --hidden-import socketio --hidden-import socketio.async_drivers --hidden-import socketio.async_drivers.threading --hidden-import engineio --hidden-import engineio.async_drivers --hidden-import engineio.async_drivers.threading && node scripts/copyBin.js && node scripts/copySchema.js",
     "start:electron": "electron dist/electron/main.js",
     "release:local": "npm run build && electron-builder",
     "release:publish": "npm run build && electron-builder --publish always"
