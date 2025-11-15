@@ -6,7 +6,7 @@
 
   <div>
   <img src="https://img.shields.io/badge/License-MIT-green" />
-  <img src="https://img.shields.io/badge/First_Release-Expected%201%20Jan%202026-blue" />
+  <img src="https://img.shields.io/badge/Version-1.0.0-blue" />
   </div>
 
   <div>
@@ -22,43 +22,90 @@
 
 ## About
 
-Sharktooth is a feature-rich music downloader desktop application. You can download audio from YouTube in a range of different audio codecs such as mp3, flac, and so on. You can also authenticate with Spotify and download your Spotify music library and playlists into m3u8 or XML files.
+Sharktooth is a feature-rich desktop application that allows you to download audio from YouTube. There are a number of YouTube to audio converters on the internet but they all fall short in one way or another—too many ads, poor handling of file metadata, etc. To fix this I built this project so that music collectors can download files and handle metadata quickly, seamlessly, and hassle-free.
 
 ### Disclaimer
 
-Users are responsible for their actions and potential legal consequences. I do not support unauthorized downloading of copyrighted material and take no responsibility for user actions. This project is mainly for the download of public domain tracks and to demonstrate, as well as exercise, the core engineering and architecture that goes into applications that require media processing.
+Users are responsible for their actions and potential legal consequences. I do not support unauthorized downloading of copyrighted material and take no responsibility for user actions.
 
 ## Features
 
 - Search for audio tracks or paste a YouTube URL to download.
-- Set file metadata such as track artist, name, album, release date and more before download.
+- Set file metadata such as track artist, name, album, release date, genre and more before download.
+- Download audio in either .mp3 or .flac format.
 - A queue based downloads system with real-time updates and
   CRUD operations.
-- Integration with the Spotify API in order to download tracks as well as playlist metadata into m3u8 or XML files.
-- Highly configurable global application and download settings.
 
-## Roadmap
+## Folder Structure
 
-Sharktooth is currently in development and yet to be released however I anticipate that I will have a minimum viable product (MVP) that I am happy with by early 2026 and as a result v1.0.0.
+- `frontend` - Contains React and TypeScript code for the electron renderer.
+- `electron` - Contains TypeScript code used by the main Electron process.
+- `shared` - Contains shared TypeScript code for the renderer and main processes.
+- `scripts` - Contains Node.js scripts used at build-time.
+- `backend` - Contains Python code for the backend API of the application.
+- `bin` - Contains binaries used by the application.
+- `assets` - Contains static project assets.
 
-## Architecture
+## Running Locally
 
-The project is architected as a full-stack desktop application with an Electron frontend built using React and TypeScript, and a Python Flask backend running locally on the user’s machine as part of the application. This separation offloads heavy download and file management tasks to a backend service that operates on the user’s system. The backend exposes both RESTful and real-time WebSocket APIs, enabling communication with the frontend for status updates, progress tracking, and dynamic task management.
+### Prerequisites
 
-The backend is a download management system designed around concurrency and data persistence. Downloads are processed via a threaded queue-based loop, allowing multiple tasks to be scheduled, paused, or resumed without blocking the main Flask application. Each download’s metadata, progress, and history are tracked using an SQLite database, providing local persistence for session restoration and history tracking.
+- [Python 3](https://www.python.org/downloads/)
+- [Node.js](https://nodejs.org/en/download)
 
-The frontend talks to the backend using a combination of REST endpoints for commands (e.g., start, pause, queue, or cancel downloads) and real-time WebSocket events for continuous updates on progress, errors, and task completion. The main process in the Electron app also talks to the Spotify API feeding data to the renderer via IPC.
+### 1. Clone the Repo
 
-Below you can see a diagram that illustrates this architecture:
+```bash
+git clone https://github.com/nicoll-douglas/sharktooth.git
+cd sharktooth
+```
 
-![Sharktooth Architecture](assets/images/architecture.png)
+### 2. Set up a Python Virtual Environment
 
-## Screenshots
+Create a Python virtual environment with the command below:
 
-<img src="assets/images/sc-new-download.png" />
-<img src="assets/images/sc-searched-tracks.png" />
-<img src="assets/images/sc-downloads.png"/>
-<img src="assets/images/sc-spotify.png"/>
+```bash
+python3 -m venv .venv
+```
+
+Activate the virtual environment:
+
+```bash
+source .venv/bin/activate
+```
+
+Or if you are on windows:
+
+```bash
+.venv\Scripts\Activate.ps1
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+npm install
+```
+
+### 4. Set up Envrionment Variables
+
+Consult the [.env.example](.env.example) file to see the expected environment variables and structure of the .env file. Use the following command to get a headstart:
+
+```bash
+cp .env.example .env
+```
+
+### 5. Running the Application
+
+Run the following command to start a development instance of the application:
+
+```
+npm run dev
+```
+
+## Demo
+
+A project demo can be found on my website at [https://nicolldouglas.xyz/projects](https://nicolldouglas.xyz/projects)
 
 ## License
 
