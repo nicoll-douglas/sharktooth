@@ -1,12 +1,18 @@
 import * as Ch from "@chakra-ui/react";
 import { LuSearch } from "react-icons/lu";
 import { useSearchDownloadsFormContext } from "../../../context/SearchDownloadsFormContext";
+import { useDownloadFormContext } from "../../../context/DownloadFormContext";
 
 /**
  * Represents a card component that contains a form to search for download sources.
  */
 export default function SearchDownloadsForm() {
   const { form, onFormSubmit } = useSearchDownloadsFormContext();
+  const { form: downloadForm } = useDownloadFormContext();
+  const { onChange: onArtistChange, ...mainArtistFieldRegistration } =
+    form.register("main_artist");
+  const { onChange: onTrackChange, ...trackNameFieldRegistration } =
+    form.register("track_name");
 
   return (
     <Ch.Card.Root size={"sm"}>
@@ -24,8 +30,14 @@ export default function SearchDownloadsForm() {
               <Ch.Field.RequiredIndicator />
             </Ch.Field.Label>
             <Ch.Input
+              onChange={(e) => {
+                onArtistChange(e);
+                downloadForm.setValue("artistNames", [
+                  { value: e.target.value },
+                ]);
+              }}
               placeholder="Daft Punk"
-              {...form.register("main_artist")}
+              {...mainArtistFieldRegistration}
             />
             <Ch.Field.ErrorText>
               {form.formState.errors.main_artist?.message}
@@ -38,8 +50,12 @@ export default function SearchDownloadsForm() {
               <Ch.Field.RequiredIndicator />
             </Ch.Field.Label>
             <Ch.Input
+              onChange={(e) => {
+                onTrackChange(e);
+                downloadForm.setValue("trackName", e.target.value);
+              }}
               placeholder="One More Time"
-              {...form.register("track_name")}
+              {...trackNameFieldRegistration}
             />
             <Ch.Field.ErrorText>
               {form.formState.errors.track_name?.message}
