@@ -8,6 +8,12 @@ const envPath = app.isPackaged
 
 dotenv.config({ path: envPath });
 
+const APP_NAME = String(process.env.VITE_APP_NAME);
+
+app.setName(
+  process.env.APP_ENV === "development" ? APP_NAME + "-dev" : APP_NAME
+);
+
 import { createMainWindow } from "./windows/mainWindow.js";
 import {
   startBackend,
